@@ -9,3 +9,42 @@ Currently, two official plugins are available:
 
 
 hello
+
+
+User:
+{
+  id:
+  firstName: 
+  lastName:
+  email:
+  password:
+  likedPosts: []
+  dates: []
+  picture
+}
+
+Date:
+{
+  id:
+  title:
+  tags: []
+  events: [
+    {
+      id:
+      title:
+      location:
+      time:
+    },
+    ...
+  ]
+  likes:
+  comments: [
+    {
+      username:
+      comment:
+      time: (potentially)
+    },
+    ...
+  ]
+  summary:
+}
