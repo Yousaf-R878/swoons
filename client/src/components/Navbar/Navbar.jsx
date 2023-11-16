@@ -25,7 +25,7 @@ const Navbar = () => {
         </button> */}
         <Button
           asChild
-          className="ml-4 font-semibold text-white border-primary border-2 text-lg py-2 px-4 hover:text-primary hover:bg-white min-w-[100px] max-w-xs"
+          className="transition delay-100 duration-300 ease-in-out ml-4 font-semibold text-white border-primary border-2 text-lg py-2 px-4 hover:bg-primary-hover min-w-[100px] max-w-xs"
         >
           <Link href="/signup">Sign Up</Link>
         </Button>

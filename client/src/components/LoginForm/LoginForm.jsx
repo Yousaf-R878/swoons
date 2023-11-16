@@ -84,7 +84,19 @@ const LoginForm = ({ handleLogin }) => {
             </FormItem>
           )}
         />
-        <FormDescription>
+        {/* <FormDescription>
+          
+        </FormDescription> */}
+        {/* <DialogFooter></DialogFooter> */}
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover w-full text-xl"
+          >
+            Login
+          </Button>
+        </div>
+        <div className="flex justify-center">
           <span className="text-gray-600 mr-4">
             Don't have an account? {""}
             <Link
@@ -94,12 +106,7 @@ const LoginForm = ({ handleLogin }) => {
               Sign up
             </Link>
           </span>
-        </FormDescription>
-        <DialogFooter>
-          <Button type="submit" className="hover:bg-primary-hover">
-            Login
-          </Button>
-        </DialogFooter>
+        </div>
       </form>
     </Form>
   );
