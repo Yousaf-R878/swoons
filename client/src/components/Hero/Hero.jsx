@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 const Hero = () => {
   return (
     <>
-      <div className="flex flex-col md:flex-row items-center justify-center bg-secondary">
+      <div className="flex flex-col md:flex-row items-center justify-center bg-secondary border-gray-200 border-b-2 border-t-2">
         {/* Image Container */}
         <div className="w-full md:w-1/2">
           <img
@@ -27,7 +27,7 @@ const Hero = () => {
             arcu massa nisi. Praesent eu at eu arcu massa eget. Eget a risus
             faucibus lorem vitae volutpat suspendisse tempor ut. Ut lorem.
           </p>
-          <Button className="bg-white text-black w-1/4 h-15 transition delay-100 duration-300 ease-in-out hover:bg-white-hover text-xl">
+          <Button className="bg-white text-black w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-white-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
             Learn More
           </Button>
           {/* <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">

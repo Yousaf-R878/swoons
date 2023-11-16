@@ -20,18 +20,12 @@ const Navbar = () => {
       </div>
       <div>
         <LoginButton />
-        {/* <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-          Login
-        </button> */}
         <Button
           asChild
           className="transition delay-100 duration-300 ease-in-out ml-4 font-semibold text-white border-primary border-2 text-lg py-2 px-4 hover:bg-primary-hover min-w-[100px] max-w-xs"
         >
           <Link href="/signup">Sign Up</Link>
         </Button>
-        {/* <button className="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 border border-blue-700 rounded">
-          Register
-        </button> */}
       </div>
     </nav>
   );
