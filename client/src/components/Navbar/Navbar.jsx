@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Boxes } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import LoginButton from "../LoginButton/LoginButton";
+import SignupButton from "../LoginButton/SignupButton";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
@@ -20,12 +21,7 @@ const Navbar = () => {
       </div>
       <div>
         <LoginButton />
-        <Button
-          asChild
-          className="transition delay-100 duration-300 ease-in-out ml-4 font-semibold text-white border-primary border-2 text-lg py-2 px-4 hover:bg-primary-hover min-w-[100px] max-w-xs"
-        >
-          <Link href="/signup">Sign Up</Link>
-        </Button>
+        <SignupButton/>
       </div>
     </nav>
   );
