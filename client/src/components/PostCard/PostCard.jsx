@@ -14,6 +14,12 @@ import { StarHalf } from "lucide-react";
 import { Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { MessagesSquare } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 

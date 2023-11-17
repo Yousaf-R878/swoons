@@ -31,7 +31,10 @@ const formSchema = z.object({
 
 const SignupForm = ({ handleLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const toggleConfirmPasswordVisibility = () =>
+    setShowConfirmPassword(!showConfirmPassword);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -64,6 +67,32 @@ const SignupForm = ({ handleLogin }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(registerUser)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="firstName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>First Name</FormLabel>
+              <FormControl>
+                <Input placeholder="John" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Doe" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="email"
@@ -109,6 +138,38 @@ const SignupForm = ({ handleLogin }) => {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm Password"
+                    {...field}
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer">
+                    {showConfirmPassword ? (
+                      <Eye
+                        className="h-6 w-6"
+                        onClick={toggleConfirmPasswordVisibility}
+                      />
+                    ) : (
+                      <EyeOff
+                        className="h-6 w-6"
+                        onClick={toggleConfirmPasswordVisibility}
+                      />
+                    )}
+                  </div>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {/* <FormDescription>
           
         </FormDescription> */}
@@ -118,10 +179,10 @@ const SignupForm = ({ handleLogin }) => {
             type="submit"
             className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover w-full text-xl"
           >
-            Login
+            Sign Up
           </Button>
         </div>
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <span className="text-gray-600 mr-4">
             Don't have an account? {""}
             <Link
@@ -131,7 +192,7 @@ const SignupForm = ({ handleLogin }) => {
               Sign up
             </Link>
           </span>
-        </div>
+        </div> */}
       </form>
     </Form>
   );

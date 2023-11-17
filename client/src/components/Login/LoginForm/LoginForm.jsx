@@ -92,12 +92,12 @@ const LoginForm = ({ handleLogin }) => {
         <div className="flex justify-center">
           <Button
             type="submit"
-            className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover w-full text-xl"
+            className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover w-full text-xl my-2"
           >
             Login
           </Button>
         </div>
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <span className="text-gray-600 mr-4">
             Don't have an account? {""}
             <Link
@@ -107,7 +107,7 @@ const LoginForm = ({ handleLogin }) => {
               Sign up
             </Link>
           </span>
-        </div>
+        </div> */}
       </form>
     </Form>
   );
