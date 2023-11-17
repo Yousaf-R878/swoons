@@ -17,7 +17,9 @@ const Hero = () => {
             arcu massa nisi. Praesent eu at eu arcu massa eget. Eget a risus
             faucibus lorem vitae volutpat suspendisse tempor ut. Ut lorem.
           </p>
-          {/* Add your CTA buttons here */}
+          <Button className="bg-white text-black w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-white-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
+            Learn More
+          </Button>
         </div>
         <div className="md:w-1/3 h-full flex justify-center md:justify-end items-center">
           <img
@@ -49,9 +51,9 @@ const Hero = () => {
     //         arcu massa nisi. Praesent eu at eu arcu massa eget. Eget a risus
     //         faucibus lorem vitae volutpat suspendisse tempor ut. Ut lorem.
     //       </p>
-    //       <Button className="bg-white text-black w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-white-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
-    //         Learn More
-    //       </Button>
+    // <Button className="bg-white text-black w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-white-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
+    //   Learn More
+    // </Button>
     //       {/* <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
     //         Learn More
     //       </button> */}
