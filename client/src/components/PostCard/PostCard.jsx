@@ -14,6 +14,12 @@ import { StarHalf } from "lucide-react";
 import { Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { MessagesSquare } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
@@ -33,16 +39,16 @@ const PostCard = () => {
     },
   ];
   return (
-    <Card className="w-[350px] border-primary border-4">
+    <Card className="w-[350px]">
       <CardHeader>
         <div className="flex items-center">
-          <Avatar className="w-12 h-12 mr-2">
+          <Avatar className="w-10 h-10 mr-2">
             <AvatarImage src="" alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <span>
-            <CardTitle>John Doe</CardTitle>
-            <CardDescription>@johnDoe</CardDescription>
+            <CardTitle className="text-xl">John Doe</CardTitle>
+            <CardDescription className="text-sm">@johnDoe</CardDescription>
           </span>
         </div>
         <Separator />
@@ -50,13 +56,15 @@ const PostCard = () => {
       <CardContent>
         <h2>A Cozy Hangout</h2>
         <div className="flex flex-row">
-          <Star color="#FFB240" fill="#FFB240" size={30} />
-          <Star color="#FFB240" size={30} />
-          <Star color="#FFB240" size={30} />
-          <StarHalf color="#FFB240" fill="#FFB240" size={30} />
+          <Star color="#FFB240" fill="#FFB240" size={25} />
+          <Star color="#FFB240" size={25} />
+          <Star color="#FFB240" size={25} />
+          <StarHalf color="#FFB240" fill="#FFB240" size={25} />
         </div>
-        <Badge className="bg-palecyan my-2">Badge</Badge>
-        <ScrollArea className="w-full h-48 whitespace-nowrap rounded-md border">
+        <Badge className="bg-palecyan my-2 h-5 text-xs text-gray-500">
+          Badge
+        </Badge>
+        <ScrollArea className="w-full h-40 whitespace-nowrap rounded-md border">
           <div className="flex w-max space-x-4 p-4">
             {works.map((artwork) => (
               <figure key={artwork.artist} className="shrink-0">
@@ -64,7 +72,7 @@ const PostCard = () => {
                   <img
                     src={artwork.art}
                     alt={`Photo by ${artwork.artist}`}
-                    className="h-36 w-36 object-cover"
+                    className="h-28 w-28 object-cover"
                   />
                 </div>
                 {/* <figcaption className="pt-2 text-xs text-muted-foreground">
@@ -80,9 +88,10 @@ const PostCard = () => {
         </ScrollArea>
       </CardContent>
       <CardFooter className="">
-        <Heart size={35} className="mr-2" />
+        <Heart size={30} color="#FFA39C" className="mr-2" />
         <span>100</span>
-        <MessagesSquare size={35} className="ml-2 mr-2" />
+        {/* Maybe make comments blue? */}
+        <MessagesSquare size={30} color="gray" className="ml-2 mr-2" />
         <span>10</span>
       </CardFooter>
     </Card>
