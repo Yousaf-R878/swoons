@@ -1,10 +1,19 @@
 import { Link } from "react-router-dom";
 import { Boxes } from "lucide-react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import LoginDialog from "../Login/LoginDialog/LoginDialog";
-import { buttonVariants } from "@/components/ui/button";
-import SignupButton from "../LoginButton/SignupButton";
 import { Button } from "@/components/ui/button";
+import SignUpSheet from "../SignUp/SignUpSheet/SignUpSheet";
 
 const Navbar = () => {
   return (
@@ -32,7 +41,17 @@ const Navbar = () => {
           </DialogTrigger>
           <LoginDialog />
         </Dialog>
-        <SignupButton />
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              className="transition delay-100 duration-300 ease-in-out ml-4 font-semibold text-white border-primary border-2 text-lg py-2 px-4 bg-primary hover:bg-primary-hover hover:text-white min-w-[100px] max-w-xs"
+            >
+              Sign Up
+            </Button>
+          </SheetTrigger>
+          <SignUpSheet />
+        </Sheet>
       </div>
     </nav>
   );

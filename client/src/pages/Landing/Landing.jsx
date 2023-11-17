@@ -14,7 +14,7 @@ const Landing = () => {
       <Navbar />
       <Hero />
       <div className="my-8">
-        <h2 className="text-4xl text-center">Recent Activity</h2>
+        <h2 className="text-4xl text-center font-bold">Recent Activity</h2>
         <div className="relative blur-endings my-8 mx-4">
           <div className="flex justify-center items-center">
             <ScrollArea className="w-full whitespace-nowrap rounded-md border-2">

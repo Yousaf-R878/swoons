@@ -19,13 +19,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
-
-
 const formSchema = z.object({
+  firstName: z.string().min(1, { message: "First name required" }),
+  lastName: z.string().min(1, { message: "Last name required" }),
   email: z.string().email({
     message: "Invalid email address.",
   }),
-  password: z.string().min(1, { message: "Password required" }),
+  password: z.string().min(1, { message: "Password required" }), // This needs more validation
+  confirmPassword: z.string().min(1, { message: "Confirm password required" }), // This needs more validation
 });
 
 const SignupForm = ({ handleLogin }) => {
@@ -34,13 +35,16 @@ const SignupForm = ({ handleLogin }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   function registerUser({ email, password }) {
-    console.log(email,password)
+    console.log(email, password);
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
