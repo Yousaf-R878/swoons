@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { Boxes } from "lucide-react";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import LoginDialog from "../Login/LoginDialog/LoginDialog";
 import { buttonVariants } from "@/components/ui/button";
-import LoginButton from "../LoginButton/LoginButton";
 import SignupButton from "../LoginButton/SignupButton";
 import { Button } from "@/components/ui/button";
 
@@ -20,8 +21,18 @@ const Navbar = () => {
         </span>
       </div>
       <div>
-        <LoginButton />
-        <SignupButton/>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              className="transition delay-100 duration-300 ease-in-out font-semibold text-primary border-primary border-2 text-lg py-2 px-4 hover:text-primary hover:bg-white-hover min-w-[100px] max-w-xs mb-4 sm:mb-0"
+            >
+              Login
+            </Button>
+          </DialogTrigger>
+          <LoginDialog />
+        </Dialog>
+        <SignupButton />
       </div>
     </nav>
   );

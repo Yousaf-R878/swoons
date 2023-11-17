@@ -1,0 +1,17 @@
+.blur-endings::before,
+.blur-endings::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px; /* Adjust as needed */
+  border-radius: 8px;
+  pointer-events: none;
+  background: linear-gradient(to right, rgb(214, 214, 214), transparent);
+  z-index: 1;
+}
+
+.blur-endings::after {
+  right: 0;
+  transform: rotateZ(180deg);
+}

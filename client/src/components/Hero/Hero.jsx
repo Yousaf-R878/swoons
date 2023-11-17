@@ -6,7 +6,6 @@ const Hero = () => {
   return (
     <>
       <div className="flex flex-col md:flex-row items-center justify-center bg-secondary border-gray-200 border-b-2 border-t-2">
-        {/* Image Container */}
         <div className="w-full md:w-1/2">
           <img
             src={HeroImage}
@@ -14,8 +13,6 @@ const Hero = () => {
             className="w-full h-auto object-cover"
           />
         </div>
-
-        {/* Text Container */}
         <div className="w-full md:w-1/2 p-4 md:p-8 text-center">
           <h1 className="text-5xl font-bold mb-8 text-white">
             Lorem ipsum dolor sit amet{" "}
