@@ -8,19 +8,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import SignupForm from "../LoginForm/SignupForm";
+import LoginForm from "../LoginForm/LoginForm";
+import './LoginButton.css'
 import { Separator } from "@/components/ui/separator";
 import {signInWithPopup, GoogleAuthProvider, getAuth} from "firebase/auth";
-import { useNavigation } from "react-router-dom";
 
-const SignupButton = () => {
+const LoginButton = () => {
   // 2. Define a submit handler.
   function handleLogin(values) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
   }
-  
+
   async function handleGoogle(){
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
@@ -36,9 +36,9 @@ const SignupButton = () => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="transition delay-100 duration-300 ease-in-out ml-4 font-semibold text-white border-primary border-2 text-lg py-2 px-4 bg-primary hover:bg-primary-hover hover:text-white min-w-[100px] max-w-xs"
+          className="transition delay-100 duration-300 ease-in-out font-semibold text-primary border-primary border-2 text-lg py-2 px-4 hover:text-primary hover:bg-white-hover min-w-[100px] max-w-xs mb-4 sm:mb-0"
         >
-          Sign Up
+          Login
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -47,7 +47,7 @@ const SignupButton = () => {
         </DialogHeader>
         <Button onClick={handleGoogle} className="googleButton gradient-border bg-white py-2 px-4 cursor-pointer font-bold hover:bg-gray-100">
           <span className="googleText">
-          Sign in with Google
+          Log in with Google
           </span>
         </Button>
         <div className="flex items-center my-4">
@@ -55,10 +55,11 @@ const SignupButton = () => {
           <span className="mx-4 text-gray-600">OR</span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
-        <SignupForm/>
+        <LoginForm handleLogin={handleLogin} />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default SignupButton;
+export default LoginButton;
+
