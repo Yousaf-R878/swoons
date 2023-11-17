@@ -9,7 +9,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import LoginForm from "../LoginForm/LoginForm";
+import './LoginButton.css'
 import { Separator } from "@/components/ui/separator";
+import {signInWithPopup, GoogleAuthProvider, getAuth} from "firebase/auth";
 
 const LoginButton = () => {
   // 2. Define a submit handler.
@@ -18,6 +20,17 @@ const LoginButton = () => {
     // ✅ This will be type-safe and validated.
     console.log(values);
   }
+
+  async function handleGoogle(){
+    const provider = new GoogleAuthProvider();
+    const auth = getAuth();
+    const userCred = await signInWithPopup(auth, provider);
+    console.log(userCred)
+    if (userCred.user){
+      console.log('navigate or smn')
+    }
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -32,6 +45,11 @@ const LoginButton = () => {
         <DialogHeader>
           <DialogTitle className="text-2xl text-center">Login</DialogTitle>
         </DialogHeader>
+        <Button onClick={handleGoogle} className="googleButton gradient-border bg-white py-2 px-4 cursor-pointer font-bold hover:bg-gray-100">
+          <span className="googleText">
+          Log in with Google
+          </span>
+        </Button>
         <div className="flex items-center my-4">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="mx-4 text-gray-600">OR</span>
