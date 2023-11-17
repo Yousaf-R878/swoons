@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 import { Boxes } from "lucide-react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import LoginDialog from "../Login/LoginDialog/LoginDialog";
+import { buttonVariants } from "@/components/ui/button";
+import LoginButton from "../LoginButton/LoginButton";
+import SignupButton from "../LoginButton/SignupButton";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
@@ -36,6 +39,8 @@ const Navbar = () => {
         >
           <Link href="/signup">Sign Up</Link>
         </Button>
+        <LoginButton />
+        <SignupButton/>
       </div>
     </nav>
   );
