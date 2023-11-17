@@ -36,6 +36,12 @@ module.exports = {
           foreground: "hsl(var(--secondary-foreground))",
           hover: "hsl(var(--secondary-hover))",
         },
+        yelloworange: {
+          DEFAULT: "hsl(var(--yelloworange))",
+        },
+        palecyan: {
+          DEFAULT: "hsl(var(--palecyan))",
+        },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
