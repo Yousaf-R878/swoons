@@ -83,3 +83,20 @@ export let get = async (id) => {
     }
     return returnUser;
 }
+
+export let remove = async (id) => {
+    id = helpers.checkId(id, "User ID");
+
+    let user = await get(id);
+    
+    let usersCollection = await users();
+    let deletionInfo = await usersCollection.findOneAndDelete({
+        _id: new ObjectId(id)
+    });
+
+    if (!deletionInfo){
+        throw `Could not delete User with ID ${id}`
+    }
+
+    return `User ${id} has been successfully deleted!`
+}
