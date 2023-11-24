@@ -100,3 +100,75 @@ export let remove = async (id) => {
 
     return `User ${id} has been successfully deleted!`
 }
+
+export let update = async (
+    id,
+    firstName,
+    lastName,
+    email,
+    password
+) => {
+    id = helpers.checkId(id, `User (${id})'s Id`)
+    
+    let usersCollection = await users();
+
+    let user = await get(id);
+
+    firstName = helpers.checkName(firstName, `User (${id})'s First Name`);
+    lastName = helpers.checkName(lastName, `User (${id})'s Last Name`);
+    email = helpers.checkEmail(email, `User (${id})'s Email`);
+    password = helpers.checkPassword(password, `User (${id})'s Password`);
+
+    // let userPassHash = user.password;
+    // let compare = bcrypt.compare(password, userPassHash);
+    // if (compare){
+    //     throw `User (${id})'s `
+    // }
+
+    let updatedUser = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password
+    }
+    let updateInfo = await usersCollection.findOneAndUpdate(
+        {_id: new ObjectId(id)}, 
+        {$set: updatedUser},
+        {returnDocument: 'after'}
+    );
+
+    if (!updateInfo){
+        throw `Could not update User (${id})`
+    }
+    updateInfo._id = updateInfo._id.toString();
+    return updateInfo;
+}
+
+export let addPost = async (userId,postId) => {
+    userId = helpers.checkId(userId, `User (${userId})'s Id`);
+    postId = helpers.checkId(postId, `Post (${postId})'s Id`);
+
+    let usersCollection = await users();
+    //Check to see if post exists? If we have posts collection
+    //or we can have them store the object itself instead of id
+
+    let user = await get(userId);
+
+    let userLikedPosts = user.likedPosts
+    if (userLikedPosts.includes(postId)){
+        throw `User (${userId}) already liked that post (${postId})`
+    }
+
+    let addInfo = await usersCollection.findOneAndUpdate(
+        {_id: new ObjectId(userId)},
+        {$push: {likedPosts: postId}},
+        {returnDocument: 'after'}
+    );
+
+    if (!addInfo){
+        throw `Could not add liked post (${postId}) to User (${id})`
+    }
+
+    addInfo._id = addInfo._id.toString();
+    return addInfo;
+}
