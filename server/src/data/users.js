@@ -201,3 +201,61 @@ export let removePost = async (userId,postId) => {
     removeInfo._id = removeInfo._id.toString();
     return removeInfo;
 }
+
+export let addDate = async (userId,dateId) => {
+    userId = helpers.checkId(userId, `User (${userId})'s Id`);
+    dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
+
+    let usersCollection = await users();
+    //Check to see if post exists? If we have posts collection
+    //or we can have them store the object itself instead of id
+
+    let user = await get(userId);
+
+    let userDates = user.dates
+    if (userDates.includes(dateId)){
+        throw `User (${userId}) already added that date (${dateId})`
+    }
+
+    let addInfo = await usersCollection.findOneAndUpdate(
+        {_id: new ObjectId(userId)},
+        {$push: {dates: dateId}},
+        {returnDocument: 'after'}
+    );
+
+    if (!addInfo){
+        throw `Could not add date (${dateId}) to User (${id})`
+    }
+
+    addInfo._id = addInfo._id.toString();
+    return addInfo;
+}
+
+export let removeDate = async (userId,dateId) => {
+    userId = helpers.checkId(userId, `User (${userId})'s Id`);
+    dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
+
+    let usersCollection = await users();
+    //Check to see if post exists? If we have posts collection
+    //or we can have them store the object itself instead of id
+
+    let user = await get(userId);
+
+    let userDates = user.dates
+    if (!userDates.includes(dateId)){
+        throw `User (${userId}) did not create that date (${dateId})`
+    }
+
+    let removeInfo = await usersCollection.findOneAndUpdate(
+        {_id: new ObjectId(userId)},
+        {$pull: {dates: dateId}},
+        {returnDocument: 'after'}
+    );
+
+    if (!removeInfo){
+        throw `Could not remove date (${dateId}) from User (${id})`
+    }
+
+    removeInfo._id = removeInfo._id.toString();
+    return removeInfo;
+}
