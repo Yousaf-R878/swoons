@@ -172,3 +172,32 @@ export let addPost = async (userId,postId) => {
     addInfo._id = addInfo._id.toString();
     return addInfo;
 }
+
+export let removePost = async (userId,postId) => {
+    userId = helpers.checkId(userId, `User (${userId})'s Id`);
+    postId = helpers.checkId(postId, `Post (${postId})'s Id`);
+
+    let usersCollection = await users();
+    //Check to see if post exists? If we have posts collection
+    //or we can have them store the object itself instead of id
+
+    let user = await get(userId);
+
+    let userLikedPosts = user.likedPosts
+    if (!userLikedPosts.includes(postId)){
+        throw `User (${userId}) has not liked post (${postId})`
+    }
+
+    let removeInfo = await usersCollection.findOneAndUpdate(
+        {_id: new ObjectId(userId)},
+        {$pull: {likedPosts: postId}},
+        {returnDocument: 'after'}
+    );
+
+    if (!removeInfo){
+        throw `Could not remove liked post (${postId}) from User (${id})`
+    }
+
+    removeInfo._id = removeInfo._id.toString();
+    return removeInfo;
+}
