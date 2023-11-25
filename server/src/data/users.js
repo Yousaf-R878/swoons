@@ -13,7 +13,7 @@ export let create = async (
     //Input Validation
     firstName = helpers.checkName(firstName, 'First Name');
     lastName = helpers.checkName(lastName, 'Last Name');
-    email = helpers.checkEmail(email);
+    email = helpers.checkEmail(email, "Email");
     password = helpers.checkPassword(password, "Password");
 
     //Check if email is already associated with user
@@ -53,10 +53,12 @@ export let getAll = async () => {
     if (!usersList){
         throw `Could not get all users`
     }
-    usersList = usersList.map((user) =>{
+    
+    let returnList = usersList.map((user) =>{
         user._id = user._id.toString();
+        return user
     })
-    return usersList;
+    return returnList;
 }
 
 export let get = async (id) => {
