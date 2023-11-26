@@ -16,7 +16,8 @@ const Explore = () => {
     const [badges, setBadges] = useState([]);
     const [selectedSort, setSelectedSort] = useState("recent");
 
-    // Function to handle the input change
+    const hasSearch = badges.length > 0;
+
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
     };
@@ -30,6 +31,7 @@ const Explore = () => {
     };
 
     const handleSortChange = (e) => {
+        // TODO: this should handle sorting
         setSelectedSort(e.target.value);
     };
 
@@ -37,12 +39,18 @@ const Explore = () => {
         <>
             <NavbarExplore />
             <div className="container mx-auto p-4">
-                <Input
-                    placeholder="Search for dates!"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyPress={handleInputKeyPress}
-                />
+                <div className="relative">
+                    <Input
+                        className="w-1/3" // Adjust width as needed
+                        placeholder="Search for dates!"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyPress={handleInputKeyPress}
+                    />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <img src="" alt="" />
+                    </div>
+                </div>
                 <div className="flex flex-wrap gap-2 my-4 ">
                     {badges.map((badge, index) => (
                         <Badge className="bg-palecyan " key={index}>
@@ -50,16 +58,23 @@ const Explore = () => {
                         </Badge>
                     ))}
                 </div>
-                <Select>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Theme" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
-                    </SelectContent>
-                </Select>
+                <div className="flex justify-between items-center my-10">
+                    <h2 className="text-xl font-semibold">
+                        {hasSearch ? "Found Results" : "Recent Activity"}
+                    </h2>
+                    <Select
+                        className="w-1/5"
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Sort by.." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="recent">Recent</SelectItem>
+                            <SelectItem value="rating">Rating</SelectItem>
+                            <SelectItem value="recommended">Recommended</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
 
                 <div className="grid grid-cols-3 gap-4">
                     {" "}
