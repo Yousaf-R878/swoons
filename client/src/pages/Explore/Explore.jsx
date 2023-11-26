@@ -3,7 +3,13 @@ import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import PostCard from "@/src/components/PostCard/PostCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Select } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 const Explore = () => {
     const [inputValue, setInputValue] = useState("");
@@ -17,9 +23,9 @@ const Explore = () => {
 
     // * This handles ENTER PRESS
     const handleInputKeyPress = (e) => {
-        if (e.key === "Enter" && inputValue) {
+        if (e.key === "Enter" && inputValue && inputValue.trim().length > 0) {
             setBadges([...badges, inputValue]);
-            setInputValue(""); 
+            setInputValue("");
         }
     };
 
@@ -39,14 +45,25 @@ const Explore = () => {
                 />
                 <div className="flex flex-wrap gap-2 my-4 ">
                     {badges.map((badge, index) => (
-                        <Badge className="bg-palecyan " key={index}>{badge}</Badge>
+                        <Badge className="bg-palecyan " key={index}>
+                            {badge}
+                        </Badge>
                     ))}
                 </div>
-                <Select value={selectedSort} onChange={handleSortChange}>
-                    <option value="recent">Recent</option>
-                    <option value="popular">Popular</option>
+                <Select>
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Theme" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
                 </Select>
-                <div className="grid grid-cols-3 gap-4">                    <PostCard />
+
+                <div className="grid grid-cols-3 gap-4">
+                    {" "}
+                    <PostCard />
                     <PostCard />
                     <PostCard />
                 </div>
