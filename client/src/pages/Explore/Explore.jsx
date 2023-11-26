@@ -3,6 +3,8 @@ import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import PostCard from "@/src/components/PostCard/PostCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import XIcon from "../../assets/icons/XIcon.jsx";
+
 import {
     Select,
     SelectContent,
@@ -24,10 +26,19 @@ const Explore = () => {
 
     // * This handles ENTER PRESS
     const handleInputKeyPress = (e) => {
-        if (e.key === "Enter" && inputValue && inputValue.trim().length > 0) {
+        if (
+            e.key === "Enter" &&
+            inputValue &&
+            inputValue.trim().length > 0 &&
+            badges.length < 4
+        ) {
             setBadges([...badges, inputValue]);
             setInputValue("");
         }
+    };
+
+    const handleRemoveBadge = (indexToRemove) => {
+        setBadges(badges.filter((_, index) => index !== indexToRemove));
     };
 
     const handleSortChange = (e) => {
@@ -39,39 +50,49 @@ const Explore = () => {
         <>
             <NavbarExplore />
             <div className="container mx-auto p-4">
-                <div className="relative">
-                    <Input
-                        className="w-1/3"
-                        placeholder="Search for dates!"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onKeyPress={handleInputKeyPress}
-                    />
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <img src="" alt="" />
+                <div className="flex flex-col items-center">
+                    <div className="relative w-full max-w-lg">
+                        <Input
+                            className="w-full text-lg"
+                            placeholder="Search for dates!"
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            onKeyPress={handleInputKeyPress}
+                        />
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <img src="" alt="" />
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2 my-4 max-w-lg">
+                        {badges.map((badge, index) => (
+                            <div key={index} className="flex items-center">
+                                <Badge className="bg-palecyan text-lg py-2 px-4">
+                                    {badge}
+                                </Badge>
+                                <button
+                                    onClick={() => handleRemoveBadge(index)}
+                                >
+                                    {/* TODO: FIX THIS */}
+                                    <XIcon className="w-4 h-4 ml-1" />
+                                </button>
+                            </div>
+                        ))}
                     </div>
                 </div>
-                <div className="flex flex-wrap gap-2 my-4 ">
-                    {badges.map((badge, index) => (
-                        <Badge className="bg-palecyan " key={index}>
-                            {badge}
-                        </Badge>
-                    ))}
-                </div>
                 <div className="flex justify-between items-center my-10">
-                    <h2 className="text-xl font-semibold">
+                    <h2 className="text-2xl font-semibold">
                         {hasSearch ? "Found Results" : "Recent Activity"}
                     </h2>
-                    <Select
-                        className="w-1/5"
-                    >
+                    <Select className="w-1/5">
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Sort by.." />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="recent">Recent</SelectItem>
                             <SelectItem value="rating">Rating</SelectItem>
-                            <SelectItem value="recommended">Recommended</SelectItem>
+                            <SelectItem value="recommended">
+                                Recommended
+                            </SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

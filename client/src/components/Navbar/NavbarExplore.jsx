@@ -1,20 +1,7 @@
 import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import { Boxes } from "lucide-react";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import {
-    Sheet,
-    SheetClose,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet";
-import LoginDialog from "../Login/LoginDialog/LoginDialog";
-import { Button } from "@/components/ui/button";
-import SignUpSheet from "../SignUp/SignUpSheet/SignUpSheet";
+
 
 const Navbar = () => {
     const [activeTab, setActiveTab] = useState("explore");
