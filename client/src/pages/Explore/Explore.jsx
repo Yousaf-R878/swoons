@@ -41,7 +41,7 @@ const Explore = () => {
             <div className="container mx-auto p-4">
                 <div className="relative">
                     <Input
-                        className="w-1/3" // Adjust width as needed
+                        className="w-1/3"
                         placeholder="Search for dates!"
                         value={inputValue}
                         onChange={handleInputChange}
