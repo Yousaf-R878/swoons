@@ -1,13 +1,36 @@
-import React, {useState} from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Boxes } from "lucide-react";
 
+const LinkItems = [
+    { name: "Explore", pathname: "/explore" },
+    { name: "Likes", pathname: "/likes" },
+    { name: "My Posts", pathname: "/myposts" },
+];
 
 const Navbar = () => {
-    const [activeTab, setActiveTab] = useState("explore");
+    const [activeTab, setActiveTab] = useState("Explore");
 
     const handleTabChange = (tabName) => {
         setActiveTab(tabName);
+    };
+
+    const NavItem = ({ name, pathname }) => {
+        const location = useLocation();
+        return (
+            <Link to={pathname}>
+                <div
+                    className={`${
+                        location.pathname === pathname
+                            ? "text-secondary border-b-2 border-secondary"
+                            : "text-gray-600"
+                    } text-lg mr-8 cursor-pointer`}
+                    onClick={() => handleTabChange(name)}
+                >
+                    {name}
+                </div>
+            </Link>
+        );
     };
 
     return (
@@ -24,36 +47,13 @@ const Navbar = () => {
                 </span>
             </div>
             <div className="flex">
-                <button
-                    onClick={() => setActiveTab("explore")}
-                    className={`px-4 py-2 font-semibold text-lg ${
-                        activeTab === "explore"
-                            ? "text-secondary border-b-2 border-secondary"
-                            : "text-gray-600"
-                    }`}
-                >
-                    Explore
-                </button>
-                <button
-                    onClick={() => setActiveTab("likes")}
-                    className={`px-4 py-2 font-semibold text-lg ${
-                        activeTab === "likes"
-                            ? "text-secondary border-b-2 border-secondary"
-                            : "text-gray-600"
-                    }`}
-                >
-                    Likes
-                </button>
-                <button
-                    onClick={() => setActiveTab("myposts")}
-                    className={`px-4 py-2 font-semibold text-lg ${
-                        activeTab === "myposts"
-                            ? "text-secondary border-b-2 border-secondary"
-                            : "text-gray-600"
-                    }`}
-                >
-                    My Posts
-                </button>
+                {LinkItems.map((link) => (
+                    <NavItem
+                        key={link.name}
+                        name={link.name}
+                        pathname={link.pathname}
+                    />
+                ))}
             </div>
             <div className="flex items-center">
                 {/* NEED USER DATA PASSED HERE */}

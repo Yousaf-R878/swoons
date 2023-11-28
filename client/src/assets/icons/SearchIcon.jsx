@@ -1,6 +1,6 @@
 import React from "react";
 
-const XIcon = () => (
+const SearchIcon = () => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -11,11 +11,11 @@ const XIcon = () => (
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="lucide lucide-x"
+        class="lucide lucide-search"
     >
-        <path d="M18 6 6 18" />
-        <path d="m6 6 12 12" />
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.3-4.3" />
     </svg>
 );
 
-export default XIcon;
+export default SearchIcon;

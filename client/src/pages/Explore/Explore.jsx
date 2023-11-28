@@ -4,6 +4,7 @@ import PostCard from "@/src/components/PostCard/PostCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import XIcon from "../../assets/icons/XIcon.jsx";
+import SearchIcon from "../../assets/icons/SearchIcon.jsx";
 
 import {
     Select,
@@ -30,7 +31,7 @@ const Explore = () => {
             e.key === "Enter" &&
             inputValue &&
             inputValue.trim().length > 0 &&
-            badges.length < 4
+            badges.length < 20
         ) {
             setBadges([...badges, inputValue]);
             setInputValue("");
@@ -50,30 +51,31 @@ const Explore = () => {
         <>
             <NavbarExplore />
             <div className="container mx-auto p-4">
-                <div className="flex flex-col items-center">
-                    <div className="relative w-full max-w-lg">
+                <div className="w-full max-w-lg mx-auto">
+                    <div className="relative mb-2">
                         <Input
-                            className="w-full text-lg"
+                            className="w-full text-lg pl-3 pr-10"
                             placeholder="Search for dates!"
                             value={inputValue}
                             onChange={handleInputChange}
                             onKeyPress={handleInputKeyPress}
                         />
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <img src="" alt="" />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <SearchIcon className="w-5 h-5 text-gray-400" />
                         </div>
                     </div>
-                    <div className="flex flex-wrap gap-2 my-4 max-w-lg">
+                    <div className="flex flex-wrap gap-2">
                         {badges.map((badge, index) => (
-                            <div key={index} className="flex items-center">
-                                <Badge className="bg-palecyan text-lg py-2 px-4">
-                                    {badge}
-                                </Badge>
+                            <div
+                                key={index}
+                                className="flex items-center bg-palecyan text-sm py-1 px-3 rounded-full mr-2"
+                            >
+                                {badge}
                                 <button
                                     onClick={() => handleRemoveBadge(index)}
+                                    className="ml-1"
                                 >
-                                    {/* TODO: FIX THIS */}
-                                    <XIcon className="w-4 h-4 ml-1" />
+                                    <XIcon className="w-2 h-2" />
                                 </button>
                             </div>
                         ))}
@@ -98,7 +100,6 @@ const Explore = () => {
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
-                    {" "}
                     <PostCard />
                     <PostCard />
                     <PostCard />
