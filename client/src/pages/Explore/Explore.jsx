@@ -33,7 +33,9 @@ const Explore = () => {
             inputValue.trim().length > 0 &&
             badges.length < 20
         ) {
-            setBadges([...badges, inputValue]);
+            const formattedInputValue =
+                inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+            setBadges([...badges, formattedInputValue]);
             setInputValue("");
         }
     };
@@ -68,14 +70,14 @@ const Explore = () => {
                         {badges.map((badge, index) => (
                             <div
                                 key={index}
-                                className="flex items-center bg-palecyan text-sm py-1 px-3 rounded-full mr-2"
+                                className="flex items-center bg-palecyan text-sm py-0.25 px-3 rounded-full mr-1 text-gray-500"
                             >
                                 {badge}
                                 <button
                                     onClick={() => handleRemoveBadge(index)}
                                     className="ml-1"
                                 >
-                                    <XIcon className="w-2 h-2" />
+                                    <XIcon className="w-1.5 h-1.5" />
                                 </button>
                             </div>
                         ))}
