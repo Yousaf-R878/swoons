@@ -31,7 +31,7 @@ export let create = async (
         lastName: lastName,
         email: email,
         password: hashed_password,
-        likedPosts: [],
+        likedDates: [],
         dates: [],
         picture: null
     }
@@ -79,7 +79,7 @@ export let get = async (id) => {
         lastName: user.lastName,
         email: user.email,
         password: user.password,
-        likedPosts: user.likedPosts,
+        likedDates: user.likedDates,
         dates: user.dates,
         picture: user.picture
     }
@@ -146,58 +146,56 @@ export let update = async (
     return updateInfo;
 }
 
-export let addPost = async (userId,postId) => {
+export let addLikedDate = async (userId,dateId) => {
     userId = helpers.checkId(userId, `User (${userId})'s Id`);
-    postId = helpers.checkId(postId, `Post (${postId})'s Id`);
+    dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //Check to see if post exists? If we have posts collection
-    //or we can have them store the object itself instead of id
+    //CHECK TO SEE IF DATE EXISTS
 
     let user = await get(userId);
 
-    let userLikedPosts = user.likedPosts
-    if (userLikedPosts.includes(postId)){
-        throw `User (${userId}) already liked that post (${postId})`
+    let userLikedDates = user.likedDates
+    if (userLikedDates.includes(dateId)){
+        throw `User (${userId}) already liked that date (${dateId})`
     }
 
     let addInfo = await usersCollection.findOneAndUpdate(
         {_id: new ObjectId(userId)},
-        {$push: {likedPosts: postId}},
+        {$push: {likedDates: dateId}},
         {returnDocument: 'after'}
     );
 
     if (!addInfo){
-        throw `Could not add liked post (${postId}) to User (${id})`
+        throw `Could not add liked date (${dateId}) to User (${id})`
     }
 
     addInfo._id = addInfo._id.toString();
     return addInfo;
 }
 
-export let removePost = async (userId,postId) => {
+export let removeLikedDate = async (userId,dateId) => {
     userId = helpers.checkId(userId, `User (${userId})'s Id`);
-    postId = helpers.checkId(postId, `Post (${postId})'s Id`);
+    dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //Check to see if post exists? If we have posts collection
-    //or we can have them store the object itself instead of id
+    //CHECK TO SEE IF DATE EXISTS
 
     let user = await get(userId);
 
-    let userLikedPosts = user.likedPosts
-    if (!userLikedPosts.includes(postId)){
-        throw `User (${userId}) has not liked post (${postId})`
+    let userLikedDates = user.likedDates
+    if (!userLikedDates.includes(dateId)){
+        throw `User (${userId}) has not liked Date (${dateId})`
     }
 
     let removeInfo = await usersCollection.findOneAndUpdate(
         {_id: new ObjectId(userId)},
-        {$pull: {likedPosts: postId}},
+        {$pull: {likedDates: dateId}},
         {returnDocument: 'after'}
     );
 
     if (!removeInfo){
-        throw `Could not remove liked post (${postId}) from User (${id})`
+        throw `Could not remove liked Date (${dateId}) from User (${id})`
     }
 
     removeInfo._id = removeInfo._id.toString();
@@ -209,8 +207,7 @@ export let addDate = async (userId,dateId) => {
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //Check to see if post exists? If we have posts collection
-    //or we can have them store the object itself instead of id
+    //CHECK TO SEE IF DATE EXISTS
 
     let user = await get(userId);
 
@@ -238,8 +235,7 @@ export let removeDate = async (userId,dateId) => {
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //Check to see if post exists? If we have posts collection
-    //or we can have them store the object itself instead of id
+    //CHECK TO SEE IF DATE EXISTS
 
     let user = await get(userId);
 
