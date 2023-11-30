@@ -10,15 +10,15 @@ function AppContainer() {
 
 function App() {
   return (
-      <>
-          <BrowserRouter forceRefresh={true}>
-              <Routes>
-                  <Route path="/" element={<Landing />} />
-                  <Route path="/explore" element={<Explore />} /> 
-                <Route path="/create-post" element={<CreatePost />} />
+    <>
+      <BrowserRouter forceRefresh={true}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/create-post" element={<CreatePost />} />
         </Routes>
-          </BrowserRouter>
-      </>
+      </BrowserRouter>
+    </>
   );
 }
 
