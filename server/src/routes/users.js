@@ -185,7 +185,7 @@ router
       user = await userFuncs.get(userId);
       //GET DATE HERE
     } catch (e) {
-      if (e === `No User with that ID (${id})`) {
+      if (e === `No User with that ID (${userId})`) {
         return res.status(404).json({ error: e });
       } else {
         return res.status(500).json({ error: e });
@@ -205,11 +205,135 @@ router
       let addInfo = await userFuncs.addLikedDate(userId, dateId);
       return res.status(200).json(addInfo);
     } catch (e) {
-        return res.status(500).json({ error: e });
+      return res.status(500).json({ error: e });
     }
   })
-  .delete(async (req, res) => {});
+  .delete(async (req, res) => {
+    let userId = req.params.userId;
+    let dateId = req.params.dateId;
+
+    try {
+      userId = helpers.checkId(userId, "User Id");
+      dateId = helpers.checkId(dateId, "Date Id");
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+    let user;
+    let date;
+
+    try {
+      user = await userFuncs.get(userId);
+      //CHECK DATE
+    } catch (e) {
+      if (e === `No User with that ID (${userId})`) {
+        return res.status(404).json({ error: e });
+      } else {
+        return res.status(500).json({ error: e });
+      }
+    }
+
+    let likedDates = user.likedDates;
+
+    try {
+      if (!likedDates.includes(dateId)) {
+        throw `User (${userId}) has not liked Date (${dateId})`;
+      }
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+
+    try {
+      let deleteInfo = await userFuncs.removeLikedDate(userId, dateId);
+      return res.status(200).json(deleteInfo);
+    } catch (e) {
+      return res.status(500).json({ error: e });
+    }
+  });
 router
   .route("/:userId/date/:dateId")
-  .post(async (req, res) => {})
-  .delete(async (req, res) => {});
+  .post(async (req, res) => {
+    let userId = req.params.userId;
+    let dateId = req.params.dateId;
+
+    try {
+      userId = helpers.checkId(userId, "User Id");
+      dateId = helpers.checkId(dateId, "Date Id");
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+
+    let user;
+    let date;
+
+    try {
+      user = await userFuncs.get(userId);
+      //CHECK DATE
+    } catch (e) {
+      if (e === `No User with that ID (${userId})`) {
+        return res.status(404).json({ error: e });
+      } else {
+        return res.status(500).json({ error: e });
+      }
+    }
+
+    let userDates = user.dates;
+
+    try {
+      if (userDates.includes(dateId)) {
+        throw `User (${userId}) already added that date (${dateId})`;
+      }
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+
+    try {
+      let addInfo = await userFuncs.addDate(userId, dateId);
+      return res.status(200).json(addInfo);
+    } catch (e) {
+      return res.status(500).json({ error: e });
+    }
+  })
+  .delete(async (req, res) => {
+
+    let userId = req.params.userId;
+    let dateId = req.params.dateId;
+
+    try {
+      userId = helpers.checkId(userId, "User Id");
+      dateId = helpers.checkId(dateId, "Date Id");
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+
+    let user;
+    let date;
+
+    try {
+      user = await userFuncs.get(userId);
+      //CHECK DATE
+    } catch (e) {
+      if (e === `No User with that ID (${userId})`) {
+        return res.status(404).json({ error: e });
+      } else {
+        return res.status(500).json({ error: e });
+      }
+    }
+
+    let userDates = user.dates;
+
+    try {
+      if (!userDates.includes(dateId)) {
+        throw `User (${userId}) did not create that date (${dateId})`;
+      }
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+
+    try {
+      let deleteInfo = await userFuncs.removeDate(userId, dateId);
+      return res.status(200).json(deleteInfo);
+    } catch (e) {
+      return res.status(500).json({ error: e });
+    }
+
+  });
