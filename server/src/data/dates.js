@@ -28,6 +28,7 @@ import * as helpers from './helpers.js'
 import { dates } from '../config/mongoCollections.js'
 import { ObjectId } from 'mongodb';
 import bcrypt from 'bcrypt';
+import { get } from './users.js';
 
 export const getAllDates = async () => {
     const dateCollection = await dates();
@@ -108,4 +109,21 @@ export const addEvent = async (
         throw 'Date not found or could not update date successfully';
     }
     return newEvent
+}
+
+export const removeEvent = async (dateId, locId) => {
+    const dateCollection = await dates();
+    const date = await getDate(dateId);
+
+    const deletionInfo = await dateCollection.updateOne(
+        {_id: new ObjectId(dateId)},
+        {$pull: {events: {_id: locId}}}
+    );
+    if(deletionInfo.modifiedCount === 0){
+        throw `Couldnt remove Event with id of ${locId}`;
+    }
+
+    const returnDate = await getDate(dateId);
+    returnDate._id = returnDate._id.toString();
+    return returnDate;
 }
