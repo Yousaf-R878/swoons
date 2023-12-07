@@ -37,7 +37,7 @@ export const getAllDates = async () => {
 }
 
 export const getDate = async (id) => {
-    //TODO: VALIDATE ID
+    id = helpers.checkId(id, "Date ID");
 
     const dateCollection = await dates();
     const date = await dateCollection.findOne({_id: new ObjectId(id)});
@@ -65,6 +65,7 @@ export const createDate = async (title) => {
 }
 
 export const deleteDate = async (id) => {
+    id = helpers.checkId(id, "Date ID");
     const dateCollection = await dates();
     const date = await getDate(id);
     const deletionInfo = await dateCollection.removeOne({_id: new ObjectId(id)});
@@ -88,30 +89,36 @@ export const addEvent = async (
     phone,
     website
     ) => {
-    const newEvent = {
-        _id: locId,
-        name: name,
-        description: description,
-        location_address: locAddress,
-        location_img_url: locImgUrl,
-        rating: rating,
-        rating_img_url: ratingImgUrl,
-        email: email,
-        phone: phone,
-        website: website
-    }
-    const dateCollection = await dates();
-    const updatedInfo = await dateCollection.updateOne(
-        {_id: new ObjectId(dateId)},
-        {$push: {events: newEvent}}, {returnDocument: 'after'}
-    );
-    if (updatedInfo.modifiedCount === 0) {
-        throw 'Date not found or could not update date successfully';
-    }
-    return newEvent
+        dateId = helpers.checkId(dateId, "Date ID");
+
+        const dateCollection = await dates();
+        let date = await getDate(dateId);
+
+        const newEvent = {
+            _id: locId,
+            name: name,
+            description: description,
+            location_address: locAddress,
+            location_img_url: locImgUrl,
+            rating: rating,
+            rating_img_url: ratingImgUrl,
+            email: email,
+            phone: phone,
+            website: website
+        }
+        
+        const updatedInfo = await dateCollection.updateOne(
+            {_id: new ObjectId(dateId)},
+            {$push: {events: newEvent}}, {returnDocument: 'after'}
+        );
+        if (updatedInfo.modifiedCount === 0) {
+            throw 'Could not update date successfully';
+        }
+        return newEvent
 }
 
 export const removeEvent = async (dateId, locId) => {
+    dateId = helpers.checkId(dateId, "Date ID");
     const dateCollection = await dates();
     const date = await getDate(dateId);
 

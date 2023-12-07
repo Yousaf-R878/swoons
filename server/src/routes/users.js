@@ -1,6 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import * as userFuncs from "../data/users.js";
+import * as dateFuncs from "../data/dates.js"
 import * as helpers from "../data/helpers.js";
 import { users } from "../config/mongoCollections.js";
 
@@ -183,13 +184,9 @@ router
     let date;
     try {
       user = await userFuncs.get(userId);
-      //GET DATE HERE
+      date = await dateFuncs.getDate(dateId);
     } catch (e) {
-      if (e === `No User with that ID (${userId})`) {
-        return res.status(404).json({ error: e });
-      } else {
-        return res.status(500).json({ error: e });
-      }
+      return res.status(404).json({ error: e });
     }
     let likedDates = user.likedDates;
 
@@ -223,13 +220,9 @@ router
 
     try {
       user = await userFuncs.get(userId);
-      //CHECK DATE
+      date = await dateFuncs.getDate(dateId);
     } catch (e) {
-      if (e === `No User with that ID (${userId})`) {
-        return res.status(404).json({ error: e });
-      } else {
-        return res.status(500).json({ error: e });
-      }
+      return res.status(404).json({ error: e });
     }
 
     let likedDates = user.likedDates;
@@ -267,13 +260,9 @@ router
 
     try {
       user = await userFuncs.get(userId);
-      //CHECK DATE
+      date = await dateFuncs.getDate(dateId);
     } catch (e) {
-      if (e === `No User with that ID (${userId})`) {
-        return res.status(404).json({ error: e });
-      } else {
-        return res.status(500).json({ error: e });
-      }
+      return res.status(404).json({ error: e });
     }
 
     let userDates = user.dates;
@@ -310,13 +299,9 @@ router
 
     try {
       user = await userFuncs.get(userId);
-      //CHECK DATE
+      date = await dateFuncs.getDate(dateId);
     } catch (e) {
-      if (e === `No User with that ID (${userId})`) {
-        return res.status(404).json({ error: e });
-      } else {
-        return res.status(500).json({ error: e });
-      }
+      return res.status(404).json({ error: e });
     }
 
     let userDates = user.dates;
