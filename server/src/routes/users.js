@@ -322,3 +322,5 @@ router
     }
 
   });
+
+export default router;
