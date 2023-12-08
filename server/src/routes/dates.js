@@ -2,12 +2,18 @@ import { Router } from "express";
 const router = Router();
 import * as dateFuncts from "../data/dates.js"
 import * as helpers from "../data/helpers.js";
+import { dirname } from "path";
+import path from "path"
+import { fileURLToPath } from "url";
 
 //import api key from env file for trip advisor api
 import dotenv from "dotenv";
-console.log(dotenv.config({ path: "/Users/yousafrajput/Snoopers/client/.env" }));
-//access api key called TRIP_ADVISOR_API_KEY
-//get api key from env file
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename)
+
+dotenv.config({ path: path.resolve(__dirname, "../../../client/.env") });
+
 const apiKey = process.env.TRIP_ADVISOR_API_KEY;
 router.route("/").get(async (req, res) => {
     try {
