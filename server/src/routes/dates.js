@@ -16,6 +16,8 @@ const __dirname = dirname(__filename)
 dotenv.config({ path: path.resolve(__dirname, "../../../client/.env") });
 
 const apiKey = process.env.TRIP_ADVISOR_API_KEY;
+
+//ROUTE TO GET ALL DATES
 router.route("/").get(async (req, res) => {
     try {
         const dateList = await dateFuncts.getAllDates();
@@ -25,6 +27,7 @@ router.route("/").get(async (req, res) => {
     }
 });
 
+//ROUTE TO GET DATE BY ID
 router.route("/:id").get(async (req, res) => {
     let id = req.params.id;
     try {
@@ -41,6 +44,7 @@ router.route("/:id").get(async (req, res) => {
     }
 });
 
+//ROUTE TO CREATE A NEW DATE
 router.route("/").post(async (req, res) => {
     let title = req.body.title;
     try {
@@ -57,6 +61,7 @@ router.route("/").post(async (req, res) => {
     }
 });
 
+//ROUTE FOR DELETING DATE BY ID
 router.route("/:id").delete(async (req, res) => {
     let id = req.params.id;
     try {
@@ -73,6 +78,7 @@ router.route("/:id").delete(async (req, res) => {
     }
 });
 
+//ROUTE FOR SEARCHING FOR LOCATIONS
 router.route("/api/:searchTerm").get(async (req, res) => {
     let searchTerm = req.params.searchTerm;
     try {
@@ -111,5 +117,63 @@ router.route("/api/:searchTerm").get(async (req, res) => {
     }
 })
 
+//ROUTE FOR ADDING AN EVENT
+router.route("/:id").patch(async (req, res) => {
+    let id = req.params.id;
+    let locId = req.body.locId;
+    let name = req.body.name;
+    let description = req.body.description;
+    let locAddress = req.body.locAddress;
+    let locImgUrl = req.body.locImgUrl;
+    let rating = req.body.rating;
+    let ratingImgUrl = req.body.ratingImgUrl;
+    let email = req.body.email;
+    let phone = req.body.phone;
+    let website = req.body.website;
+
+    try {
+        id = helpers.checkId(id, "ID");
+    } catch (e) {
+        return res.status(400).json({ error: e });
+    }
+
+    try {
+        let newEvent = await dateFuncts.addEvent(
+            id,
+            locId,
+            name,
+            description,
+            locAddress,
+            locImgUrl,
+            rating,
+            ratingImgUrl,
+            email,
+            phone,
+            website
+        );
+        return res.status(200).json(newEvent);
+    } catch (e) {
+        return res.status(500).json({ error: e });
+    }
+});
+
+//ROUTE FOR REMOVING AN EVENT
+router.route("/:id/:locId").delete(async (req, res) => {
+    let id = req.params.id;
+    let locId = req.params.locId;
+
+    try {
+        id = helpers.checkId(id, "ID");
+    } catch (e) {
+        return res.status(400).json({ error: e });
+    }
+
+    try {
+        let deletedEvent = await dateFuncts.removeEvent(id, locId);
+        return res.status(200).json(deletedEvent);
+    } catch (e) {
+        return res.status(404).json({ error: e });
+    }
+});
 
 export default router;
