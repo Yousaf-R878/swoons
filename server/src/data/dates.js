@@ -42,12 +42,12 @@ export const getDate = async (id) => {
     const dateCollection = await dates();
     const date = await dateCollection.findOne({_id: new ObjectId(id)});
     if(!date) throw 'Date not found';
+    date._id = date._id.toString();
     return date;
 }
 
 export const createDate = async (title) => {
-    //TODO: VALIDATE TITLE
-
+    title = helpers.checkTitle(title, "Date Title");
     const dateCollection = await dates();
     const newDate = {
         title: title,
@@ -59,7 +59,7 @@ export const createDate = async (title) => {
     }
     const insertInfo = await dateCollection.insertOne(newDate);
     if(insertInfo.insertedCount === 0) throw 'Could not add date';
-    const newId = insertInfo.insertedId;
+    const newId = insertInfo.insertedId.toString();
     const date = await getDate(newId);
     return date;
 }
