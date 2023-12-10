@@ -48,7 +48,7 @@ router.route("/:id").get(async (req, res) => {
 router.route("/").post(async (req, res) => {
     let title = req.body.title;
     try {
-        title = helpers.checkString(title, "Title");
+        title = helpers.checkTitle(title, "Title");
     } catch (e) {
         return res.status(400).json({ error: e });
     }
