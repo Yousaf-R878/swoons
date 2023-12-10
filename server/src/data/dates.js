@@ -33,7 +33,14 @@ import { get } from './users.js';
 export const getAllDates = async () => {
     const dateCollection = await dates();
     const dateList = await dateCollection.find({}).toArray();
-    return dateList;
+    if (!dateList){
+        throw `Could not get all dates`
+    }
+    let returnList = dateList.map((date) =>{
+        date._id = date._id.toString();
+        return date
+    })
+    return returnList;
 }
 
 export const getDate = async (id) => {
