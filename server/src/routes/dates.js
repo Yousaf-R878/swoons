@@ -5,6 +5,7 @@ import * as helpers from "../data/helpers.js";
 import { dirname } from "path";
 import path from "path"
 import { fileURLToPath } from "url";
+import axios from "axios";
 
 //import api key from env file for trip advisor api
 import dotenv from "dotenv";
@@ -81,13 +82,30 @@ router.route("/api/:searchTerm").get(async (req, res) => {
     }
 
     try {
-        console.log(apiKey)
-        // const options = {
-        //     method: 'GET',
-        //     url: 'https://api.content.tripadvisor.com/api/v1/location/search?key=9A1E057F540C41068E7A2E086D9561AB&searchQuery=times&language=en',
-        //     headers: {accept: 'application/json'}
-        // };
-        return res.status(200).json(dateList);
+        console.log("here")
+        let data;
+        const options = {
+            method: 'GET',
+            url: `https://api.content.tripadvisor.com/api/v1/location/search?key=${apiKey}&searchQuery=${searchTerm}&language=en`,
+            headers: {accept: 'application/json'}
+        };
+
+        await axios
+        .request(options)
+        .then(function (response) {
+            //TODO: CHANGE THIS LATER WHEN USING FRONTEND SO THAT WE GET MORE LOCS
+            data = response.data.data;
+        }).catch(function (error) {
+            return res.status(error.code).json({message: error.message});
+        });
+        data = data.splice(0,1)
+
+        for(let i = 0; i < data.length; i++){
+            let locPhotos = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${data[i].location_id}/photos?language=en&key=${apiKey}`)
+            data[i]["imageUrl"] = locPhotos.data.data[0].images.medium.url
+            //TODO: ADD SOME LOGIC IF NO PHOTOS
+        }
+        return res.status(200).json(data);
     } catch (e) {
         return res.status(404).json({ error: e });
     }
