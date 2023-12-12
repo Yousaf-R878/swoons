@@ -95,3 +95,20 @@ export let checkPassword = (password, variableName) => {
 
     return password;
 }
+
+export let checkTitle = (title, variableName) => {
+    title = checkString(title, variableName);
+    if (title.length < 1){
+        throw `${variableName} must be at least one character long`
+    }
+    if (title.length > 50) {
+        throw `${variableName} must be less than 50 characters long`
+    }
+
+    const eventTitleRegex = /^[a-zA-Z0-9\s'-]+$/;
+    if (!eventTitleRegex.test(title)){
+        throw `${variableName} (${title}) must only contain letters, numbers, spaces, apostrophes, or hypens`
+    }
+
+    return title;
+}
