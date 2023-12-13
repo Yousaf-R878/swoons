@@ -28,6 +28,8 @@ let main = async () => {
     }
 };
 
+console.log("Seeding DB...");
 await main();
 //await db.dropDatabase();
 await closeConnection();
+console.log("Done Seeding DB!");
