@@ -52,7 +52,7 @@ router.route("/signup").post(async (req, res) => {
 });
 
 router
-  .route("/:id")
+  .route("/user/:id")
   .get(async (req, res) => {
     let id = req.params.id;
 
@@ -169,7 +169,7 @@ router
   });
 
 router
-  .route("/:userId/like/:dateId")
+  .route("/user/:userId/like/:dateId")
   .post(async (req, res) => {
     let userId = req.params.userId;
     let dateId = req.params.dateId;
@@ -243,7 +243,7 @@ router
     }
   });
 router
-  .route("/:userId/date/:dateId")
+  .route("/user/:userId/date/:dateId")
   .post(async (req, res) => {
     let userId = req.params.userId;
     let dateId = req.params.dateId;
