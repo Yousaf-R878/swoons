@@ -257,3 +257,27 @@ export let removeDate = async (userId,dateId) => {
     removeInfo._id = removeInfo._id.toString();
     return removeInfo;
 }
+
+export let updatePhoto = async (id, url) => {
+    id = helpers.checkId(id,"User's Id");
+    url = helpers.checkString(url, "Profile Picture URL");
+
+    const usersCollection = await users();
+    let user = get(id);
+
+    let newProfilePic = {
+        picture: url
+    }
+
+    let updateInfo = await usersCollection.findOneAndUpdate(
+        {_id: new ObjectId(id)}, 
+        {$set: newProfilePic},
+        {returnDocument: 'after'}
+    );
+
+    if (!updateInfo){
+        throw `Could not update User (${id})'s profile pic!`
+    }
+    updateInfo._id = updateInfo._id.toString();
+    return updateInfo;
+}
