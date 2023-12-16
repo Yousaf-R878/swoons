@@ -18,7 +18,6 @@ function App() {
                     <Route path="/" element={<Landing />} />
                     <Route path="/explore" element={<Explore />} />
                     <Route path="/settings" element={<UserSettings />}>
-                        {" "}
                     </Route>
                 </Routes>
             </BrowserRouter>

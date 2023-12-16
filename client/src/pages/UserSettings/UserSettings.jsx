@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import NavbarExplore from "../../components/Navbar/NavbarExplore";
-import { useParams } from "react-router-dom";
-import axios from "axios";
 
-const fakeUser = {
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    password: "1212qwer",
-};
+import NavbarExplore from "@/src/components/Navbar/NavbarExplore";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar } from "@/components/ui/avatar";
 
 const UserSettings = () => {
-    const { id } = useParams();
-    const [user, setUser] = useState(fakeUser);
+    const [user, setUser] = useState({
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
+        bio: "",
+    });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -21,55 +22,95 @@ const UserSettings = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.patch(
-                `http://localhost:3000/user/${id}`,
-                user
-            );
-            console.log("User updated:", response.data);
-        } catch (error) {
-            console.error("Error updating user:", error);
-        }
+        // ! Submit logic here
     };
 
     return (
         <>
             <NavbarExplore />
+            <div className="container mx-auto p-8 flex justify-between">
+                <div className="w-1/2 max-w-xs bg-white shadow rounded p-6 flex flex-col items-center mr-4">
+                    <div className="mb-4">
+                        <Avatar
+                            src={
+                                user.profilePic ||
+                                "/path/to/default/profile-pic.jpg"
+                            }
+                            alt="Profile"
+                            size="lg"
+                        />{" "}
+                       
+                    </div>
+                    <Button className="mb-2">Change Picture</Button>
+                    <Button variant="danger">Delete Picture</Button>
+                </div>
+                <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
+                    <h1 className="text-2xl font-semibold mb-6">Settings</h1>
 
-            <div className="container mx-auto p-4">
-                <form onSubmit={handleSubmit}>
-                    <label>First Name</label>
-                    <input
-                        name="firstName"
-                        value={user.firstName}
-                        onChange={handleInputChange}
-                    />
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-700">
+                            First Name
+                        </label>
+                        <Input
+                            name="firstName"
+                            value={user.firstName}
+                            onChange={handleInputChange}
+                        />
+                    </div>
 
-                    <label>Last Name</label>
-                    <input
-                        name="lastName"
-                        value={user.lastName}
-                        onChange={handleInputChange}
-                    />
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-700">
+                            Last Name
+                        </label>
+                        <Input
+                            name="lastName"
+                            value={user.lastName}
+                            onChange={handleInputChange}
+                        />
+                    </div>
 
-                    <label>Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={user.email}
-                        onChange={handleInputChange}
-                    />
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-700">
+                            Email
+                        </label>
+                        <Input
+                            type="email"
+                            name="email"
+                            value={user.email}
+                            onChange={handleInputChange}
+                        />
+                    </div>
 
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        value={user.password}
-                        onChange={handleInputChange}
-                    />
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-700">
+                            Password
+                        </label>
+                        <Input
+                            type="password"
+                            name="password"
+                            value={user.password}
+                            onChange={handleInputChange}
+                        />
+                    </div>
 
-                    <button type="submit">Update Settings</button>
-                </form>
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-700">
+                            Bio
+                        </label>
+                        <Textarea
+                            name="bio"
+                            value={user.bio}
+                            onChange={handleInputChange}
+                            rows={4}
+                        />
+                    </div>
+
+                    <div className="flex justify-end">
+                        <Button type="submit" onClick={handleSubmit}>
+                            Update Settings
+                        </Button>
+                    </div>
+                </div>
             </div>
         </>
     );

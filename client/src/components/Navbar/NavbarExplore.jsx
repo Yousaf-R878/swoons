@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Boxes } from "lucide-react";
 
+import { Avatar } from "@/components/ui/avatar";
+
 const LinkItems = [
     { name: "Explore", pathname: "/explore" },
     { name: "Likes", pathname: "/likes" },
@@ -68,10 +70,10 @@ const Navbar = () => {
                     <span className="text-black font-semibold text-lg mr-4">
                         {fakeUser.firstName} {fakeUser.lastName}
                     </span>
-                    <img
+                    <Avatar
                         src={fakeUser.profilePic}
-                        alt="Profile"
-                        className="h-8 w-8 rounded-full"
+                        alt="User profile"
+                        size="md"
                     />
                 </Link>
             </div>
