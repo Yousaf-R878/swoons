@@ -1,5 +1,6 @@
 import * as helpers from './helpers.js'
-import { users } from '../config/mongoCollections.js'
+import * as dateFuncs from './dates.js'
+import { dates, users } from '../config/mongoCollections.js'
 import { ObjectId } from 'mongodb';
 import bcrypt from 'bcrypt';
 
@@ -33,7 +34,7 @@ export let create = async (
         password: hashed_password,
         likedDates: [],
         dates: [],
-        picture: null
+        picture: '../public/default_profile_pic.jpg'
     }
 
     let addInfo = await usersCollection.insertOne(newUser);
@@ -151,8 +152,8 @@ export let addLikedDate = async (userId,dateId) => {
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //CHECK TO SEE IF DATE EXISTS
-
+    
+    let date = await dateFuncs.getDate(dateId);
     let user = await get(userId);
 
     let userLikedDates = user.likedDates
@@ -179,8 +180,7 @@ export let removeLikedDate = async (userId,dateId) => {
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //CHECK TO SEE IF DATE EXISTS
-
+    let date = await dateFuncs.getDate(dateId);
     let user = await get(userId);
 
     let userLikedDates = user.likedDates
@@ -207,7 +207,7 @@ export let addDate = async (userId,dateId) => {
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //CHECK TO SEE IF DATE EXISTS
+    let date = await dateFuncs.getDate(dateId);
 
     let user = await get(userId);
 
@@ -235,7 +235,7 @@ export let removeDate = async (userId,dateId) => {
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //CHECK TO SEE IF DATE EXISTS
+    let date = await dateFuncs.getDate(dateId);
 
     let user = await get(userId);
 
