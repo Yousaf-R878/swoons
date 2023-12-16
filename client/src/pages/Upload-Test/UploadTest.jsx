@@ -15,8 +15,8 @@ function UploadTest() {
 
     // S3 Credentials
     AWS.config.update({
-      accessKeyId: "AKIA32L5UNOS5FTXL32K", //import.meta.env.AWS_ACCESS_KEY,
-      secretAccessKey: "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",//import.meta.env.AWS_SECRET_KEY,
+      accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY,
+      secretAccessKey: import.meta.env.VITE_AWS_SECRET_KEY,
     });
     const s3 = new AWS.S3({
       params: { Bucket: S3_BUCKET },
