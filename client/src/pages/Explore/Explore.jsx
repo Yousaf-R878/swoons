@@ -3,7 +3,7 @@ import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import PostCard from "@/src/components/PostCard/PostCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import XIcon from "../../assets/icons/XIcon.jsx";
+import { X } from "lucide-react";
 import SearchIcon from "../../assets/icons/SearchIcon.jsx";
 
 import {
@@ -70,14 +70,14 @@ const Explore = () => {
             {badges.map((badge, index) => (
               <div
                 key={index}
-                className="flex items-center bg-palecyan text-sm py-0.25 px-3 rounded-full mr-1 text-gray-500"
+                className="flex items-center bg-palecyan text-sm py-1 px-2.5 rounded-full mr-1 text-gray-500"
               >
                 {badge}
                 <button
                   onClick={() => handleRemoveBadge(index)}
                   className="ml-1"
                 >
-                  <XIcon className="w-1.5 h-1.5" />
+                  <X size={17} />
                 </button>
               </div>
             ))}

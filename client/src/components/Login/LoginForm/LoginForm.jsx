@@ -10,14 +10,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { DialogFooter } from "@/components/ui/dialog";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -85,10 +82,6 @@ const LoginForm = ({ handleLogin }) => {
             </FormItem>
           )}
         />
-        {/* <FormDescription>
-          
-        </FormDescription> */}
-        {/* <DialogFooter></DialogFooter> */}
         <div className="flex justify-center">
           <Button
             type="submit"
@@ -97,17 +90,6 @@ const LoginForm = ({ handleLogin }) => {
             Login
           </Button>
         </div>
-        {/* <div className="flex justify-center">
-          <span className="text-gray-600 mr-4">
-            Don't have an account? {""}
-            <Link
-              href="/signup"
-              className="text-secondary hover:text-secondary-hover"
-            >
-              Sign up
-            </Link>
-          </span>
-        </div> */}
       </form>
     </Form>
   );

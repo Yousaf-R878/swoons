@@ -15,7 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/explore" element={<Explore />} />
-          <Route path="/create-post" element={<CreatePost />} />
+          {/* <Route path="/create-post" element={<CreatePost />} /> */}
         </Routes>
       </BrowserRouter>
     </>
