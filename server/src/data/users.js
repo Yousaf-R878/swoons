@@ -108,7 +108,6 @@ export let update = async (
     id,
     firstName,
     lastName,
-    email,
     password
 ) => {
     id = helpers.checkId(id, `User (${id})'s Id`)
@@ -119,7 +118,7 @@ export let update = async (
 
     firstName = helpers.checkName(firstName, `User (${id})'s First Name`);
     lastName = helpers.checkName(lastName, `User (${id})'s Last Name`);
-    email = helpers.checkEmail(email, `User (${id})'s Email`);
+    // email = helpers.checkEmail(email, `User (${id})'s Email`);
     password = helpers.checkPassword(password, `User (${id})'s Password`);
 
     // let userPassHash = user.password;
@@ -131,7 +130,6 @@ export let update = async (
     let updatedUser = {
         firstName: firstName,
         lastName: lastName,
-        email: email,
         password: password
     }
     let updateInfo = await usersCollection.findOneAndUpdate(
