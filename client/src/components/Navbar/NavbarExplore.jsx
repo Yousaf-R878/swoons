@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Boxes } from "lucide-react";
 
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+import profilePic from "../../assets/profile.png" 
 
 const LinkItems = [
     { name: "Explore", pathname: "/explore" },
@@ -16,6 +18,7 @@ const fakeUser = {
     lastName: "Doe",
     email: "johndoe@gmail.com",
     password: "password",
+    profilePic: profilePic,
 };
 
 const Navbar = () => {
@@ -70,11 +73,13 @@ const Navbar = () => {
                     <span className="text-black font-semibold text-lg mr-4">
                         {fakeUser.firstName} {fakeUser.lastName}
                     </span>
-                    <Avatar
-                        src={fakeUser.profilePic}
-                        alt="User profile"
-                        size="md"
-                    />
+                    <Avatar>
+                        <AvatarImage
+                            src={fakeUser.profilePic}
+                            alt="Profile"
+                        />
+                        <AvatarFallback>{fakeUser.firstName[0]}</AvatarFallback>
+                    </Avatar>
                 </Link>
             </div>
         </nav>

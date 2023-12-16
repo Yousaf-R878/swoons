@@ -5,15 +5,21 @@ import NavbarExplore from "@/src/components/Navbar/NavbarExplore";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
+import profilePic from "../../assets/profile.png";
+
+const fakeUser = {
+    id: "1",
+    firstName: "John",
+    lastName: "Doe",
+    email: "johndoe@gmail.com",
+    password: "password",
+    profilePic: profilePic,
+};
 
 const UserSettings = () => {
-    const [user, setUser] = useState({
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        bio: "",
-    });
+    const [user, setUser] = useState(fakeUser);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -29,23 +35,39 @@ const UserSettings = () => {
         <>
             <NavbarExplore />
             <div className="container mx-auto p-8 flex justify-between">
-                <div className="w-1/2 max-w-xs bg-white shadow rounded p-6 flex flex-col items-center mr-4">
+                <div className="w-1/2  h-1/2 bg-white shadow rounded p-6 flex flex-col items-center mr-4">
+                    <h1 className="text-2xl font-semibold mb-6">
+                        Profile Picture
+                    </h1>
                     <div className="mb-4">
-                        <Avatar
-                            src={
-                                user.profilePic ||
-                                "/path/to/default/profile-pic.jpg"
-                            }
-                            alt="Profile"
-                            size="lg"
-                        />{" "}
-                       
+                        <Avatar className="w-24 h-24">
+                            <AvatarImage
+                                src={fakeUser.profilePic}
+                                alt="Profile"
+                            />
+                            <AvatarFallback>
+                                {fakeUser.firstName[0]}
+                            </AvatarFallback>
+                        </Avatar>
                     </div>
                     <Button className="mb-2">Change Picture</Button>
                     <Button variant="danger">Delete Picture</Button>
                 </div>
                 <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
                     <h1 className="text-2xl font-semibold mb-6">Settings</h1>
+
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-700">
+                            Email
+                        </label>
+                        <Input
+                            type="email"
+                            name="email"
+                            value={user.email}
+                            onChange={handleInputChange}
+                            disabled
+                        />
+                    </div>
 
                     <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-700">
@@ -65,18 +87,6 @@ const UserSettings = () => {
                         <Input
                             name="lastName"
                             value={user.lastName}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="mb-6">
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                            Email
-                        </label>
-                        <Input
-                            type="email"
-                            name="email"
-                            value={user.email}
                             onChange={handleInputChange}
                         />
                     </div>
