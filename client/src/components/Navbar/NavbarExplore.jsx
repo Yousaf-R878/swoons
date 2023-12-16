@@ -8,6 +8,14 @@ const LinkItems = [
     { name: "My Posts", pathname: "/myposts" },
 ];
 
+const fakeUser = {
+    id: "1",
+    firstName: "John",
+    lastName: "Doe",
+    email: "johndoe@gmail.com",
+    password: "password",
+};
+
 const Navbar = () => {
     const [activeTab, setActiveTab] = useState("Explore");
 
@@ -43,7 +51,7 @@ const Navbar = () => {
                     className="h-10 w-9 mr-2"
                 />
                 <span className="text-black font-semibold text-xl tracking-tight">
-                    Company Name
+                    Swoons
                 </span>
             </div>
             <div className="flex">
@@ -56,15 +64,16 @@ const Navbar = () => {
                 ))}
             </div>
             <div className="flex items-center">
-                {/* NEED USER DATA PASSED HERE */}
-                <span className="text-black font-semibold text-lg mr-4">
-                    John Doe
-                </span>
-                <img
-                    src="/user-profile.jpg"
-                    alt="Profile"
-                    className="h-8 w-8 rounded-full"
-                />
+                <Link to={`/settings`} className="flex items-center">
+                    <span className="text-black font-semibold text-lg mr-4">
+                        {fakeUser.firstName} {fakeUser.lastName}
+                    </span>
+                    <img
+                        src={fakeUser.profilePic}
+                        alt="Profile"
+                        className="h-8 w-8 rounded-full"
+                    />
+                </Link>
             </div>
         </nav>
     );
