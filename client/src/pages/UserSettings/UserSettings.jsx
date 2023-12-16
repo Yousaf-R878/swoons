@@ -6,8 +6,28 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+    Form,
+    FormControl,
+    FormLabel,
+    FormMessage,
+    FormField,
+    FormItem,
+} from "@/components/ui/form";
 
 import profilePic from "../../assets/profile.png";
+
+import * as z from "zod";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+const formSchema = z.object({
+    firstName: z.string().min(1, { message: "First name required" }),
+    lastName: z.string().min(1, { message: "Last name required" }),
+    password: z.string().min(1, { message: "Password required" }),
+    bio: z.string().min(1, { message: "Bio required" }),
+});
 
 const fakeUser = {
     id: "1",
@@ -21,14 +41,24 @@ const fakeUser = {
 const UserSettings = () => {
     const [user, setUser] = useState(fakeUser);
 
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            firstName: fakeUser.firstName,
+            lastName: fakeUser.lastName,
+            email: fakeUser.email,
+            password: "", // Clear the password field
+            bio: fakeUser.bio,
+        },
+    });
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUser({ ...user, [name]: value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // ! Submit logic here
+    const onSubmit = (data) => {
+        console.log(data);
     };
 
     return (
@@ -56,70 +86,90 @@ const UserSettings = () => {
                 <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
                     <h1 className="text-2xl font-semibold mb-6">Settings</h1>
 
-                    <div className="mb-6">
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                            Email
-                        </label>
-                        <Input
-                            type="email"
-                            name="email"
-                            value={user.email}
-                            onChange={handleInputChange}
-                            disabled
-                        />
-                    </div>
+                    <Form {...form}>
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            className="space-y-4"
+                        >
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Email</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                name="email"
+                                                disabled
+                                                {...form.register("email")}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                    <div className="mb-6">
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                            First Name
-                        </label>
-                        <Input
-                            name="firstName"
-                            value={user.firstName}
-                            onChange={handleInputChange}
-                        />
-                    </div>
+                            <FormField
+                                control={form.control}
+                                name="firstName"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>First Name</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                    <div className="mb-6">
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                            Last Name
-                        </label>
-                        <Input
-                            name="lastName"
-                            value={user.lastName}
-                            onChange={handleInputChange}
-                        />
-                    </div>
+                            <FormField
+                                control={form.control}
+                                name="lastName"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Last Name</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                    <div className="mb-6">
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                            Password
-                        </label>
-                        <Input
-                            type="password"
-                            name="password"
-                            value={user.password}
-                            onChange={handleInputChange}
-                        />
-                    </div>
+                            <FormField
+                                control={form.control}
+                                name="bio"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Bio</FormLabel>
+                                        <FormControl>
+                                            <Textarea {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                    <div className="mb-6">
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                            Bio
-                        </label>
-                        <Textarea
-                            name="bio"
-                            value={user.bio}
-                            onChange={handleInputChange}
-                            rows={4}
-                        />
-                    </div>
+                            <FormField
+                                control={form.control}
+                                name="password"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Password</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                    <div className="flex justify-end">
-                        <Button type="submit" onClick={handleSubmit}>
-                            Update Settings
-                        </Button>
-                    </div>
+                            <div className="flex justify-end mt-4">
+                                <Button type="submit">Update Settings</Button>
+                            </div>
+                        </form>
+                    </Form>
                 </div>
             </div>
         </>
