@@ -126,11 +126,6 @@ export let checkComment = (comment, variableName) => {
         throw `${variableName} must be less than 500 characters long`;
     }
 
-    const commentRegex = /^[a-zA-Z0-9\s'-]+$/;
-    if (!commentRegex.test(comment)) {
-        throw `${variableName} (${comment}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
-    }
-
     return comment;
 };
 
@@ -148,7 +143,7 @@ export let checkTag = (tag, variableName) => {
         throw `${variableName} (${tag}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
     }
 
-    return tag;
+    return tag.toLowerCase();
 };
 
 export let checkTagArray = (tagArray, variableName) => {
@@ -201,4 +196,3 @@ export let checkEventArray = (eventArray, variableName) => {
 
     return eventArray;
 };
-

@@ -28,7 +28,7 @@ export const postComment = async (dateId, userId, comment) => {
 
     const updateInfo = await dateCollection.updateOne(
         { _id: new ObjectId(dateId) },
-        { $push: { comments: newComment } }
+        { $push: { comments: newComment }, $inc: { commentsCount: 1 } }
     );
 
     if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
