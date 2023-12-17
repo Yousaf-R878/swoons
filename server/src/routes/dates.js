@@ -117,6 +117,7 @@ router.route("/api/:searchTerm").get(async (req, res) => {
             data[i]["imageUrl"] = locPhotos.data.data[0].images.medium.url
             //TODO: ADD SOME LOGIC IF NO PHOTOS
         }
+        //drjkkbn
         return res.status(200).json(data);
     } catch (e) {
         return res.status(404).json({ error: e });
