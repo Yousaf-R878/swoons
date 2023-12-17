@@ -1,9 +1,9 @@
 import { Router } from "express";
 const router = Router();
-import * as dateFuncts from "../data/dates.js"
+import * as dateFuncts from "../data/dates.js";
 import * as helpers from "../data/helpers.js";
 import { dirname } from "path";
-import path from "path"
+import path from "path";
 import { fileURLToPath } from "url";
 import axios from "axios";
 
@@ -11,7 +11,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename)
+const __dirname = dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, "../../../client/.env") });
 
@@ -22,9 +22,21 @@ router.route("/").get(async (req, res) => {
     try {
         const tags = req.query.tags ? req.query.tags.split(",") : [];
         const sorting = req.query.sorting || "disabled";
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 12;
 
-        const dateList = await dateFuncts.getAllDates(tags, sorting);
-        return res.status(200).json(dateList);
+        const {dates, totalPages} = await dateFuncts.getAllDates(
+            tags,
+            sorting,
+            page,
+            limit
+        );
+
+        return res.status(200).json({
+            dates: dates,
+            totalPages: totalPages,
+            currentPage: page,
+        });
     } catch (e) {
         return res.status(500).json({ error: e });
     }
@@ -63,25 +75,38 @@ router.route("/").post(async (req, res) => {
     }
 
     try {
-        for(let i = 0; i < eventArray.length; i++){
-            try{
-                let locPhotos = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/photos?language=en&key=${apiKey}`)
-                eventArray[i]["tripAdvisorLocationImages"] = locPhotos.data.data[0].images.medium.url
+        for (let i = 0; i < eventArray.length; i++) {
+            try {
+                let locPhotos = await axios.get(
+                    `https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/photos?language=en&key=${apiKey}`
+                );
+                eventArray[i]["tripAdvisorLocationImages"] =
+                    locPhotos.data.data[0].images.medium.url;
                 //TODO: ADD SOME LOGIC IF NO PHOTOS
             } catch (e) {
-               return res.status(404).json({ error: e });
+                return res.status(404).json({ error: e });
             }
-            try{
-                let locInfo = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/details?key=${apiKey}`)
-                eventArray[i]["tripAdvisorLocationUrl"] = locInfo.data.data.web_url;
-                eventArray[i]["tripAdvisorLocationRating"] = locInfo.data.data.rating;
-                eventArray[i]["tripAdvisorLocationRatingImage"] = locInfo.data.data.rating_image_url;
-            }catch (e) {
+            try {
+                let locInfo = await axios.get(
+                    `https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/details?key=${apiKey}`
+                );
+                eventArray[i]["tripAdvisorLocationUrl"] =
+                    locInfo.data.data.web_url;
+                eventArray[i]["tripAdvisorLocationRating"] =
+                    locInfo.data.data.rating;
+                eventArray[i]["tripAdvisorLocationRatingImage"] =
+                    locInfo.data.data.rating_image_url;
+            } catch (e) {
                 return res.status(404).json({ error: e });
             }
         }
         //drjkkbn
-        const newDate = await dateFuncts.createDate(title, tagArray, eventArray, userId);
+        const newDate = await dateFuncts.createDate(
+            title,
+            tagArray,
+            eventArray,
+            userId
+        );
         return res.status(200).json(newDate);
     } catch (e) {
         return res.status(500).json({ error: e });
@@ -115,30 +140,29 @@ router.route("/api/:searchTerm").get(async (req, res) => {
     }
 
     try {
-        console.log("here")
+        console.log("here");
         let data;
         const options = {
-            method: 'GET',
+            method: "GET",
             url: `https://api.content.tripadvisor.com/api/v1/location/search?key=${apiKey}&searchQuery=${searchTerm}&language=en`,
-            headers: {accept: 'application/json'}
+            headers: { accept: "application/json" },
         };
 
         await axios
-        .request(options)
-        .then(function (response) {
-            //TODO: CHANGE THIS LATER WHEN USING FRONTEND SO THAT WE GET MORE LOCS
-            data = response.data.data;
-        }).catch(function (error) {
-            return res.status(error.code).json({message: error.message});
-        });
-        data = data.splice(0,5)
+            .request(options)
+            .then(function (response) {
+                //TODO: CHANGE THIS LATER WHEN USING FRONTEND SO THAT WE GET MORE LOCS
+                data = response.data.data;
+            })
+            .catch(function (error) {
+                return res.status(error.code).json({ message: error.message });
+            });
+        data = data.splice(0, 5);
         return res.status(200).json(data);
     } catch (e) {
         return res.status(404).json({ error: e });
     }
-})
-
-
+});
 
 //ROUTE FOR REMOVING AN EVENT
 router.route("/:id/:locId").delete(async (req, res) => {

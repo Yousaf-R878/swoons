@@ -18,18 +18,27 @@ import API from "../../services/apiClient";
 
 const Explore = () => {
     const [inputValue, setInputValue] = useState("");
-    const [badges, setBadges] = useState([]);
+    const [tags, setTags] = useState([]);
     const [selectedSort, setSelectedSort] = useState("disabled");
     const [dates, setDates] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const response = await API.getDates(badges, selectedSort);
+                const response = await API.getDates(
+                    tags,
+                    selectedSort,
+                    currentPage
+                );
+                // console.log(response);
                 if (response.data) {
-                    setDates(response.data);
+                    setDates(response.data.dates);
+                    setTotalPages(response.data.totalPages);
                 } else {
                     console.error("Failed to fetch dates:", response.error);
                 }
@@ -40,9 +49,17 @@ const Explore = () => {
         };
 
         fetchData();
-    }, [badges, selectedSort]);
+    }, [tags, selectedSort, currentPage]);
 
-    const hasSearch = badges.length > 0 ? true : false;
+    const goToNextPage = () => {
+        setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+    };
+
+    const goToPreviousPage = () => {
+        setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+    };
+
+    const hasSearch = tags.length > 0 ? true : false;
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
@@ -52,23 +69,24 @@ const Explore = () => {
         if (
             e.key === "Enter" &&
             inputValue.trim().length > 0 &&
-            badges.length < 20
+            tags.length < 20
         ) {
             const formattedInputValue = inputValue
                 .toLowerCase()
                 .trim()
                 .replace(/\s+/g, "-");
 
-            if (badges.includes(formattedInputValue)) {
+            if (tags.includes(formattedInputValue)) {
                 return;
             }
-            setBadges([...badges, formattedInputValue]);
+            setTags([...tags, formattedInputValue]);
             setInputValue("");
+            setCurrentPage(1);
         }
     };
 
     const handleRemoveBadge = (indexToRemove) => {
-        setBadges(badges.filter((_, index) => index !== indexToRemove));
+        setTags(tags.filter((_, index) => index !== indexToRemove));
     };
 
     const handleSortChange = (newValue) => {
@@ -97,7 +115,7 @@ const Explore = () => {
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        {badges.map((badge, index) => (
+                        {tags.map((badge, index) => (
                             <div
                                 key={index}
                                 className="flex items-center bg-palecyan text-sm py-1 px-2.5 rounded-full mr-1 text-gray-500"
@@ -141,6 +159,33 @@ const Explore = () => {
                             <PostCard key={date._id} date={date} />
                         ))}
                     </div>
+                </div>
+                <div className="mt-4 flex items-center justify-center space-x-1">
+                    <button
+                        className="flex items-center px-4 py-2 text-gray-500 bg-white rounded-md hover:bg-gray-100"
+                        disabled={currentPage === 1}
+                        onClick={goToPreviousPage}
+                    >
+                        Previous
+                    </button>
+                    {[...Array(totalPages).keys()].map((number) => (
+                        <button
+                            key={number}
+                            className={`px-4 py-2 text-gray-700 bg-white rounded-md hover:bg-gray-100 ${
+                                currentPage === number + 1 ? "bg-gray-200" : ""
+                            }`}
+                            onClick={() => setCurrentPage(number + 1)}
+                        >
+                            {number + 1}
+                        </button>
+                    ))}
+                    <button
+                        className="flex items-center px-4 py-2 text-gray-500 bg-white rounded-md hover:bg-gray-100"
+                        disabled={currentPage === totalPages}
+                        onClick={goToNextPage}
+                    >
+                        Next
+                    </button>
                 </div>
             </div>
         </>
