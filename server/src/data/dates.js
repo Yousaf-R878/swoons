@@ -11,7 +11,7 @@
 //       tripAdvisorRating:
 //       tripAdvisorRatingImage:
 //       tripAdvisorLocationId:
-//       tripAdvisorLocationImages
+//       tripAdvisorLocationImages:
 //       tripAdvisorLocationUrl:
 //     },
 //     ...
