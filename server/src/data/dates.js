@@ -1,50 +1,38 @@
-// Date:getDate
-// {
-//   id:
-//   title:
-//   tags: []
-//   events: [
-//     {
-//       name:
-//       location:
-//       description:
-//       tripAdvisorLocationImage:
-//       tripAdvisorRating:
-//       tripAdvisorRatingImage:
-//       tripAdvisorLocationId:
-//       tripAdvisorLocationUrl:
-//     },
-//     ...
-//   ]
-//   likes:
-//   comments: [
-//     {
-//       username:
-//       comment:
-//       time: 
-//     },
-//     ...
-//   ]
-//   timeStamp: //for when date is created
-// }
-
 import * as helpers from "./helpers.js";
 import { dates, users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 import { get } from "./users.js";
 
-export const getAllDates = async () => {
+export const getAllDates = async (tags = [], sorting = "disabled") => {
     const dateCollection = await dates();
-    const dateList = await dateCollection.find({}).toArray();
-    if (!dateList) {
-        throw `Could not get all dates`;
+    let query = {};
+
+    if (tags.length > 0) {
+        query.tags = { $all: tags.map((tag) => new RegExp(tag, "i")) };
     }
-    let returnList = dateList.map((date) => {
-        date._id = date._id.toString();
-        return date;
-    });
-    return returnList;
+    let sortQuery = {};
+    if (sorting !== "disabled") {
+        if (sorting === "recent") {
+            sortQuery = { timeStamp: -1 };
+        } else if (sorting === "likes") {
+            sortQuery = { likes: -1 };
+        } else if (sorting === "comments") {
+            sortQuery = { commentsCount : -1 };
+        } else if (sorting === "trending") {
+            // put nothing for now
+            sortQuery = {};
+        } else {
+            throw "Invalid sorting method";
+        }
+    }
+
+    const datesByTags = await dateCollection
+        .find(query)
+        .sort(sortQuery)
+        .toArray();
+
+    return datesByTags;
 };
 
 export const getDate = async (id) => {
@@ -65,26 +53,33 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
 
     const dateCollection = await dates();
 
-    // get User by ID
-
     const author = await get(userId);
-    const name = author.firstName + author.lastName;
-    const userPicture = author.picture;
+
     //add username
 
     const newDate = {
         title: title,
-        tags: tagArray,
+        tags: [...new Set(tagArray)],
         events: eventArray,
         likes: 0,
         comments: [],
+        commentsCount: 0,
         creator: {
-            name: name,
-            picture: userPicture,
-            username: name 
-            //add username in user
-        }
+            firstName: author.firstName,
+            lastName: author.lastName,
+            username: author.username,
+            picture: author.picture,
+        },
+        timeStamp: new Date(),
     };
+
+    newDate.events.forEach((event) => {
+        event.tripAdvisorLocationImages = [];
+        event.tripAdvisorLocationUrl = "";
+        event.tripAdvisorRating = "";
+        event.tripAdvisorRatingImage = "";
+        event.tripAdvisorLocationId = "";
+    });
 
     const insertInfo = await dateCollection.insertOne(newDate);
     if (insertInfo.insertedCount === 0) throw "Could not add date";
@@ -142,3 +137,35 @@ export const removeEventFromDate = async (dateId, eventIndex) => {
 
     return date;
 };
+
+// Date
+// {
+//   _id:
+//   title:
+//   tags: []
+//   events: [
+//     {
+
+//       name:
+//       location:
+//       description:
+//       tripAdvisorLocationImage:
+//       tripAdvisorRating:
+//       tripAdvisorRatingImage:
+//       tripAdvisorLocationId:
+//       tripAdvisorLocationUrl:
+//     },
+//     ...
+//   ]
+//   likes:
+//   comments: [
+//     {
+//       username:
+//       comment:
+//       time:
+//     },
+//     ...
+//   ],
+//   commentsCount:
+//   timeStamp: //for when date is created
+// }

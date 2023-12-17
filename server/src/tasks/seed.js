@@ -1,114 +1,149 @@
 import { dbConnection, closeConnection } from "../config/mongoConnection.js";
-import { userData } from "../data/index.js";
 import * as userFuncs from "../data/users.js";
 import * as dateFuncs from "../data/dates.js";
 import * as commentFuncs from "../data/comments.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const db = await dbConnection();
 await db.dropDatabase();
 console.log("Seeding DB...");
 
-let user1Id, user2Id;
-let date1Id, date2Id;
+// Store created user IDs and date IDs for later
+const userIds = [];
+const dateIds = [];
 
-// Create User 1
 try {
-    const user1 = await userFuncs.create(
-        "John",
-        "Doe",
-        "johndoe@email.com",
-        "1212qwerA@"
+    // Read users from JSON file and create them
+    const usersData = JSON.parse(
+        fs.readFileSync(path.join(__dirname, "users.json"), "utf-8")
     );
-    user1Id = user1._id;
-} catch (e) {
-    console.log("Error creating user 1: " + e);
-}
 
-// Create User 2
-try {
-    const user2 = await userFuncs.create(
-        "Jane",
-        "Doe",
-        "janedoe@email.com",
-        "1212qwerA@"
+    for (const userData of usersData) {
+        try {
+            const createdUser = await userFuncs.create(
+                userData.firstName,
+                userData.lastName,
+                userData.email,
+                userData.username,
+                userData.password
+            );
+            userIds.push(createdUser._id); // Store the user ID for later
+            console.log(`User ${userData.username} created successfully.`);
+        } catch (e) {
+            console.error(`Error creating user ${userData.username}: ${e}`);
+        }
+    }
+
+    // Read dates from JSON file and create them with user IDs
+    const datesData = JSON.parse(
+        fs.readFileSync(path.join(__dirname, "dates.json"), "utf-8")
     );
-    user2Id = user2._id;
+
+    for (const [index, dateData] of datesData.entries()) {
+        try {
+            // Assign a user ID from the created users at random
+            const randomUserId =
+                userIds[Math.floor(Math.random() * userIds.length)];
+            const createdDate = await dateFuncs.createDate(
+                dateData.title,
+                dateData.tagArray,
+                dateData.eventArray,
+                randomUserId
+            );
+            dateIds.push(createdDate._id); // Store the date ID for later
+            console.log(`Date ${dateData.title} created successfully.`);
+        } catch (e) {
+            console.error(`Error creating date ${dateData.title}: ${e}`);
+        }
+    }
+
+    // random users like random dates
+    // console.log(dateIds);
+    for (const userId of userIds) {
+        try {
+            const numDatesToLike = Math.floor(Math.random() * 10);
+
+            let randomDates = [];
+            for (let i = 0; i < numDatesToLike; i++) {
+                const randomDateId =
+                    dateIds[Math.floor(Math.random() * dateIds.length)];
+                randomDates.push(randomDateId);
+            }
+
+            randomDates = [...new Set(randomDates)];
+
+            for (const randomDateId of randomDates) {
+                await userFuncs.likeADate(userId, randomDateId);
+                // console.log(
+                //     `User ${userId} liked date ${randomDateId} successfully.`
+                // );
+            }
+        } catch (e) {
+            console.error(`Error liking date: ${e}`);
+        }
+    }
+
+    // random users comment on random dates
+
+    for (const userId of userIds) {
+        try {
+            const numDatesToComment = Math.floor(Math.random() * 10);
+
+            let randomDates = [];
+            for (let i = 0; i < numDatesToComment; i++) {
+                const randomDateId =
+                    dateIds[Math.floor(Math.random() * dateIds.length)];
+                randomDates.push(randomDateId);
+            }
+
+            randomDates = [...new Set(randomDates)]
+
+            for (const randomDateId of randomDates) {
+                await commentFuncs.postComment(
+                    randomDateId,
+                    userId,
+                    "This is a comment!"
+                );
+                // console.log(
+                //     `User ${userId} commented on date ${randomDateId} successfully.`
+                // );
+            }
+        } catch (e) {
+            console.error(`Error commenting on date: ${e}`);
+        }
+    }
 } catch (e) {
-    console.log("Error creating user 2: " + e);
+    console.error(`Error seeding database: ${e}`);
 }
 
-// Create Date 1
-try {
-    const date1 = await dateFuncs.createDate(
-        "John's Date 1",
-        ["Cozy", "Chill", "Movies"],
-        [
-            {
-                title: "Dinner",
-                location: "John's House",
-                time: new Date("2021-03-25T18:00:00Z"),
-                description: "We'll be having dinner at my house.",
-            },
-            {
-                title: "Movie",
-                location: "John's House",
-                time: new Date("2021-03-25T20:00:00Z"),
-                description: "We'll be watching a movie at my house.",
-            },
-        ],
-        user1Id
-    );
-    date1Id = date1._id;
-} catch (e) {
-    console.log("Error creating date 1: " + e);
-}
+// try to get all dates
+// try {
+//     const allDates = await dateFuncs.getAllDates();
+//     // print date 1-5
+//     console.log("Printing first five dates:");
+//     for (let i = 0; i < 5; i++) {
+//         console.log(allDates[i]);
+//     }
+// } catch (e) {
+//     console.error(`Error getting all dates: ${e}`);
+// }
 
-// Create Date 2
-
-try {
-    const date2 = await dateFuncs.createDate(
-        "John's Date 2",
-        ["Action", "Sport", "Quality time"],
-        [
-            {
-                title: "Basketball",
-                location: "Local Park",
-                time: new Date("2021-03-25T18:00:00Z"),
-                description: "We'll be playing basketball at my house.",
-            },
-            {
-                title: "Spa",
-                location: "John's House",
-                time: new Date("2021-03-25T20:00:00Z"),
-                description: "We'll be having a spa day at my house.",
-            },
-        ],
-        user1Id
-    );
-    date2Id = date2._id;
-} catch (e) {
-    console.log("Error creating date 2: " + e);
-}
-
-// User 2 likes Date 1
-
-try {
-    const like1 = await userFuncs.likeADate(user2Id, date1Id);
-} catch (e) {
-    console.log("Error liking date 1: " + e);
-}
-
-// User 2 comments under Date 1
-
-try {
-    const comment1 = await commentFuncs.postComment(
-        date1Id,
-        user2Id,
-        "This is a comment under date 1"
-    );
-} catch (e) {
-    console.log("Error commenting under date 1: " + e);
-}
+// try to get all dates, but with tags
+// try {
+//     const allDates = await dateFuncs.getAllDates(["adventurous"]);
+//     // print date 1-5
+//     console.log("Printing first five dates with tag food:");
+//     for (let i = 0; i < 5; i++) {
+//         console.log(allDates[i]);
+//     }
+// } catch (e) {
+//     console.error(`Error getting all dates: ${e}`);
+// }
 
 await closeConnection();
 console.log("Done Seeding DB!");

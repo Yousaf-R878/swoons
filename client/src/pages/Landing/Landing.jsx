@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Hero from "../../components/Hero/Hero";
 import PostCard from "@/src/components/PostCard/PostCard";
@@ -8,40 +8,67 @@ import LoginDialog from "../../components/Login/LoginDialog/LoginDialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import "./Landing.css";
 
+import API from "../../services/apiClient";
+
 const Landing = () => {
-  return (
-    <>
-      <Navbar />
-      <Hero />
-      <div className="my-8">
-        <h2 className="text-4xl text-center font-bold">Recent Activity</h2>
-        <div className="relative blur-endings my-8 mx-4">
-          <div className="flex justify-center items-center">
-            <ScrollArea className="w-full whitespace-nowrap rounded-md border-2">
-              <div className="flex w-max space-x-4 p-4">
-                <PostCard />
-                <PostCard />
-                <PostCard />
-                <PostCard />
-                <PostCard />
-              </div>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
-          </div>
-        </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <div className="flex justify-center">
-              <Button className="w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-primary-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
-                See More
-              </Button>
+    const [mostLikedDates, setMostLikedDates] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchMostLikedDates = async () => {
+            setIsLoading(true);
+            try {
+                const response = await API.getDates([], "likes");
+                if (response.data) {
+                    setMostLikedDates(response.data.slice(0, 5)); // Take the top 5 most liked dates
+                } else {
+                    console.error("Failed to fetch dates:", response.error);
+                }
+            } catch (error) {
+                console.error("There was an error fetching the dates:", error);
+            }
+            setIsLoading(false);
+        };
+        fetchMostLikedDates();
+    }, []);
+
+    return (
+        <>
+            <Navbar />
+            <Hero />
+            <div className="my-8">
+                <h2 className="text-4xl text-center font-bold">
+                    Recent Activity
+                </h2>
+                <div className="relative blur-endings my-8 mx-4">
+                    <div className="flex justify-center items-center">
+                        <ScrollArea className="w-full whitespace-nowrap rounded-md border-2">
+                            <div className="flex w-max space-x-4 p-4">
+                                {isLoading ? (
+                                    <p>Loading...</p>
+                                ) : (
+                                    mostLikedDates.map((date) => (
+                                        <PostCard key={date._id} date={date} />
+                                    ))
+                                )}
+                            </div>
+                            <ScrollBar orientation="horizontal" />
+                        </ScrollArea>
+                    </div>
+                </div>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <div className="flex justify-center">
+                            <Button className="w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-primary-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
+                                See More
+                            </Button>
+                        </div>
+                    </DialogTrigger>
+                    <LoginDialog />
+                </Dialog>
             </div>
-          </DialogTrigger>
-          <LoginDialog />
-        </Dialog>
-      </div>
-    </>
-  );
+        </>
+    );
 };
 
 export default Landing;

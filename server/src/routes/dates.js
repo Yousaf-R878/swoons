@@ -17,10 +17,13 @@ dotenv.config({ path: path.resolve(__dirname, "../../../client/.env") });
 
 const apiKey = process.env.TRIP_ADVISOR_API_KEY;
 
-//ROUTE TO GET ALL DATES
+// get dates
 router.route("/").get(async (req, res) => {
     try {
-        const dateList = await dateFuncts.getAllDates();
+        const tags = req.query.tags ? req.query.tags.split(",") : [];
+        const sorting = req.query.sorting || "disabled";
+
+        const dateList = await dateFuncts.getAllDates(tags, sorting);
         return res.status(200).json(dateList);
     } catch (e) {
         return res.status(500).json({ error: e });
@@ -61,9 +64,21 @@ router.route("/").post(async (req, res) => {
 
     try {
         for(let i = 0; i < eventArray.length; i++){
-            let locPhotos = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${data[i].location_id}/photos?language=en&key=${apiKey}`)
-            data[i]["imageUrl"] = locPhotos.data.data[0].images.medium.url
-            //TODO: ADD SOME LOGIC IF NO PHOTOS
+            try{
+                let locPhotos = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/photos?language=en&key=${apiKey}`)
+                eventArray[i]["tripAdvisorLocationImages"] = locPhotos.data.data[0].images.medium.url
+                //TODO: ADD SOME LOGIC IF NO PHOTOS
+            } catch (e) {
+               return res.status(404).json({ error: e });
+            }
+            try{
+                let locInfo = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/details?key=${apiKey}`)
+                eventArray[i]["tripAdvisorLocationUrl"] = locInfo.data.data.web_url;
+                eventArray[i]["tripAdvisorLocationRating"] = locInfo.data.data.rating;
+                eventArray[i]["tripAdvisorLocationRatingImage"] = locInfo.data.data.rating_image_url;
+            }catch (e) {
+                return res.status(404).json({ error: e });
+            }
         }
         //drjkkbn
         const newDate = await dateFuncts.createDate(title, tagArray, eventArray, userId);
