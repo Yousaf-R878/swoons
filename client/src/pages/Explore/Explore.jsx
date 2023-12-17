@@ -58,6 +58,10 @@ const Explore = () => {
                 .toLowerCase()
                 .trim()
                 .replace(/\s+/g, "-");
+
+            if (badges.includes(formattedInputValue)) {
+                return;
+            }
             setBadges([...badges, formattedInputValue]);
             setInputValue("");
         }
@@ -116,7 +120,7 @@ const Explore = () => {
                     <Select
                         className="w-1/5"
                         value={selectedSort}
-                        onValueChange={handleSortChange} 
+                        onValueChange={handleSortChange}
                     >
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Sort by.." />

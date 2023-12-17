@@ -37,7 +37,9 @@ export let create = async (
         password: hashed_password,
         likedDates: [],
         dates: [],
-        picture: '../public/default_profile_pic.jpg'
+        picture: '../public/default_profile_pic.jpg',
+        accountCreationDate: new Date(),
+        bio: "",
     }
 
     let addInfo = await usersCollection.insertOne(newUser);

@@ -36,6 +36,16 @@ const fakeUser = {
     email: "johndoe@gmail.com",
     password: "password",
     profilePic: profilePic,
+    accountCreationDate: "2021-10-01T00:00:00.000Z",
+    bio: "",
+};
+
+const timeStampToDate = (timeStamp) => {
+    const date = new Date(timeStamp);
+    const month = date.toLocaleString("default", { month: "long" });
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month} ${day}, ${year}`;
 };
 
 const UserSettings = () => {
@@ -48,6 +58,7 @@ const UserSettings = () => {
             lastName: fakeUser.lastName,
             email: fakeUser.email,
             password: "", // Clear the password field
+            accountCreationDate: fakeUser.accountCreationDate,
             bio: fakeUser.bio,
         },
     });
@@ -82,6 +93,10 @@ const UserSettings = () => {
                     </div>
                     <Button className="mb-2">Change Picture</Button>
                     <Button variant="danger">Delete Picture</Button>
+                    <p className="text-gray-600 text-xs">
+                        Your account was created on{" "}
+                        {timeStampToDate(fakeUser.accountCreationDate)}
+                    </p>
                 </div>
                 <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
                     <h1 className="text-2xl font-semibold mb-6">Settings</h1>
