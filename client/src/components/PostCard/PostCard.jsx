@@ -27,6 +27,14 @@ import ViewCardModal from "./ViewCardModal";
 import { useEffect, useState } from "react";
 import { set } from "react-hook-form";
 
+const timeStampToDate = (timeStamp) => {
+    const date = new Date(timeStamp);
+    const month = date.toLocaleString("default", { month: "long" });
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month} ${day}, ${year}`;
+}
+
 const PostCard = ({ date }) => {
     return (
         <Dialog>
@@ -36,7 +44,10 @@ const PostCard = ({ date }) => {
                         <div className="flex items-center">
                             <Avatar className="w-10 h-10 mr-2">
                                 <AvatarImage src="" alt="@shadcn" />
-                                <AvatarFallback>CN</AvatarFallback>
+                                <AvatarFallback>
+                                    {date.creator.firstName[0]}
+                                    {date.creator.lastName[0]}
+                                </AvatarFallback>
                             </Avatar>
                             <span>
                                 <CardTitle className="text-xl">
@@ -50,6 +61,9 @@ const PostCard = ({ date }) => {
                         <Separator />
                     </CardHeader>
                     <CardContent>
+                        <p className="text-sm">
+                            {timeStampToDate(date.timeStamp)}
+                        </p>
                         {date.tags.map((tag, index) => (
                             <Badge
                                 key={index}
