@@ -1,5 +1,6 @@
 import * as helpers from './helpers.js'
-import { users } from '../config/mongoCollections.js'
+import * as dateFuncs from './dates.js'
+import { dates, users } from '../config/mongoCollections.js'
 import { ObjectId } from 'mongodb';
 import bcrypt from 'bcrypt';
 
@@ -33,7 +34,7 @@ export let create = async (
         password: hashed_password,
         likedDates: [],
         dates: [],
-        picture: null
+        picture: '../public/default_profile_pic.jpg'
     }
 
     let addInfo = await usersCollection.insertOne(newUser);
@@ -146,13 +147,13 @@ export let update = async (
     return updateInfo;
 }
 
-export let addLikedDate = async (userId,dateId) => {
+export let likeADate = async (userId,dateId) => {
     userId = helpers.checkId(userId, `User (${userId})'s Id`);
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //CHECK TO SEE IF DATE EXISTS
-
+    let dateCollection = await dates();
+    
     let user = await get(userId);
 
     let userLikedDates = user.likedDates
@@ -170,17 +171,22 @@ export let addLikedDate = async (userId,dateId) => {
         throw `Could not add liked date (${dateId}) to User (${id})`
     }
 
+    let updatedDate = await dateCollection.findOneAndUpdate(
+        {_id: new ObjectId(dateId)},
+        {$inc: {likes: 1}},
+        {returnDocument: 'after'}
+    );
+
     addInfo._id = addInfo._id.toString();
     return addInfo;
 }
 
-export let removeLikedDate = async (userId,dateId) => {
+export let unlikeADate = async (userId,dateId) => {
     userId = helpers.checkId(userId, `User (${userId})'s Id`);
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //CHECK TO SEE IF DATE EXISTS
-
+    let date = await dateFuncs.getDate(dateId);
     let user = await get(userId);
 
     let userLikedDates = user.likedDates
@@ -202,40 +208,40 @@ export let removeLikedDate = async (userId,dateId) => {
     return removeInfo;
 }
 
-export let addDate = async (userId,dateId) => {
-    userId = helpers.checkId(userId, `User (${userId})'s Id`);
-    dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
+// export let addDate = async (userId,dateId) => {
+//     userId = helpers.checkId(userId, `User (${userId})'s Id`);
+//     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
-    let usersCollection = await users();
-    //CHECK TO SEE IF DATE EXISTS
+//     let usersCollection = await users();
+//     let date = await dateFuncs.getDate(dateId);
 
-    let user = await get(userId);
+//     let user = await get(userId);
 
-    let userDates = user.dates
-    if (userDates.includes(dateId)){
-        throw `User (${userId}) already added that date (${dateId})`
-    }
+//     let userDates = user.dates
+//     if (userDates.includes(dateId)){
+//         throw `User (${userId}) already added that date (${dateId})`
+//     }
 
-    let addInfo = await usersCollection.findOneAndUpdate(
-        {_id: new ObjectId(userId)},
-        {$push: {dates: dateId}},
-        {returnDocument: 'after'}
-    );
+//     let addInfo = await usersCollection.findOneAndUpdate(
+//         {_id: new ObjectId(userId)},
+//         {$push: {dates: dateId}},
+//         {returnDocument: 'after'}
+//     );
 
-    if (!addInfo){
-        throw `Could not add date (${dateId}) to User (${id})`
-    }
+//     if (!addInfo){
+//         throw `Could not add date (${dateId}) to User (${id})`
+//     }
 
-    addInfo._id = addInfo._id.toString();
-    return addInfo;
-}
+//     addInfo._id = addInfo._id.toString();
+//     return addInfo;
+// }
 
 export let removeDate = async (userId,dateId) => {
     userId = helpers.checkId(userId, `User (${userId})'s Id`);
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
-    //CHECK TO SEE IF DATE EXISTS
+    let date = await dateFuncs.getDate(dateId);
 
     let user = await get(userId);
 
