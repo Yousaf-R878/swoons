@@ -16,7 +16,9 @@ try {
     const user1 = await userFuncs.create(
         "John",
         "Doe",
+
         "johndoe@email.com",
+        "johndoer",
         "1212qwerA@"
     );
     user1Id = user1._id;
@@ -29,7 +31,9 @@ try {
     const user2 = await userFuncs.create(
         "Jane",
         "Doe",
+
         "janedoe@email.com",
+        "janedoe1448",
         "1212qwerA@"
     );
     user2Id = user2._id;
@@ -44,16 +48,14 @@ try {
         ["Cozy", "Chill", "Movies"],
         [
             {
-                title: "Dinner",
+                name: "Dinner",
                 location: "John's House",
-                time: new Date("2021-03-25T18:00:00Z"),
                 description: "We'll be having dinner at my house.",
             },
             {
-                title: "Movie",
-                location: "John's House",
-                time: new Date("2021-03-25T20:00:00Z"),
-                description: "We'll be watching a movie at my house.",
+                name: "Movies",
+                location: "Local Movie Theater",
+                description: "We'll be watching a movie at the local Movie Theater",
             },
         ],
         user1Id
@@ -71,16 +73,14 @@ try {
         ["Action", "Sport", "Quality time"],
         [
             {
-                title: "Basketball",
+                name: "Basketball",
                 location: "Local Park",
-                time: new Date("2021-03-25T18:00:00Z"),
                 description: "We'll be playing basketball at my house.",
             },
             {
-                title: "Spa",
-                location: "John's House",
-                time: new Date("2021-03-25T20:00:00Z"),
-                description: "We'll be having a spa day at my house.",
+                name: "Spa",
+                location: "Spa",
+                description: "We'll be having a spa day at the local Spa!",
             },
         ],
         user1Id

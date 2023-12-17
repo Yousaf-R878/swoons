@@ -5,12 +5,14 @@
 //   tags: []
 //   events: [
 //     {
-//       id:
-//       name:
+//       
+//       title:
 //       location:
-//       rating:
-//       ratingImage:
-//       locationUrl:
+//       description:
+//       tripAdvisorRating:
+//       tripAdvisorRatingImage:
+//       tripAdvisorLocationId:
+//       tripAdvisorLocationUrl:
 //     },
 //     ...
 //   ]
@@ -19,7 +21,7 @@
 //     {
 //       username:
 //       comment:
-//       time: 
+//       time:
 //     },
 //     ...
 //   ]
@@ -66,8 +68,7 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
     // get User by ID
 
     const author = await get(userId);
-    const name = author.firstName + author.lastName;
-    const userPicture = author.picture;
+
     //add username
 
     const newDate = {
@@ -77,10 +78,10 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
         likes: 0,
         comments: [],
         creator: {
-            name: name,
-            picture: userPicture,
-            username: name 
-            //add username in user
+            firstName: author.firstName,
+            lastName: author.lastName,
+            username: author.username,
+            picture: author.picture,
         }
     };
 
