@@ -8,6 +8,7 @@
 //       name:
 //       location:
 //       description:
+//       tripAdvisorLocationImage:
 //       tripAdvisorRating:
 //       tripAdvisorRatingImage:
 //       tripAdvisorLocationId:

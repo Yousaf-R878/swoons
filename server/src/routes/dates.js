@@ -60,6 +60,12 @@ router.route("/").post(async (req, res) => {
     }
 
     try {
+        for(let i = 0; i < eventArray.length; i++){
+            let locPhotos = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${data[i].location_id}/photos?language=en&key=${apiKey}`)
+            data[i]["imageUrl"] = locPhotos.data.data[0].images.medium.url
+            //TODO: ADD SOME LOGIC IF NO PHOTOS
+        }
+        //drjkkbn
         const newDate = await dateFuncts.createDate(title, tagArray, eventArray, userId);
         return res.status(200).json(newDate);
     } catch (e) {
@@ -110,14 +116,7 @@ router.route("/api/:searchTerm").get(async (req, res) => {
         }).catch(function (error) {
             return res.status(error.code).json({message: error.message});
         });
-        data = data.splice(0,1)
-
-        for(let i = 0; i < data.length; i++){
-            let locPhotos = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${data[i].location_id}/photos?language=en&key=${apiKey}`)
-            data[i]["imageUrl"] = locPhotos.data.data[0].images.medium.url
-            //TODO: ADD SOME LOGIC IF NO PHOTOS
-        }
-        //drjkkbn
+        data = data.splice(0,5)
         return res.status(200).json(data);
     } catch (e) {
         return res.status(404).json({ error: e });
