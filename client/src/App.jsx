@@ -5,22 +5,21 @@ import Explore from "./pages/Explore/Explore";
 import UserSettings from "./pages/UserSettings/UserSettings";
 
 function AppContainer() {
-    return <App />;
+  return <App />;
 }
 
 function App() {
-    return (
-        <>
-            <BrowserRouter forceRefresh={true}>
-                <Routes>
-                    <Route path="/" element={<Landing />} />
-                    <Route path="/explore" element={<Explore />} />
-                    <Route path="/settings" element={<UserSettings />}>
-                    </Route>
-                </Routes>
-            </BrowserRouter>
-        </>
-    );
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/settings" element={<UserSettings />} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }
 
 export default AppContainer;
