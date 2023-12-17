@@ -13,6 +13,7 @@ import SignupForm from "../SignUpForm/SignUpForm";
 import { Separator } from "@/components/ui/separator";
 import { signInWithPopup, GoogleAuthProvider, getAuth } from "firebase/auth";
 import { useNavigation } from "react-router-dom";
+import apiClient from '../../../services/apiClient';
 import "./SignUpSheet.css";
 
 const SignupButton = () => {
@@ -29,7 +30,19 @@ const SignupButton = () => {
     const userCred = await signInWithPopup(auth, provider);
     console.log(userCred);
     if (userCred.user) {
+
       console.log("navigate or smn");
+      const user = {
+        id: userCred.user.uid,
+        email: userCred.user.email,
+        username: userCred.user.displayName,
+      }
+
+      apiClient.registerUser(user).then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        console.log(err);
+      });
     }
   }
 

@@ -18,6 +18,7 @@ import { EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import apiClient from '../../../services/apiClient';
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name required" }),
@@ -56,6 +57,16 @@ const SignupForm = ({ handleLogin }) => {
         const user = userCredential.user;
         console.log("yippee", user);
         let uid = user.uid;
+        const desiredUser = {
+          id: uid,
+          email: user.email,
+          username: user.displayName,
+        }
+        apiClient.registerUser(desiredUser).then((res) => {
+          console.log(res);
+        }).catch((err) => {
+          console.log(err);
+        });
         // ...
       })
       .catch((error) => {

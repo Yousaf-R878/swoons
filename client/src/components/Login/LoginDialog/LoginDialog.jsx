@@ -7,6 +7,7 @@ import LoginForm from "../LoginForm/LoginForm";
 import { Button } from "@/components/ui/button";
 import { signInWithPopup, GoogleAuthProvider, getAuth } from "firebase/auth";
 import "./LoginDialog.css";
+import apiClient from '../../../services/apiClient';
 
 const LoginDialog = () => {
   // 2. Define a submit handler.
@@ -21,7 +22,9 @@ const LoginDialog = () => {
     const userCred = await signInWithPopup(auth, provider);
     console.log(userCred);
     if (userCred.user) {
+      console.log(auth.currentUser);
       console.log("navigate or smn");
+
     }
   }
   return (
