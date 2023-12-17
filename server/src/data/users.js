@@ -6,12 +6,14 @@ import bcrypt from 'bcrypt';
 
 //User: { id: firstName: lastName: email: password: likedPosts: [] dates: [] picture }
 export let create = async (
+    uid,
     firstName,
     lastName,
     email,
     password,
 ) => {
     //Input Validation
+    uid = helpers.checkString(uid, "Uid");
     firstName = helpers.checkName(firstName, 'First Name');
     lastName = helpers.checkName(lastName, 'Last Name');
     email = helpers.checkEmail(email, "Email");
@@ -28,6 +30,7 @@ export let create = async (
     let hashed_password = await bcrypt.hash(password, saltRounds);
 
     let newUser = {
+        _id: uid,
         firstName: firstName,
         lastName: lastName,
         email: email,
@@ -43,7 +46,7 @@ export let create = async (
     }
 
     //Get by id to return (Just to double check)
-    let newId = addInfo.insertedId.toString();
+    let newId = addInfo.insertedId;
     let user = await get(newId);
     return user;
 }
@@ -55,19 +58,15 @@ export let getAll = async () => {
         throw `Could not get all users`
     }
     
-    let returnList = usersList.map((user) =>{
-        user._id = user._id.toString();
-        return user
-    })
-    return returnList;
+    return usersList;
 }
 
 export let get = async (id) => {
-    id = helpers.checkId(id, "User ID");
+    id = helpers.checkString(id, "User ID");
 
     let usersCollection = await users();
     let user = await usersCollection.findOne({
-        _id: new ObjectId(id)
+        _id: id
     });
 
     if (user === null){
@@ -75,7 +74,7 @@ export let get = async (id) => {
     }
 
     let returnUser = {
-        _id: user._id.toString(),
+        _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
@@ -88,13 +87,13 @@ export let get = async (id) => {
 }
 
 export let remove = async (id) => {
-    id = helpers.checkId(id, "User ID");
+    id = helpers.checkString(id, "User ID");
 
     let user = await get(id);
     
     let usersCollection = await users();
     let deletionInfo = await usersCollection.findOneAndDelete({
-        _id: new ObjectId(id)
+        _id: id
     });
 
     if (!deletionInfo){
@@ -111,7 +110,7 @@ export let update = async (
     email,
     password
 ) => {
-    id = helpers.checkId(id, `User (${id})'s Id`)
+    id = helpers.checkString(id, `User (${id})'s Id`)
     
     let usersCollection = await users();
 
@@ -135,7 +134,7 @@ export let update = async (
         password: password
     }
     let updateInfo = await usersCollection.findOneAndUpdate(
-        {_id: new ObjectId(id)}, 
+        {_id: id}, 
         {$set: updatedUser},
         {returnDocument: 'after'}
     );
@@ -143,12 +142,12 @@ export let update = async (
     if (!updateInfo){
         throw `Could not update User (${id})`
     }
-    updateInfo._id = updateInfo._id.toString();
+
     return updateInfo;
 }
 
 export let addLikedDate = async (userId,dateId) => {
-    userId = helpers.checkId(userId, `User (${userId})'s Id`);
+    userId = helpers.checkString(userId, `User (${userId})'s Id`);
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
@@ -162,7 +161,7 @@ export let addLikedDate = async (userId,dateId) => {
     }
 
     let addInfo = await usersCollection.findOneAndUpdate(
-        {_id: new ObjectId(userId)},
+        {_id: userId},
         {$push: {likedDates: dateId}},
         {returnDocument: 'after'}
     );
@@ -171,12 +170,11 @@ export let addLikedDate = async (userId,dateId) => {
         throw `Could not add liked date (${dateId}) to User (${id})`
     }
 
-    addInfo._id = addInfo._id.toString();
     return addInfo;
 }
 
 export let removeLikedDate = async (userId,dateId) => {
-    userId = helpers.checkId(userId, `User (${userId})'s Id`);
+    userId = helpers.checkString(userId, `User (${userId})'s Id`);
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
@@ -189,7 +187,7 @@ export let removeLikedDate = async (userId,dateId) => {
     }
 
     let removeInfo = await usersCollection.findOneAndUpdate(
-        {_id: new ObjectId(userId)},
+        {_id: userId},
         {$pull: {likedDates: dateId}},
         {returnDocument: 'after'}
     );
@@ -198,12 +196,11 @@ export let removeLikedDate = async (userId,dateId) => {
         throw `Could not remove liked Date (${dateId}) from User (${id})`
     }
 
-    removeInfo._id = removeInfo._id.toString();
     return removeInfo;
 }
 
 export let addDate = async (userId,dateId) => {
-    userId = helpers.checkId(userId, `User (${userId})'s Id`);
+    userId = helpers.checkString(userId, `User (${userId})'s Id`);
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
@@ -217,7 +214,7 @@ export let addDate = async (userId,dateId) => {
     }
 
     let addInfo = await usersCollection.findOneAndUpdate(
-        {_id: new ObjectId(userId)},
+        {_id: userId},
         {$push: {dates: dateId}},
         {returnDocument: 'after'}
     );
@@ -226,12 +223,11 @@ export let addDate = async (userId,dateId) => {
         throw `Could not add date (${dateId}) to User (${id})`
     }
 
-    addInfo._id = addInfo._id.toString();
     return addInfo;
 }
 
 export let removeDate = async (userId,dateId) => {
-    userId = helpers.checkId(userId, `User (${userId})'s Id`);
+    userId = helpers.checkString(userId, `User (${userId})'s Id`);
     dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
     let usersCollection = await users();
@@ -245,7 +241,7 @@ export let removeDate = async (userId,dateId) => {
     }
 
     let removeInfo = await usersCollection.findOneAndUpdate(
-        {_id: new ObjectId(userId)},
+        {_id: userId},
         {$pull: {dates: dateId}},
         {returnDocument: 'after'}
     );
@@ -254,6 +250,5 @@ export let removeDate = async (userId,dateId) => {
         throw `Could not remove date (${dateId}) from User (${id})`
     }
 
-    removeInfo._id = removeInfo._id.toString();
     return removeInfo;
 }
