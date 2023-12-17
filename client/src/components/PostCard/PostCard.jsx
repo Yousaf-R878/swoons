@@ -88,10 +88,10 @@ const PostCard = () => {
         </ScrollArea>
       </CardContent>
       <CardFooter className="">
-        <Heart size={30} color="#FFA39C" className="mr-2" />
+        <Heart size={25} color="#FFA39C" className="mr-2" />
         <span>100</span>
         {/* Maybe make comments blue? */}
-        <MessagesSquare size={30} color="gray" className="ml-2 mr-2" />
+        <MessagesSquare size={25} color="gray" className="ml-2 mr-2" />
         <span>10</span>
       </CardFooter>
     </Card>

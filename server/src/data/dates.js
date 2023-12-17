@@ -6,9 +6,11 @@
 //   events: [
 //     {
 //       id:
-//       title:
+//       name:
 //       location:
-//       time:
+//       rating:
+//       ratingImage:
+//       locationUrl:
 //     },
 //     ...
 //   ]
@@ -17,11 +19,11 @@
 //     {
 //       username:
 //       comment:
-//       time: (potentially)
+//       time: 
 //     },
 //     ...
 //   ]
-//   summary:
+//   timeStamp: //for when date is created
 // }
 
 import * as helpers from "./helpers.js";
@@ -64,15 +66,22 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
     // get User by ID
 
     const author = await get(userId);
+    const name = author.firstName + author.lastName;
+    const userPicture = author.picture;
+    //add username
 
     const newDate = {
         title: title,
         tags: tagArray,
         events: eventArray,
-        author: author,
         likes: 0,
         comments: [],
-        summary: "",
+        creator: {
+            name: name,
+            picture: userPicture,
+            username: name 
+            //add username in user
+        }
     };
 
     const insertInfo = await dateCollection.insertOne(newDate);
@@ -98,6 +107,7 @@ export const deleteDate = async (id) => {
     id = helpers.checkId(id, "Date ID");
     const dateCollection = await dates();
     const date = await getDate(id);
+    //TODO DELETE ID FROM THE USER
     const deletionInfo = await dateCollection.removeOne({
         _id: new ObjectId(id),
     });

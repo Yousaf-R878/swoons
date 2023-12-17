@@ -4,8 +4,6 @@ import Explore from "./pages/Explore/Explore";
 
 import UserSettings from "./pages/UserSettings/UserSettings";
 
-// import "./App.css";
-
 function AppContainer() {
     return <App />;
 }
