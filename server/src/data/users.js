@@ -114,6 +114,7 @@ export let update = async (
     lastName,
     username,
     email,
+
     password
 ) => {
     id = helpers.checkId(id, `User (${id})'s Id`)
@@ -124,8 +125,10 @@ export let update = async (
 
     firstName = helpers.checkName(firstName, `User (${id})'s First Name`);
     lastName = helpers.checkName(lastName, `User (${id})'s Last Name`);
+
     username = helpers.checkAlphanumeric(username, `User (${id})'s Username`);
     email = helpers.checkEmail(email, `User (${id})'s Email`);
+
     password = helpers.checkPassword(password, `User (${id})'s Password`);
 
     // let userPassHash = user.password;

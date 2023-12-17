@@ -35,27 +35,26 @@ const formSchema = z.object({
 });
 
 const CreatePostForm = () => {
-  const initialEvent = { location: "", description: "" };
-
   const [tags, setTags] = useState([]);
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       tags: [],
-      events: [initialEvent],
+      events: [{ location: "", description: "" }],
     },
   });
 
   const handleAddEvent = () => {
-    setEvents([...events, { location: "", description: "" }]);
+    const newEvents = form.getValues("events");
+    newEvents.push({ location: "", description: "" });
+    form.setValue("events", newEvents);
   };
 
   const handleRemoveEvent = (indexToRemove) => {
-    setEvents((currentEvents) =>
-      currentEvents.filter((_, index) => index !== indexToRemove)
-    );
+    const newEvents = form.getValues("events");
+    newEvents.splice(indexToRemove, 1);
+    form.setValue("events", newEvents);
   };
 
   const handleKeyDown = (event) => {
@@ -63,16 +62,13 @@ const CreatePostForm = () => {
       event.preventDefault();
       const newTag = event.target.value.trim();
       if (newTag !== "") {
-        setTags((prevTags) => {
-          const updatedTags = [...prevTags, newTag];
-          // Update the form's value without triggering validation
-          form.setValue("tags", updatedTags, { shouldValidate: false });
-          // If there's an error for the tags field, clear it
-          if (form.formState.errors.tags) {
-            form.clearErrors("tags");
-          }
-          return updatedTags;
-        });
+        const updatedTags = [...tags, newTag];
+        setTags(updatedTags);
+        form.setValue("tags", updatedTags, { shouldValidate: true }); // Update the form's value for 'tags' and trigger validation
+
+        // Trigger validation manually for the 'tags' field
+        form.trigger("tags");
+
         event.target.value = "";
       }
     }
@@ -136,10 +132,19 @@ const CreatePostForm = () => {
             </FormItem>
           )}
         />
-
-        {events.map((event, index) => (
+        <h2 className="text-2xl font-bold">Events</h2>
+        {form.watch("events").map((event, index) => (
           <div key={index} className="border p-4 rounded">
-            <h5 className="text-2xl mb-2">Event {index + 1}</h5>
+            {form.watch("events").length > 1 && (
+              <div className="w-full flex justify-end">
+                <button
+                  onClick={() => handleRemoveEvent(index)}
+                  className="" // absolute positioning
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            )}
             <FormField
               control={form.control}
               name={`events.${index}.location`}
@@ -166,20 +171,16 @@ const CreatePostForm = () => {
                 </FormItem>
               )}
             />
-            {events.length > 1 && (
-              <button
-                onClick={() => handleRemoveEvent(index)}
-                className="text-red-500"
-              >
-                Remove Event
-              </button>
-            )}
           </div>
         ))}
 
-        <button type="button" onClick={handleAddEvent} className="mt-4">
+        <Button
+          type="button"
+          onClick={handleAddEvent}
+          className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-secondary hover:bg-secondary-hover hover:text-white"
+        >
           Add Another Event
-        </button>
+        </Button>
         <div className="flex justify-center">
           <Button
             type="submit"

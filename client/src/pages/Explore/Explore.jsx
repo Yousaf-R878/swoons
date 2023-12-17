@@ -19,7 +19,7 @@ const Explore = () => {
   const [badges, setBadges] = useState([]);
   const [selectedSort, setSelectedSort] = useState("recent");
 
-  const hasSearch = badges.length > 0;
+  const hasSearch = badges.length > 0 ? true : false;
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);

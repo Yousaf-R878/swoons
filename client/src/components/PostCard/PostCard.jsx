@@ -20,26 +20,65 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import ViewCardModal from "./ViewCardModal";
+import { useEffect, useState } from "react";
+import { set } from "react-hook-form";
 
 const PostCard = () => {
   const works = [
     {
       artist: "Ornella Binni",
       art: "https://images.unsplash.com/photo-1465869185982-5a1a7522cbcb?auto=format&fit=crop&w=300&q=80",
+      title: "A Cozy Start",
+      description: "This hangout starts you off in a wonderful park, lorem ipsuming all over the place. It’s quite lorem ipsum. So much so, that the whole thing lorem ipsum’d on me and I lorem ipsum’d myself. Very great stuff!"
     },
     {
       artist: "Tom Byrom",
       art: "https://images.unsplash.com/photo-1548516173-3cabfa4607e9?auto=format&fit=crop&w=300&q=80",
+      title: "A Cozy Middle",
+      description: "This hangout starts you off in a wonderful park, lorem ipsuming all over the place. It’s quite lorem ipsum. So much so, that the whole thing lorem ipsum’d on me and I lorem ipsum’d myself. Very great stuff!"
+
     },
     {
       artist: "Vladimir Malyavko",
       art: "https://images.unsplash.com/photo-1494337480532-3725c85fd2ab?auto=format&fit=crop&w=300&q=80",
+      title: "A Cozy End",
+      description: "This hangout starts you off in a wonderful park, lorem ipsuming all over the place. It’s quite lorem ipsum. So much so, that the whole thing lorem ipsum’d on me and I lorem ipsum’d myself. Very great stuff!"
+
     },
   ];
-  return (
-    <Card className="w-[350px]">
+  const cardInfo = {
+    name: "John Doe",
+    username: "@johnDoe",
+    title: "A Cozy Hangout",
+    badges: ["Badge"],
+    likes: 100,
+    comments: 10,
+  };
+  const [comments, setComments] = useState([]);
+  useEffect(() => {
+    setComments([
+      {
+        name: "John Doe",
+        username: "@johnDoe",
+        comment: "This is a comment!",
+        timestamp: "2023-12-15"
+      },
+      {
+        name: "Jane Doe",
+        username: "@janeDoe",
+        comment: "This is another comment!",
+        timestamp: "2023-12-16"
+      }
+    ]);
+  });
+    return (
+    <Dialog>
+      <DialogTrigger asChild>
+            <Card className="w-[350px]">
       <CardHeader>
         <div className="flex items-center">
           <Avatar className="w-10 h-10 mr-2">
@@ -95,6 +134,9 @@ const PostCard = () => {
         <span>10</span>
       </CardFooter>
     </Card>
+      </DialogTrigger>
+      <ViewCardModal works={works} cardInfo={cardInfo} comments={comments}/>
+    </Dialog>
   );
 };
 

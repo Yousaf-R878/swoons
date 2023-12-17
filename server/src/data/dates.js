@@ -5,13 +5,14 @@
 //   tags: []
 //   events: [
 //     {
-//       title:
+
+//       name:
 //       location:
 //       description:
+//       tripAdvisorLocationImage:
 //       tripAdvisorRating:
 //       tripAdvisorRatingImage:
 //       tripAdvisorLocationId:
-//       tripAdvisorLocationImages:
 //       tripAdvisorLocationUrl:
 //     },
 //     ...

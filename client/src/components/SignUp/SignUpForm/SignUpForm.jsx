@@ -20,13 +20,47 @@ import { Link } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const formSchema = z.object({
-  firstName: z.string().min(1, { message: "First name required" }),
-  lastName: z.string().min(1, { message: "Last name required" }),
-  email: z.string().email({
-    message: "Invalid email address.",
-  }),
-  password: z.string().min(1, { message: "Password required" }), // This needs more validation
-  confirmPassword: z.string().min(1, { message: "Confirm password required" }), // This needs more validation
+  firstName: z
+    .string()
+    .min(2, { message: "First name must be at least 2 characters long" })
+    .max(50, { message: "First name must be less than 50 characters long" })
+    .regex(/^[a-zA-Z'-]+$/, { message: "Invalid first name format" }),
+  lastName: z
+    .string()
+    .min(2, { message: "Last name must be at least 2 characters long" })
+    .max(50, { message: "Last name must be less than 50 characters long" })
+    .regex(/^[a-zA-Z'-]+$/, { message: "Invalid last name format" }),
+  email: z.string().email({ message: "Invalid email address." }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long" })
+    .regex(/(?=.*[a-z])/, {
+      message: "Password must contain at least one lowercase letter",
+    })
+    .regex(/(?=.*[A-Z])/, {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .regex(/(?=.*[0-9])/, {
+      message: "Password must contain at least one number",
+    })
+    .regex(/(?=.*[!@#$%^&*])/, {
+      message: "Password must contain at least one symbol (!@#$%^&*)",
+    }),
+  confirmPassword: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long" })
+    .regex(/(?=.*[a-z])/, {
+      message: "Password must contain at least one lowercase letter",
+    })
+    .regex(/(?=.*[A-Z])/, {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .regex(/(?=.*[0-9])/, {
+      message: "Password must contain at least one number",
+    })
+    .regex(/(?=.*[!@#$%^&*])/, {
+      message: "Password must contain at least one symbol (!@#$%^&*)",
+    }),
 });
 
 const SignupForm = ({ handleLogin }) => {
