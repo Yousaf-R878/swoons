@@ -61,6 +61,7 @@ const SignupForm = ({ handleLogin }) => {
           id: uid,
           email: user.email,
           username: user.displayName,
+          accessToken: user.accessToken
         }
         apiClient.registerUser(desiredUser).then((res) => {
           console.log(res);
