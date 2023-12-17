@@ -47,14 +47,26 @@ router.route("/:id").get(async (req, res) => {
 //ROUTE TO CREATE A NEW DATE
 router.route("/").post(async (req, res) => {
     let title = req.body.title;
+    let tagArray = req.body.tagArray;
+    let eventArray = req.body.eventArray;
+    let userId = req.body.userId;
     try {
         title = helpers.checkTitle(title, "Title");
+        tagArray = helpers.checkTagArray(tagArray, "Tag Array");
+        eventArray = helpers.checkEventArray(eventArray, "Event Array");
+        userId = helpers.checkId(userId, "User ID");
     } catch (e) {
         return res.status(400).json({ error: e });
     }
 
     try {
-        const newDate = await dateFuncts.createDate(title);
+        for(let i = 0; i < eventArray.length; i++){
+            let locPhotos = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${data[i].location_id}/photos?language=en&key=${apiKey}`)
+            data[i]["imageUrl"] = locPhotos.data.data[0].images.medium.url
+            //TODO: ADD SOME LOGIC IF NO PHOTOS
+        }
+        //drjkkbn
+        const newDate = await dateFuncts.createDate(title, tagArray, eventArray, userId);
         return res.status(200).json(newDate);
     } catch (e) {
         return res.status(500).json({ error: e });
@@ -104,58 +116,14 @@ router.route("/api/:searchTerm").get(async (req, res) => {
         }).catch(function (error) {
             return res.status(error.code).json({message: error.message});
         });
-        data = data.splice(0,1)
-
-        for(let i = 0; i < data.length; i++){
-            let locPhotos = await axios.get(`https://api.content.tripadvisor.com/api/v1/location/${data[i].location_id}/photos?language=en&key=${apiKey}`)
-            data[i]["imageUrl"] = locPhotos.data.data[0].images.medium.url
-            //TODO: ADD SOME LOGIC IF NO PHOTOS
-        }
+        data = data.splice(0,5)
         return res.status(200).json(data);
     } catch (e) {
         return res.status(404).json({ error: e });
     }
 })
 
-//ROUTE FOR ADDING AN EVENT
-router.route("/:id").patch(async (req, res) => {
-    let id = req.params.id;
-    let locId = req.body.locId;
-    let name = req.body.name;
-    let description = req.body.description;
-    let locAddress = req.body.locAddress;
-    let locImgUrl = req.body.locImgUrl;
-    let rating = req.body.rating;
-    let ratingImgUrl = req.body.ratingImgUrl;
-    let email = req.body.email;
-    let phone = req.body.phone;
-    let website = req.body.website;
 
-    try {
-        id = helpers.checkId(id, "ID");
-    } catch (e) {
-        return res.status(400).json({ error: e });
-    }
-
-    try {
-        let newEvent = await dateFuncts.addEvent(
-            id,
-            locId,
-            name,
-            description,
-            locAddress,
-            locImgUrl,
-            rating,
-            ratingImgUrl,
-            email,
-            phone,
-            website
-        );
-        return res.status(200).json(newEvent);
-    } catch (e) {
-        return res.status(500).json({ error: e });
-    }
-});
 
 //ROUTE FOR REMOVING AN EVENT
 router.route("/:id/:locId").delete(async (req, res) => {

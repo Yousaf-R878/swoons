@@ -78,62 +78,62 @@ const PostCard = () => {
     return (
     <Dialog>
       <DialogTrigger asChild>
-        <Card className="w-[350px] cursor-pointer">
-          <CardHeader>
-            <div className="flex items-center">
-              <Avatar className="w-10 h-10 mr-2">
-                <AvatarImage src="" alt="@shadcn" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <span>
-                <CardTitle className="text-xl">John Doe</CardTitle>
-                <CardDescription className="text-sm">@johnDoe</CardDescription>
-              </span>
-            </div>
-            <Separator />
-          </CardHeader>
-          <CardContent>
-            <h2>A Cozy Hangout</h2>
-            <div className="flex flex-row">
-              <Star color="#FFB240" fill="#FFB240" size={25} />
-              <Star color="#FFB240" size={25} />
-              <Star color="#FFB240" size={25} />
-              <StarHalf color="#FFB240" fill="#FFB240" size={25} />
-            </div>
-            <Badge className="bg-palecyan my-2 h-5 text-xs text-gray-500">
-              Badge
-            </Badge>
-            <ScrollArea className="w-full h-40 whitespace-nowrap rounded-md border">
-              <div className="flex w-max space-x-4 p-4">
-                {works.map((artwork) => (
-                  <figure key={artwork.artist} className="shrink-0">
-                    <div className="overflow-hidden rounded-md">
-                      <img
-                        src={artwork.art}
-                        alt={`Photo by ${artwork.artist}`}
-                        className="h-28 w-28 object-cover"
-                      />
-                    </div>
-                    {/* <figcaption className="pt-2 text-xs text-muted-foreground">
-                      Photo by{" "}
-                      <span className="font-semibold text-foreground">
-                        {artwork.artist}
-                      </span>
-                    </figcaption> */}
-                  </figure>
-                ))}
-              </div>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
-          </CardContent>
-          <CardFooter className="">
-            <Heart size={30} color="#FFA39C" className="mr-2" />
-            <span>100</span>
-            {/* Maybe make comments blue? */}
-            <MessagesSquare size={30} color="gray" className="ml-2 mr-2" />
-            <span>10</span>
-          </CardFooter>
-        </Card>
+            <Card className="w-[350px]">
+      <CardHeader>
+        <div className="flex items-center">
+          <Avatar className="w-10 h-10 mr-2">
+            <AvatarImage src="" alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <span>
+            <CardTitle className="text-xl">John Doe</CardTitle>
+            <CardDescription className="text-sm">@johnDoe</CardDescription>
+          </span>
+        </div>
+        <Separator />
+      </CardHeader>
+      <CardContent>
+        <h2>A Cozy Hangout</h2>
+        <div className="flex flex-row">
+          <Star color="#FFB240" fill="#FFB240" size={25} />
+          <Star color="#FFB240" size={25} />
+          <Star color="#FFB240" size={25} />
+          <StarHalf color="#FFB240" fill="#FFB240" size={25} />
+        </div>
+        <Badge className="bg-palecyan my-2 h-5 text-xs text-gray-500">
+          Badge
+        </Badge>
+        <ScrollArea className="w-full h-40 whitespace-nowrap rounded-md border">
+          <div className="flex w-max space-x-4 p-4">
+            {works.map((artwork) => (
+              <figure key={artwork.artist} className="shrink-0">
+                <div className="overflow-hidden rounded-md">
+                  <img
+                    src={artwork.art}
+                    alt={`Photo by ${artwork.artist}`}
+                    className="h-28 w-28 object-cover"
+                  />
+                </div>
+                {/* <figcaption className="pt-2 text-xs text-muted-foreground">
+                  Photo by{" "}
+                  <span className="font-semibold text-foreground">
+                    {artwork.artist}
+                  </span>
+                </figcaption> */}
+              </figure>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      </CardContent>
+      <CardFooter className="">
+        <Heart size={25} color="#FFA39C" className="mr-2" />
+        <span>100</span>
+        {/* Maybe make comments blue? */}
+        <MessagesSquare size={25} color="gray" className="ml-2 mr-2" />
+        <span>10</span>
+      </CardFooter>
+    </Card>
       </DialogTrigger>
       <ViewCardModal works={works} cardInfo={cardInfo} comments={comments}/>
     </Dialog>
