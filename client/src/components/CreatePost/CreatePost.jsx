@@ -16,8 +16,6 @@ import { X } from "lucide-react";
 import CreatePostForm from "./CreatePostForm";
 
 const CreatePost = () => {
-
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -29,7 +27,7 @@ const CreatePost = () => {
           Create Date
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] sm:max-h-[600px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create Date</DialogTitle>
           <DialogDescription>
