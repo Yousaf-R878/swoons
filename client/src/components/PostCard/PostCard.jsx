@@ -24,6 +24,8 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import ViewCardModal from "./ViewCardModal";
+import { useEffect, useState } from "react";
+import { set } from "react-hook-form";
 
 const PostCard = () => {
   const works = [
@@ -56,7 +58,24 @@ const PostCard = () => {
     likes: 100,
     comments: 10,
   };
-  return (
+  const [comments, setComments] = useState([]);
+  useEffect(() => {
+    setComments([
+      {
+        name: "John Doe",
+        username: "@johnDoe",
+        comment: "This is a comment!",
+        timestamp: "2023-12-15"
+      },
+      {
+        name: "Jane Doe",
+        username: "@janeDoe",
+        comment: "This is another comment!",
+        timestamp: "2023-12-16"
+      }
+    ]);
+  });
+    return (
     <Dialog>
       <DialogTrigger asChild>
         <Card className="w-[350px] cursor-pointer">
@@ -116,7 +135,7 @@ const PostCard = () => {
           </CardFooter>
         </Card>
       </DialogTrigger>
-      <ViewCardModal works={works} cardInfo={cardInfo}/>
+      <ViewCardModal works={works} cardInfo={cardInfo} comments={comments}/>
     </Dialog>
   );
 };
