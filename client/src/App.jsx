@@ -2,24 +2,25 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Landing from "./pages/Landing/Landing";
 import Explore from "./pages/Explore/Explore";
 
-import CreatePost from "./pages/CreatePost/CreatePost";
+import UserSettings from "./pages/UserSettings/UserSettings";
 
 function AppContainer() {
-  return <App />;
+    return <App />;
 }
 
 function App() {
-  return (
-    <>
-      <BrowserRouter forceRefresh={true}>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/explore" element={<Explore />} />
-          {/* <Route path="/create-post" element={<CreatePost />} /> */}
-        </Routes>
-      </BrowserRouter>
-    </>
-  );
+    return (
+        <>
+            <BrowserRouter forceRefresh={true}>
+                <Routes>
+                    <Route path="/" element={<Landing />} />
+                    <Route path="/explore" element={<Explore />} />
+                    <Route path="/settings" element={<UserSettings />}>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </>
+    );
 }
 
 export default AppContainer;

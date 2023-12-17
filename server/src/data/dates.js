@@ -70,7 +70,6 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
     const userPicture = author.picture;
     //add username
 
-
     const newDate = {
         title: title,
         tags: tagArray,
