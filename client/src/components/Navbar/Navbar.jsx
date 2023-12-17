@@ -26,7 +26,7 @@ const Navbar = () => {
           className="h-10 w-9 mr-2"
         />
         <span className="text-black font-semibold text-xl tracking-tight">
-          Company Name
+          Swoons
         </span>
       </div>
       <div>

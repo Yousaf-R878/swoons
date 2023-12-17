@@ -100,7 +100,6 @@ router
 
     let firstName = userInfo.firstName;
     let lastName = userInfo.lastName;
-    let email = userInfo.email;
     let password = userInfo.password;
 
     if (!firstName) {
@@ -111,10 +110,6 @@ router
       lastName = user.lastName;
     }
 
-    if (!email) {
-      email = user.email;
-    }
-
     if (!password) {
       password = user.password;
     }
@@ -122,7 +117,6 @@ router
     try {
       firstName = helpers.checkName(firstName, "First Name");
       lastName = helpers.checkName(lastName, "Last Name");
-      email = helpers.checkEmail(email, "Email");
       password = helpers.checkPassword(password, "Password");
     } catch (e) {
       return res.status(400).json({ error: e });
@@ -133,7 +127,6 @@ router
         id,
         firstName,
         lastName,
-        email,
         password
       );
       return res.status(200).json(updatedUser);
