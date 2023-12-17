@@ -11,31 +11,33 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
   
-const ViewCardModal = ({works, cardInfo, comments}) => {
+const ViewCardModal = ({date, timeStampToDate}) => {
 
     return (
         <DialogContent className="sm:max-w-[925px] sm:max-h-[700px] overflow-y-auto">
             <DialogHeader>
-                <DialogTitle className="text-2xl text-center">{cardInfo.title}</DialogTitle>
+                <DialogTitle className="text-2xl text-center">{date.title}</DialogTitle>
                 <div className="flex flex-col justify-center items-center">
-                    <p className="text-xl mr-2 text-gray-300">By: {cardInfo.username}</p>
-                    {cardInfo.badges.map((badge, index) => (
-                        <Badge key={index} className="bg-palecyan my-2 h-5 text-xs text-gray-500">
-                            {badge}
-                        </Badge>
-                    ))}
+                    <p className="text-xl mr-2 text-gray-300">By: {date.creator.username}</p>
+                    <div className="flex flex-row">
+                        {date.tags.map((badge, index) => (
+                            <Badge key={index} className="bg-palecyan my-2 mx-1 h-5 text-xs text-gray-500">
+                                {badge}
+                            </Badge>
+                        ))}
+                    </div>
                     <div className="flex flex-row">
                         <Heart size={30} color="#FFA39C" className="mr-2" />
-                        <span>{cardInfo.likes}</span>
+                        <span>{date.likes}</span>
                         {/* Maybe make comments blue? */}
                         <MessagesSquare size={30} color="gray" className="ml-2 mr-2" />
-                        <span>{cardInfo.comments}</span>
+                        <span>{date.commentsCount}</span>
                     </div>
                 </div>
                 <Separator/>
             </DialogHeader>
             <div className="flex items-center my-4 flex-col">
-                {works.map((work, index) => (
+                {/* {works.map((work, index) => (
                     <div key={index} className="flex justify-between items-center w-full py-10">
                         <img src={work.art} alt={work.artist} className="w-40 h-40 mr-4 object-cover rounded-sm" />
                         <div className="flex w-full flex-col px-2">
@@ -46,7 +48,7 @@ const ViewCardModal = ({works, cardInfo, comments}) => {
                             <p className="pt-4">{work.description}</p>
                         </div>
                     </div>
-                ))}
+                ))} */}
             </div>
             <Separator />
             <DialogFooter>
@@ -57,14 +59,14 @@ const ViewCardModal = ({works, cardInfo, comments}) => {
                             Comment
                         </Button>
                     </div>
-                    {comments.map((comment, index) => (
+                    {date.comments.map((comment, index) => (
                         <div key={index} className="flex justify-between items-center w-full py-5 my-3 rounded-sm border-2">
                             <div className="flex w-full flex-col px-2">
                                 <div className="flex flex-col justify-center items-start">
-                                    <h3 className="text-xl font-bold">{comment.name}</h3>
+                                    <h3 className="text-xl font-bold">{comment.username}</h3>
                                     <div className="flex flex-row justify-between items-center w-full">
                                     <p className="mr-2 text-gray-300">{comment.username}</p>
-                                    <p className="text-gray-300">{comment.timestamp}</p>
+                                    <p className="text-gray-300">{timeStampToDate(comment.time)}</p>
                                     </div>
                                 </div>
                                 <Separator/>
