@@ -32,6 +32,7 @@ class ApiClient {
   async fetchUserFromToken() {
     return await this.request({ endpoint: `/auth/me`, method: `GET` });
   }
+
   async registerUser(credentials) {
     return await this.request({
       endpoint: `/auth/register`,
@@ -48,6 +49,7 @@ class ApiClient {
   }
   async logoutUser() {
     localStorage.removeItem(this.tokenName);
+    this.setToken(null);
   }
 }
 

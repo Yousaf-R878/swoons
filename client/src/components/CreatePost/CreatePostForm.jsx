@@ -28,14 +28,16 @@ const formSchema = z.object({
     .max(50, { message: "Title cannot be more than 50 characters long" }),
   tags: z
     .array(z.string())
-    .nonempty({ message: "You must add at least one tag" }),
+    .nonempty({ message: "You must add at least one tag" })
+    .refine((items) => new Set(items).size === items.length, {
+      message: "Cannot have duplicate tags",
+    }),
   events: z
     .array(eventSchema)
     .nonempty({ message: "At least one event is required" }),
 });
 
 const CreatePostForm = () => {
-  const [tags, setTags] = useState([]);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -62,26 +64,25 @@ const CreatePostForm = () => {
       event.preventDefault();
       const newTag = event.target.value.trim();
       if (newTag !== "") {
-        const updatedTags = [...tags, newTag];
-        setTags(updatedTags);
-        form.setValue("tags", updatedTags, { shouldValidate: true }); // Update the form's value for 'tags' and trigger validation
-
-        // Trigger validation manually for the 'tags' field
+        const updatedTags = form.getValues("tags");
+        updatedTags.push(newTag);
+        form.setValue("tags", updatedTags, { shouldValidate: true });
         form.trigger("tags");
-
         event.target.value = "";
       }
     }
   };
 
-  const handleSubmitData = (data) => {
-    console.log(data);
+  const handleRemoveBadge = (indexToRemove) => {
+    console.log("remove badge");
+    const updatedTags = form.getValues("tags");
+    updatedTags.splice(indexToRemove, 1);
+    form.setValue("tags", updatedTags, { shouldValidate: true });
+    form.trigger("tags");
   };
 
-  const handleRemoveBadge = (indexToRemove) => {
-    setTags((currentTags) =>
-      currentTags.filter((_, index) => index !== indexToRemove)
-    );
+  const handleSubmitData = (data) => {
+    console.log(data);
   };
 
   return (
@@ -106,41 +107,41 @@ const CreatePostForm = () => {
         <FormField
           control={form.control}
           name="tags"
-          render={() => (
-            <FormItem>
-              <FormLabel>Tags</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter Tags" onKeyDown={handleKeyDown} />
-              </FormControl>
-              <div className="flex flex-wrap gap-2">
-                {tags.map((tag, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center bg-palecyan text-sm py-1 px-2.5 rounded-full mr-1 text-gray-500"
-                  >
-                    {tag}
-                    <button
-                      onClick={() => handleRemoveBadge(index)}
-                      className="ml-1"
+          render={({ field }) => {
+            console.log(field);
+            return (
+              <FormItem>
+                <FormLabel>Tags</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter Tags" onKeyDown={handleKeyDown} />
+                </FormControl>
+                <div className="flex flex-wrap gap-2">
+                  {field.value.map((tag, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center bg-palecyan text-sm py-1 px-2.5 rounded-full mr-1 text-gray-500"
                     >
-                      <X size={17} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
+                      {tag}
+                      <button
+                        onMouseUp={() => handleRemoveBadge(index)}
+                        className="ml-1"
+                      >
+                        <X size={17} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <h2 className="text-2xl font-bold">Events</h2>
         {form.watch("events").map((event, index) => (
           <div key={index} className="border p-4 rounded">
             {form.watch("events").length > 1 && (
               <div className="w-full flex justify-end">
-                <button
-                  onClick={() => handleRemoveEvent(index)}
-                  className="" // absolute positioning
-                >
+                <button onClick={() => handleRemoveEvent(index)}>
                   <X size={20} />
                 </button>
               </div>
