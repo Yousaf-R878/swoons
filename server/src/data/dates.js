@@ -4,7 +4,12 @@ import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 import { get } from "./users.js";
 
-export const getAllDates = async (tags = [], sorting = "disabled") => {
+export const getAllDates = async (
+    tags = [],
+    sorting = "disabled",
+    page = 1,
+    limit = 12
+) => {
     const dateCollection = await dates();
     let query = {};
 
@@ -18,7 +23,7 @@ export const getAllDates = async (tags = [], sorting = "disabled") => {
         } else if (sorting === "likes") {
             sortQuery = { likes: -1 };
         } else if (sorting === "comments") {
-            sortQuery = { commentsCount : -1 };
+            sortQuery = { commentsCount: -1 };
         } else if (sorting === "trending") {
             // put nothing for now
             sortQuery = {};
@@ -30,9 +35,18 @@ export const getAllDates = async (tags = [], sorting = "disabled") => {
     const datesByTags = await dateCollection
         .find(query)
         .sort(sortQuery)
+        .skip((page - 1) * limit)
+        .limit(limit)
         .toArray();
 
-    return datesByTags;
+    const totalPages = Math.ceil(
+        (await dateCollection.countDocuments(query)) / limit
+    );
+
+    return {
+        dates: datesByTags,
+        totalPages: totalPages,
+    };
 };
 
 export const getDate = async (id) => {
