@@ -49,7 +49,7 @@ export const getAllDates = async (tags = [], sorting = "disabled") => {
         } else if (sorting === "likes") {
             sortQuery = { likes: -1 };
         } else if (sorting === "comments") {
-            sortQuery = { "comments.length": -1 };
+            sortQuery = { commentsCount : -1 };
         } else if (sorting === "trending") {
             // put nothing for now
             sortQuery = {};
@@ -94,6 +94,7 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
         events: eventArray,
         likes: 0,
         comments: [],
+        commentsCount: 0,
         creator: {
             firstName: author.firstName,
             lastName: author.lastName,

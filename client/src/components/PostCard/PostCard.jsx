@@ -40,28 +40,16 @@ const PostCard = ({ date }) => {
                             </Avatar>
                             <span>
                                 <CardTitle className="text-xl">
-                                    {date.creator.firstName}{" "}
-                                    {date.creator.lastName}
+                                    {date.title}
                                 </CardTitle>
                                 <CardDescription className="text-sm">
-                                    {date.creator.username}
+                                    @{date.creator.username}
                                 </CardDescription>
                             </span>
                         </div>
                         <Separator />
                     </CardHeader>
                     <CardContent>
-                        <h2>{date.title}</h2>
-                        <div className="flex flex-row">
-                            <Star color="#FFB240" fill="#FFB240" size={25} />
-                            <Star color="#FFB240" size={25} />
-                            <Star color="#FFB240" size={25} />
-                            <StarHalf
-                                color="#FFB240"
-                                fill="#FFB240"
-                                size={25}
-                            />
-                        </div>
                         {date.tags.map((tag, index) => (
                             <Badge
                                 key={index}
@@ -99,7 +87,7 @@ const PostCard = ({ date }) => {
                             color="gray"
                             className="ml-2 mr-2"
                         />
-                        <span>{date.comments.length}</span>
+                        <span>{date.commentsCount}</span>
                     </CardFooter>
                 </Card>
             </DialogTrigger>

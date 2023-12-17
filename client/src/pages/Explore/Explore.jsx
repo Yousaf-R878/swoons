@@ -16,50 +16,10 @@ import {
 
 import API from "../../services/apiClient";
 
-const propData = {
-    _id: {
-        $oid: "657e5b2df5c884180b4cf492",
-    },
-    title: "Audience Thing",
-    tags: ["Adventurous", "Adventurous", "Cultural", "Relaxing", "Educational"],
-    events: [
-        {
-            name: "Whose",
-            location: "Port Susan",
-            description: "Something power total guy process ready nor.",
-            tripAdvisorLocationImages: [],
-            tripAdvisorLocationUrl: "",
-            tripAdvisorRating: "",
-            tripAdvisorRatingImage: "",
-            tripAdvisorLocationId: "",
-        },
-        {
-            name: "Pull",
-            location: "Diazhaven",
-            description: "Take share western kid.",
-            tripAdvisorLocationImages: [],
-            tripAdvisorLocationUrl: "",
-            tripAdvisorRating: "",
-            tripAdvisorRatingImage: "",
-            tripAdvisorLocationId: "",
-        },
-    ],
-    likes: 0,
-    comments: [],
-    creator: {
-        firstName: "Leonard",
-        lastName: "Guzman",
-        username: "vgriffin",
-        picture: "../public/default_profile_pic.jpg",
-    },
-};
-
-const dates = [propData];
-
 const Explore = () => {
     const [inputValue, setInputValue] = useState("");
     const [badges, setBadges] = useState([]);
-    const [selectedSort, setSelectedSort] = useState("recent");
+    const [selectedSort, setSelectedSort] = useState("disabled");
     const [dates, setDates] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -94,8 +54,10 @@ const Explore = () => {
             inputValue.trim().length > 0 &&
             badges.length < 20
         ) {
-            const formattedInputValue =
-                inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+            const formattedInputValue = inputValue
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, "-");
             setBadges([...badges, formattedInputValue]);
             setInputValue("");
         }
@@ -105,8 +67,8 @@ const Explore = () => {
         setBadges(badges.filter((_, index) => index !== indexToRemove));
     };
 
-    const handleSortChange = (e) => {
-        setSelectedSort(e.target.value);
+    const handleSortChange = (newValue) => {
+        setSelectedSort(newValue);
     };
 
     if (isLoading) {
@@ -151,11 +113,16 @@ const Explore = () => {
                     <h2 className="text-2xl font-semibold">
                         {hasSearch ? "Found Results" : "Recent Activity"}
                     </h2>
-                    <Select className="w-1/5">
+                    <Select
+                        className="w-1/5"
+                        value={selectedSort}
+                        onValueChange={handleSortChange} 
+                    >
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Sort by.." />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value="disabled">Sort by..</SelectItem>
                             <SelectItem value="recent">Recent</SelectItem>
                             <SelectItem value="likes">Most Likes</SelectItem>
                             <SelectItem value="comments">

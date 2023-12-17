@@ -126,11 +126,6 @@ export let checkComment = (comment, variableName) => {
         throw `${variableName} must be less than 500 characters long`;
     }
 
-    const commentRegex = /^[a-zA-Z0-9\s'-]+$/;
-    if (!commentRegex.test(comment)) {
-        throw `${variableName} (${comment}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
-    }
-
     return comment;
 };
 

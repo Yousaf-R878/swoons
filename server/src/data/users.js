@@ -114,7 +114,6 @@ export let update = async (
     lastName,
     username,
     email,
-
     password
 ) => {
     id = helpers.checkId(id, `User (${id})'s Id`)
