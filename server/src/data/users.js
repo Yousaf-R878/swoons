@@ -9,11 +9,13 @@ export let create = async (
     firstName,
     lastName,
     email,
+    username,
     password,
 ) => {
     //Input Validation
     firstName = helpers.checkName(firstName, 'First Name');
     lastName = helpers.checkName(lastName, 'Last Name');
+    username = helpers.checkAlphanumeric(username, "Username");
     email = helpers.checkEmail(email, "Email");
     password = helpers.checkPassword(password, "Password");
 
@@ -31,6 +33,7 @@ export let create = async (
         firstName: firstName,
         lastName: lastName,
         email: email,
+        username: username,
         password: hashed_password,
         likedDates: [],
         dates: [],
@@ -78,6 +81,7 @@ export let get = async (id) => {
         _id: user._id.toString(),
         firstName: user.firstName,
         lastName: user.lastName,
+        username: user.username,
         email: user.email,
         password: user.password,
         likedDates: user.likedDates,
@@ -108,6 +112,9 @@ export let update = async (
     id,
     firstName,
     lastName,
+    username,
+    email,
+
     password
 ) => {
     id = helpers.checkId(id, `User (${id})'s Id`)
@@ -118,7 +125,10 @@ export let update = async (
 
     firstName = helpers.checkName(firstName, `User (${id})'s First Name`);
     lastName = helpers.checkName(lastName, `User (${id})'s Last Name`);
-    // email = helpers.checkEmail(email, `User (${id})'s Email`);
+
+    username = helpers.checkAlphanumeric(username, `User (${id})'s Username`);
+    email = helpers.checkEmail(email, `User (${id})'s Email`);
+
     password = helpers.checkPassword(password, `User (${id})'s Password`);
 
     // let userPassHash = user.password;
@@ -130,6 +140,8 @@ export let update = async (
     let updatedUser = {
         firstName: firstName,
         lastName: lastName,
+        username: username,
+        email: email,
         password: password
     }
     let updateInfo = await usersCollection.findOneAndUpdate(

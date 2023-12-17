@@ -94,20 +94,26 @@ export let checkPassword = (password, variableName) => {
     return password;
 };
 
-export let checkTitle = (title, variableName) => {
-    title = checkString(title, variableName);
-    if (title.length < 1) {
+export let checkLocationName = (name, variableName) => {
+    name = checkString(name, variableName);
+    if (name.length < 1) {
         throw `${variableName} must be at least one character long`;
     }
-    if (title.length > 50) {
+    if (name.length > 50) {
         throw `${variableName} must be less than 50 characters long`;
     }
 
-    const eventTitleRegex = /^[a-zA-Z0-9\s'-]+$/;
-    if (!eventTitleRegex.test(title)) {
-        throw `${variableName} (${title}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
+    const eventNameRegex = /^[a-zA-Z0-9\s'-]+$/;
+    if (!eventNameRegex.test(name)) {
+        throw `${variableName} (${name}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
     }
 
+    return name;
+};
+
+export let checkTitle = (title, variableName) => {
+    // essentially the same thing as checkLocationName
+    title = checkLocationName(title, variableName);
     return title;
 };
 
@@ -169,14 +175,14 @@ export let checkEvent = (event, variableName) => {
     if (Object.keys(event).length === 0) {
         throw `${variableName} cannot be an empty object`;
     }
-    if (!event.title) {
-        throw `${variableName} must have a title`;
+    if (!event.name) {
+        throw `${variableName} must have a name`;
     }
     if (!event.location) {
         throw `${variableName} must have a location`;
     }
 
-    event.title = checkTitle(event.title, `${variableName}.title`);
+    event.name = checkLocationName(event.name, `${variableName}.name`);
     event.location = checkString(event.location, `${variableName}.location`);
 
     return event;
@@ -193,12 +199,6 @@ export let checkEventArray = (eventArray, variableName) => {
         eventArray[i] = checkEvent(eventArray[i], `${variableName}[${i}]`);
     }
 
-    return sortEventArrayByTime(eventArray);
+    return eventArray;
 };
 
-export let sortEventArrayByTime = (eventArray) => {
-    eventArray.sort((a, b) => {
-        return a.time - b.time;
-    });
-    return eventArray;
-}

@@ -5,6 +5,7 @@
 //   tags: []
 //   events: [
 //     {
+
 //       name:
 //       location:
 //       description:
@@ -21,7 +22,7 @@
 //     {
 //       username:
 //       comment:
-//       time: 
+//       time:
 //     },
 //     ...
 //   ]
@@ -65,11 +66,8 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
 
     const dateCollection = await dates();
 
-    // get User by ID
-
     const author = await get(userId);
-    const name = author.firstName + author.lastName;
-    const userPicture = author.picture;
+
     //add username
 
     const newDate = {
@@ -79,12 +77,20 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
         likes: 0,
         comments: [],
         creator: {
-            name: name,
-            picture: userPicture,
-            username: name 
-            //add username in user
-        }
+            firstName: author.firstName,
+            lastName: author.lastName,
+            username: author.username,
+            picture: author.picture,
+        },
     };
+
+    newDate.events.forEach((event) => {
+        event.tripAdvisorLocationImages = [];
+        event.tripAdvisorLocationUrl = "";
+        event.tripAdvisorRating = "";
+        event.tripAdvisorRatingImage = "";
+        event.tripAdvisorLocationId = "";
+    });
 
     const insertInfo = await dateCollection.insertOne(newDate);
     if (insertInfo.insertedCount === 0) throw "Could not add date";
