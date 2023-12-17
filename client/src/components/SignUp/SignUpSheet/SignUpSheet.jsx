@@ -36,6 +36,7 @@ const SignupButton = () => {
         id: userCred.user.uid,
         email: userCred.user.email,
         username: userCred.user.displayName,
+        accessToken: userCred.user.accessToken
       }
 
       apiClient.registerUser(user).then((res) => {
