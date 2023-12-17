@@ -7,15 +7,11 @@ const Hero = () => {
     <div className="bg-secondary h-[50vh] flex items-center justify-center overflow-hidden">
       <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
         <div className="md:w-3/5 flex flex-col justify-center">
-          <h1 className="text-5xl font-bold text-white leading-tight mb-6">
-            Lorem ipsum dolor sit amet{" "}
+          <h1 className="text-2xl font-bold text-white leading-tight mb-6">
+          Unforgettable Moments, Seamless Dates.{" "}
           </h1>
           <p className="text-white text-lg mb-6">
-            Lorem ipsum dolor sit amet consectetur. Blandit etiam sed turpis
-            eget feugiat nec tincidunt eget. Cras ornare scelerisque dignissim
-            vel facilisi massa magna in. Pulvinar a sodales neque sed faucibus
-            arcu massa nisi. Praesent eu at eu arcu massa eget. Eget a risus
-            faucibus lorem vitae volutpat suspendisse tempor ut. Ut lorem.
+          Welcome to Swoons, where every date becomes a curated experience! Create and share your perfect moments with ease, as Swoons takes you on a journey of seamless connections. From charming cafes to scenic strolls, craft your ideal date by selecting from a variety of handpicked events and places. Elevate your dating game with Swoons – because extraordinary connections deserve extraordinary experiences. Get ready to embark on unforgettable dates, one Swoon at a time!
           </p>
           <Button className="bg-white text-black w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-white-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
             Learn More
