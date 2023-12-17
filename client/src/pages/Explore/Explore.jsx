@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import PostCard from "@/src/components/PostCard/PostCard";
 import { Input } from "@/components/ui/input";
@@ -14,29 +14,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-const works = [
-    {
-        artist: "Ornella Binni",
-        art: "https://images.unsplash.com/photo-1465869185982-5a1a7522cbcb?auto=format&fit=crop&w=300&q=80",
-        title: "A Cozy Start",
-        description:
-            "This hangout starts you off in a wonderful park, lorem ipsuming all over the place. It’s quite lorem ipsum. So much so, that the whole thing lorem ipsum’d on me and I lorem ipsum’d myself. Very great stuff!",
-    },
-    {
-        artist: "Tom Byrom",
-        art: "https://images.unsplash.com/photo-1548516173-3cabfa4607e9?auto=format&fit=crop&w=300&q=80",
-        title: "A Cozy Middle",
-        description:
-            "This hangout starts you off in a wonderful park, lorem ipsuming all over the place. It’s quite lorem ipsum. So much so, that the whole thing lorem ipsum’d on me and I lorem ipsum’d myself. Very great stuff!",
-    },
-    {
-        artist: "Vladimir Malyavko",
-        art: "https://images.unsplash.com/photo-1494337480532-3725c85fd2ab?auto=format&fit=crop&w=300&q=80",
-        title: "A Cozy End",
-        description:
-            "This hangout starts you off in a wonderful park, lorem ipsuming all over the place. It’s quite lorem ipsum. So much so, that the whole thing lorem ipsum’d on me and I lorem ipsum’d myself. Very great stuff!",
-    },
-];
+import API from "../../services/apiClient";
 
 const propData = {
     _id: {
@@ -82,6 +60,27 @@ const Explore = () => {
     const [inputValue, setInputValue] = useState("");
     const [badges, setBadges] = useState([]);
     const [selectedSort, setSelectedSort] = useState("recent");
+    const [dates, setDates] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true);
+            try {
+                const response = await API.getDates(badges, selectedSort);
+                if (response.data) {
+                    setDates(response.data);
+                } else {
+                    console.error("Failed to fetch dates:", response.error);
+                }
+            } catch (error) {
+                console.error("There was an error fetching the dates:", error);
+            }
+            setIsLoading(false);
+        };
+
+        fetchData();
+    }, [badges, selectedSort]);
 
     const hasSearch = badges.length > 0 ? true : false;
 
@@ -89,11 +88,9 @@ const Explore = () => {
         setInputValue(e.target.value);
     };
 
-    // * This handles ENTER PRESS
     const handleInputKeyPress = (e) => {
         if (
             e.key === "Enter" &&
-            inputValue &&
             inputValue.trim().length > 0 &&
             badges.length < 20
         ) {
@@ -109,11 +106,10 @@ const Explore = () => {
     };
 
     const handleSortChange = (e) => {
-        // TODO: this should handle sorting
         setSelectedSort(e.target.value);
     };
 
-    if (dates.length === 0) {
+    if (isLoading) {
         return <div>Loading...</div>;
     }
 
@@ -161,9 +157,9 @@ const Explore = () => {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="recent">Recent</SelectItem>
-                            <SelectItem value="rating">Rating</SelectItem>
-                            <SelectItem value="recommended">
-                                Recommended
+                            <SelectItem value="likes">Most Likes</SelectItem>
+                            <SelectItem value="comments">
+                                Most Comments
                             </SelectItem>
                         </SelectContent>
                     </Select>

@@ -17,10 +17,13 @@ dotenv.config({ path: path.resolve(__dirname, "../../../client/.env") });
 
 const apiKey = process.env.TRIP_ADVISOR_API_KEY;
 
-//ROUTE TO GET ALL DATES
+// get dates
 router.route("/").get(async (req, res) => {
     try {
-        const dateList = await dateFuncts.getAllDates();
+        const tags = req.query.tags ? req.query.tags.split(",") : [];
+        const sorting = req.query.sorting || "disabled";
+
+        const dateList = await dateFuncts.getAllDates(tags, sorting);
         return res.status(200).json(dateList);
     } catch (e) {
         return res.status(500).json({ error: e });
