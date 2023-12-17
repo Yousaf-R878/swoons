@@ -1,34 +1,3 @@
-// Date:getDate
-// {
-//   id:
-//   title:
-//   tags: []
-//   events: [
-//     {
-
-//       name:
-//       location:
-//       description:
-//       tripAdvisorLocationImage:
-//       tripAdvisorRating:
-//       tripAdvisorRatingImage:
-//       tripAdvisorLocationId:
-//       tripAdvisorLocationUrl:
-//     },
-//     ...
-//   ]
-//   likes:
-//   comments: [
-//     {
-//       username:
-//       comment:
-//       time:
-//     },
-//     ...
-//   ]
-//   timeStamp: //for when date is created
-// }
-
 import * as helpers from "./helpers.js";
 import { dates, users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
@@ -168,3 +137,35 @@ export const removeEventFromDate = async (dateId, eventIndex) => {
 
     return date;
 };
+
+// Date
+// {
+//   _id:
+//   title:
+//   tags: []
+//   events: [
+//     {
+
+//       name:
+//       location:
+//       description:
+//       tripAdvisorLocationImage:
+//       tripAdvisorRating:
+//       tripAdvisorRatingImage:
+//       tripAdvisorLocationId:
+//       tripAdvisorLocationUrl:
+//     },
+//     ...
+//   ]
+//   likes:
+//   comments: [
+//     {
+//       username:
+//       comment:
+//       time:
+//     },
+//     ...
+//   ],
+//   commentsCount:
+//   timeStamp: //for when date is created
+// }
