@@ -32,6 +32,7 @@ const formSchema = z.object({
 const SignupForm = ({ handleLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState(undefined);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
     setShowConfirmPassword(!showConfirmPassword);
@@ -54,12 +55,17 @@ const SignupForm = ({ handleLogin }) => {
         // Signed up
         const user = userCredential.user;
         console.log("yippee", user);
+        let uid = user.uid;
         // ...
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(errorMessage);
+        if (errorMessage === "Firebase: Error (auth/email-already-in-use)."){
+          setError("Email already in use!");
+        } else{
+          setError(errorMessage);
+        }        
         // ..
       });
   }
@@ -182,6 +188,12 @@ const SignupForm = ({ handleLogin }) => {
             Sign Up
           </Button>
         </div>
+        {error && 
+          <div className="flex justify-center">
+            <p>{error}</p>
+          </div>
+        }
+        
         {/* <div className="flex justify-center">
           <span className="text-gray-600 mr-4">
             Don't have an account? {""}
@@ -195,6 +207,7 @@ const SignupForm = ({ handleLogin }) => {
         </div> */}
       </form>
     </Form>
+    
   );
 };
 
