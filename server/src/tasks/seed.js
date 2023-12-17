@@ -62,5 +62,29 @@ try {
     console.error(`Error seeding database: ${e}`);
 }
 
+// try to get all dates
+// try {
+//     const allDates = await dateFuncs.getAllDates();
+//     // print date 1-5
+//     console.log("Printing first five dates:");
+//     for (let i = 0; i < 5; i++) {
+//         console.log(allDates[i]);
+//     }
+// } catch (e) {
+//     console.error(`Error getting all dates: ${e}`);
+// }
+
+// try to get all dates, but with tags 
+// try {
+//     const allDates = await dateFuncs.getAllDates(["adventurous"]);
+//     // print date 1-5
+//     console.log("Printing first five dates with tag food:");
+//     for (let i = 0; i < 5; i++) {
+//         console.log(allDates[i]);
+//     }
+// } catch (e) {
+//     console.error(`Error getting all dates: ${e}`);
+// }
+
 await closeConnection();
 console.log("Done Seeding DB!");

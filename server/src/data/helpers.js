@@ -148,7 +148,7 @@ export let checkTag = (tag, variableName) => {
         throw `${variableName} (${tag}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
     }
 
-    return tag;
+    return tag.toLowerCase();
 };
 
 export let checkTagArray = (tagArray, variableName) => {
@@ -201,4 +201,3 @@ export let checkEventArray = (eventArray, variableName) => {
 
     return eventArray;
 };
-
