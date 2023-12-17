@@ -123,45 +123,7 @@ router.route("/api/:searchTerm").get(async (req, res) => {
     }
 })
 
-//ROUTE FOR ADDING AN EVENT
-// router.route("/:id").patch(async (req, res) => {
-//     let id = req.params.id;
-//     let locId = req.body.locId;
-//     let name = req.body.name;
-//     let description = req.body.description;
-//     let locAddress = req.body.locAddress;
-//     let locImgUrl = req.body.locImgUrl;
-//     let rating = req.body.rating;
-//     let ratingImgUrl = req.body.ratingImgUrl;
-//     let email = req.body.email;
-//     let phone = req.body.phone;
-//     let website = req.body.website;
 
-//     try {
-//         id = helpers.checkId(id, "ID");
-//     } catch (e) {
-//         return res.status(400).json({ error: e });
-//     }
-
-//     try {
-//         let newEvent = await dateFuncts.addEvent(
-//             id,
-//             locId,
-//             name,
-//             description,
-//             locAddress,
-//             locImgUrl,
-//             rating,
-//             ratingImgUrl,
-//             email,
-//             phone,
-//             website
-//         );
-//         return res.status(200).json(newEvent);
-//     } catch (e) {
-//         return res.status(500).json({ error: e });
-//     }
-// });
 
 //ROUTE FOR REMOVING AN EVENT
 router.route("/:id/:locId").delete(async (req, res) => {
