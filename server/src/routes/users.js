@@ -22,6 +22,7 @@ router.route("/signup").post(async (req, res) => {
       .json({ error: "There are no fields in the request body" });
   }
 
+  let uid = userInfo.uid;
   let firstName = userInfo.firstName;
   let lastName = userInfo.lastName;
   let email = userInfo.email;
@@ -29,6 +30,7 @@ router.route("/signup").post(async (req, res) => {
 
   try {
     //VALIDATE FIELDS
+    uid = helpers.checkString(uid, "Uid");
     firstName = helpers.checkName(firstName, "First Name");
     lastName = helpers.checkName(lastName, "Last Name");
     email = helpers.checkEmail(email, "Email");
@@ -44,7 +46,7 @@ router.route("/signup").post(async (req, res) => {
   }
 
   try {
-    let newUser = await userFuncs.create(firstName, lastName, email, password);
+    let newUser = await userFuncs.create(uid, firstName, lastName, email, password);
     return res.status(200).json(newUser);
   } catch (e) {
     return res.status(500).json({ error: e });
@@ -57,7 +59,7 @@ router
     let id = req.params.id;
 
     try {
-      id = helpers.checkId(id, "ID");
+      id = helpers.checkString(id, "ID");
     } catch (e) {
       return res.status(400).json({ error: e });
     }
@@ -78,7 +80,7 @@ router
     let id = req.params.id;
 
     try {
-      id = helpers.checkId(id, "ID");
+      id = helpers.checkString(id, "ID");
     } catch (e) {
       return res.status(400).json({ error: e });
     }
@@ -145,7 +147,7 @@ router
     let id = req.params.id;
 
     try {
-      id = helpers.checkId(id, "ID");
+      id = helpers.checkString(id, "ID");
     } catch (e) {
       return res.status(400).json({ error: e });
     }
@@ -175,7 +177,7 @@ router
     let dateId = req.params.dateId;
 
     try {
-      userId = helpers.checkId(userId, "User ID");
+      userId = helpers.checkString(userId, "User ID");
       dateId = helpers.checkId(dateId, "Date ID");
     } catch (e) {
       return res.status(400).json({ error: e });
@@ -210,7 +212,7 @@ router
     let dateId = req.params.dateId;
 
     try {
-      userId = helpers.checkId(userId, "User Id");
+      userId = helpers.checkString(userId, "User Id");
       dateId = helpers.checkId(dateId, "Date Id");
     } catch (e) {
       return res.status(400).json({ error: e });
@@ -249,7 +251,7 @@ router
     let dateId = req.params.dateId;
 
     try {
-      userId = helpers.checkId(userId, "User Id");
+      userId = helpers.checkString(userId, "User Id");
       dateId = helpers.checkId(dateId, "Date Id");
     } catch (e) {
       return res.status(400).json({ error: e });
@@ -288,7 +290,7 @@ router
     let dateId = req.params.dateId;
 
     try {
-      userId = helpers.checkId(userId, "User Id");
+      userId = helpers.checkString(userId, "User Id");
       dateId = helpers.checkId(dateId, "Date Id");
     } catch (e) {
       return res.status(400).json({ error: e });
