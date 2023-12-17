@@ -5,13 +5,13 @@
 //   tags: []
 //   events: [
 //     {
-//       
 //       title:
 //       location:
 //       description:
 //       tripAdvisorRating:
 //       tripAdvisorRatingImage:
 //       tripAdvisorLocationId:
+//       tripAdvisorLocationImages
 //       tripAdvisorLocationUrl:
 //     },
 //     ...
@@ -65,8 +65,6 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
 
     const dateCollection = await dates();
 
-    // get User by ID
-
     const author = await get(userId);
 
     //add username
@@ -82,8 +80,16 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
             lastName: author.lastName,
             username: author.username,
             picture: author.picture,
-        }
+        },
     };
+
+    newDate.events.forEach((event) => {
+        event.tripAdvisorLocationImages = [];
+        event.tripAdvisorLocationUrl = "";
+        event.tripAdvisorRating = "";
+        event.tripAdvisorRatingImage = "";
+        event.tripAdvisorLocationId = "";
+    });
 
     const insertInfo = await dateCollection.insertOne(newDate);
     if (insertInfo.insertedCount === 0) throw "Could not add date";
