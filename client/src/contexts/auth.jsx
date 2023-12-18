@@ -59,6 +59,7 @@ const AuthorizeProvider = ({ children }) => {
       console.log("User Registered Succesfully!");
     } catch (err) {
       console.error(err);
+      throw(err);
     }
   };
 
