@@ -14,14 +14,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ThumbsUp, MessageCircle, Forward, PencilLine, Edit } from "lucide-react";
+import { ThumbsUp, MessageCircle, Forward } from "lucide-react";
 
 import {
   BsFillArrowLeftCircleFill,
   BsFillArrowRightCircleFill,
 } from "react-icons/bs";
 import { Separator } from "@radix-ui/react-select";
-import EditPost from "../EditPost/EditPost";
 import ViewCardModal from "./ViewCardModal";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
@@ -51,6 +50,7 @@ const Post = ({ date }) => {
             </Badge>
           ))}
         </div>
+
         <h1 className="text-md font-semibold">{date.title}</h1>
         <CardDescription className="text-sm">
           @{date.creator.username}
@@ -71,14 +71,6 @@ const Post = ({ date }) => {
           <MessageCircle className="h-4 w-4" />{" "}
           <span>{date.commentsCount}</span>
         </div>
-        <EditPost date={date}/>
-        <Button
-          as="a"
-          href="link-to-post"
-          className="flex flex-grow items-center justify-center rounded-md bg-secondary transition-colors duration-300 hover:bg-secondary-hover text-white p-2 text-xs"
-        >
-          <Forward className="h-4 w-4" /> <span>View Post</span>
-        </Button>
           
         <Dialog>
           <DialogTrigger>
@@ -92,6 +84,7 @@ const Post = ({ date }) => {
           </DialogTrigger>
           <ViewCardModal date={date} timeStampToDate={timeStampToDate} Carousel={CarouselCmp} />
         </Dialog>
+        
       </CardFooter>
     </Card>
   );
