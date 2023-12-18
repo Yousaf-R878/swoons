@@ -42,6 +42,16 @@ router.route("/").get(async (req, res) => {
     }
 });
 
+router.get("/liked", async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const dates = await dateFuncts.getLikedDatesbyUserId(userId);
+        return res.status(200).json(dates);
+    } catch (e) {
+        return res.status(500).json({ error: e });
+    }
+});
+
 //ROUTE TO GET DATE BY ID
 router.route("/:id").get(async (req, res) => {
     let id = req.params.id;
