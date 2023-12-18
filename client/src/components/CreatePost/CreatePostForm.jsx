@@ -191,6 +191,7 @@ const CreatePostForm = () => {
                   <FormLabel>Location</FormLabel>
                   <FormControl>
                     <Command>
+                      {/* this goofy ahh workaround is required because commandinput cant have a {...field}... lovely */}
                       { form.getValues(`events.${index}.location`) === "" ?
                       <CommandInput placeholder="Look up an event..." 
                       onKeyUp={(e)=> {
@@ -198,12 +199,24 @@ const CreatePostForm = () => {
                       }}
                       />
                       :
-                      <CommandInput placeholder="Look up an event..."
-                      value={form.getValues(`events.${index}.location`)}
-                      onKeyUp={(e)=> {
-                        setSearchTerm(e.target.value);
-                      }}
-                      />
+                      <div className="flex flex-row w-full justify-between">
+                        <CommandInput placeholder="Look up an event..."
+                        value={form.getValues(`events.${index}.location`)}
+                        onKeyUp={(e)=> {
+                          setSearchTerm(e.target.value);
+                        }}
+                        disabled={true}
+                        />
+                        <button
+                        onMouseUp={() => {
+                          form.setValue(`events.${index}.location`, "")
+                          form.setValue(`events.${index}.tripAdvisorLocationId`, "")
+                        }}
+                        className="ml-1"
+                        >
+                        <X size={17} />
+                        </button>
+                      </div>
                       }
                       <CommandList>
                         <CommandEmpty>No results found.</CommandEmpty>

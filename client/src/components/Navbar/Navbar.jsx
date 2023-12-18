@@ -1,21 +1,15 @@
 import { Link } from "react-router-dom";
 import { Boxes } from "lucide-react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import LoginDialog from "../Login/LoginDialog/LoginDialog";
 import { Button } from "@/components/ui/button";
 import SignUpSheet from "../SignUp/SignUpSheet/SignUpSheet";
+import { AuthorizeContext } from "@/src/contexts/auth";
+import { useContext } from "react";
 
 const Navbar = () => {
+  const { logoutUser } = useContext(AuthorizeContext);
   return (
     <nav className="bg-white p-4 text-white flex justify-between items-center">
       <div className="flex items-center">
@@ -52,6 +46,15 @@ const Navbar = () => {
           </SheetTrigger>
           <SignUpSheet />
         </Sheet>
+        <Button
+          variant="outline"
+          className="transition delay-100 duration-300 ease-in-out ml-4 font-semibold text-white border-primary border-2 text-lg py-2 px-4 bg-primary hover:bg-primary-hover hover:text-white min-w-[100px] max-w-xs"
+          onClick={() => {
+            logoutUser();
+          }}
+        >
+          Logout
+        </Button>
       </div>
     </nav>
   );
