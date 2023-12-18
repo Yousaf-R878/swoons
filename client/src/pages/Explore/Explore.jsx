@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import PostCard from "@/src/components/PostCard/PostCard";
+import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
+
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
@@ -29,6 +31,7 @@ const Explore = () => {
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
+            await new Promise((r) => setTimeout(r, 100));
             try {
                 const response = await API.getDates(
                     tags,
@@ -93,9 +96,6 @@ const Explore = () => {
         setSelectedSort(newValue);
     };
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <>
@@ -154,11 +154,15 @@ const Explore = () => {
                     </Select>
                 </div>
                 <div className="flex justify-center">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
-                        {dates.map((date) => (
-                            <PostCard key={date._id} date={date} />
-                        ))}
-                    </div>
+                    {isLoading ? (
+                        <LoadingProgress />
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
+                            {dates.map((date) => (
+                                <PostCard key={date._id} date={date} />
+                            ))}
+                        </div>
+                    )}
                 </div>
                 <div className="mt-4 flex items-center justify-center space-x-1">
                     <button

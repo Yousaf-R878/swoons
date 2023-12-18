@@ -8,19 +8,22 @@ import LoginDialog from "../../components/Login/LoginDialog/LoginDialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import "./Landing.css";
 
+import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
+
 import API from "../../services/apiClient";
 
 const Landing = () => {
     const [mostLikedDates, setMostLikedDates] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchMostLikedDates = async () => {
             setIsLoading(true);
+            await new Promise((r) => setTimeout(r, 100));
             try {
                 const response = await API.getDates([], "likes");
                 if (response.data) {
-                    setMostLikedDates(response.data.slice(0, 5)); // Take the top 5 most liked dates
+                    setMostLikedDates(response.data.dates.slice(0, 5)); // Take the top 5 most liked dates
                 } else {
                     console.error("Failed to fetch dates:", response.error);
                 }
@@ -40,20 +43,20 @@ const Landing = () => {
                 <h2 className="text-4xl text-center font-bold">
                     Recent Activity
                 </h2>
-                <div className="relative blur-endings my-8 mx-4">
+                <div className="relative my-8 mx-4">
                     <div className="flex justify-center items-center">
-                        <ScrollArea className="w-full whitespace-nowrap rounded-md border-2">
-                            <div className="flex w-max space-x-4 p-4">
-                                {isLoading ? (
-                                    <p>Loading...</p>
-                                ) : (
-                                    mostLikedDates.map((date) => (
-                                        <PostCard key={date._id} date={date} />
-                                    ))
-                                )}
-                            </div>
-                            <ScrollBar orientation="horizontal" />
-                        </ScrollArea>
+                        {isLoading ? (
+                            <LoadingProgress />
+                        ) : (
+                            <ScrollArea className="w-full whitespace-nowrap rounded-md border-2">
+                                <div className="flex w-max space-x-4 p-4">
+                                    {mostLikedDates.map((date) => (
+                                    <PostCard key={date._id} date={date} />
+                                    ))}
+                                </div>
+                                <ScrollBar orientation="horizontal" />
+                            </ScrollArea>
+                        )}
                     </div>
                 </div>
                 <Dialog>
