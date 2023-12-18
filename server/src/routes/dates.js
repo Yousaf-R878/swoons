@@ -172,7 +172,7 @@ router.route("/api/:searchTerm").get(async (req, res) => {
             .catch(function (error) {
                 return res.status(error.code).json({ message: error.message });
             });
-        //data = data.splice(0, 5);
+        data = data.splice(0, 5);
         for (let loc of data) {
             loc["location"] = loc.address_obj.address_string;
             loc["tripAdvisorLocationId"] = loc.location_id;
