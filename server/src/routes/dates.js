@@ -80,8 +80,12 @@ router.route("/").post(async (req, res) => {
                 let locPhotos = await axios.get(
                     `https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/photos?language=en&key=${apiKey}`
                 );
-                eventArray[i]["tripAdvisorLocationImages"] =
-                    locPhotos.data.data[0].images.medium.url;
+                locPhotos.data.data = locPhotos.data.data.splice(0, 3);
+                eventArray[i]["tripAdvisorLocationImages"] = [];
+                for(let photo of locPhotos.data.data){
+                    eventArray[i]["tripAdvisorLocationImages"].push(photo.images.medium.url)
+                    //locPhotos.data.data[0].images.medium.url;
+                }
                 //TODO: ADD SOME LOGIC IF NO PHOTOS
             } catch (e) {
                 return res.status(404).json({ error: e });
@@ -90,12 +94,13 @@ router.route("/").post(async (req, res) => {
                 let locInfo = await axios.get(
                     `https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/details?key=${apiKey}`
                 );
+                console.log(locInfo.data);
                 eventArray[i]["tripAdvisorLocationUrl"] =
-                    locInfo.data.data.web_url;
+                    locInfo.data.web_url;
                 eventArray[i]["tripAdvisorLocationRating"] =
-                    locInfo.data.data.rating;
+                    locInfo.data.rating;
                 eventArray[i]["tripAdvisorLocationRatingImage"] =
-                    locInfo.data.data.rating_image_url;
+                    locInfo.data.rating_image_url;
             } catch (e) {
                 return res.status(404).json({ error: e });
             }
@@ -157,7 +162,14 @@ router.route("/api/:searchTerm").get(async (req, res) => {
             .catch(function (error) {
                 return res.status(error.code).json({ message: error.message });
             });
-        data = data.splice(0, 5);
+        //data = data.splice(0, 5);
+        for (let loc of data) {
+            loc["location"] = loc.address_obj.address_string;
+            loc["tripAdvisorLocationId"] = loc.location_id;
+            delete loc.address_obj;
+            delete loc.location_id;
+            console.log(loc)
+        }
         return res.status(200).json(data);
     } catch (e) {
         return res.status(404).json({ error: e });
