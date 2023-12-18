@@ -9,12 +9,14 @@
             {
                 "name": "Margaritaville Resort Times Square",
                 "location": "560 7th Ave, New York City, NY 10018",
-                "tripAdvisorLocationId": "23462501"
+                "tripAdvisorLocationId": "23462501",
+                "description": "This is a description"
             },
             {
                 "name": "Statue of Liberty",
                 "location": "Route de Strasbourg, 68000, Colmar France",
-                "tripAdvisorLocationId": "1806061"
+                "tripAdvisorLocationId": "1806061",
+                "description": "This is a description"
             }
         ]
     },
@@ -28,12 +30,14 @@
             {
                 "name": "Paris Las Vegas",
                 "location": "3655 S Las Vegas Blvd, Paradise, NV 89109-4345",
-                "tripAdvisorLocationId": "143336"
+                "tripAdvisorLocationId": "143336",
+                "description": "This is a description"
             },
             {
                 "name": "Statue of Liberty & Ellis Island Tour: All Options",
                 "location": "New York City, NY",
-                "tripAdvisorLocationId": "11451132"
+                "tripAdvisorLocationId": "11451132",
+                "description": "This is a description"
             }
         ]
     },
@@ -47,12 +51,14 @@
             {
                 "name": "Statue of Liberty",
                 "location": "Liberty Island, New York City, NY 10004",
-                "tripAdvisorLocationId": "103887"
+                "tripAdvisorLocationId": "103887",
+                "description": "This is a description"
             },
             {
                 "name": "Melia Las Dunas",
                 "location": "52610 Cuba",
-                "tripAdvisorLocationId": "637255"
+                "tripAdvisorLocationId": "637255",
+                "description": "This is a description"
             }
         ]
     },
@@ -66,12 +72,14 @@
             {
                 "name": "Thiruvalluvar Statue",
                 "location": "Kanyakumari India",
-                "tripAdvisorLocationId": "1373129"
+                "tripAdvisorLocationId": "1373129",
+                "description": "This is a description"
             },
             {
                 "name": "The Westin New York at Times Square",
                 "location": "270 West 43rd Street At 8th Avenue, New York City, NY 10036-3912",
-                "tripAdvisorLocationId": "249712"
+                "tripAdvisorLocationId": "249712",
+                "description": "This is a description"
             }
         ]
     },
@@ -85,12 +93,14 @@
             {
                 "name": "Las Brisas Huatulco",
                 "location": "Lot 1 Blvd. Tangolunda Bah\u00eda de Tangolunda, Huatulco 70989 Mexico",
-                "tripAdvisorLocationId": "268104"
+                "tripAdvisorLocationId": "268104",
+                "description": "This is a description"
             },
             {
                 "name": "W New York - Times Square",
                 "location": "1567 Broadway, New York City, NY 10036-1517",
-                "tripAdvisorLocationId": "235238"
+                "tripAdvisorLocationId": "235238",
+                "description": "This is a description"
             }
         ]
     },
@@ -104,12 +114,14 @@
             {
                 "name": "La Casa de La Playa by Hoteles Xcaret",
                 "location": "Carr. Chetumal Juarez Mexico km 282, Lot 023 2, Playa del Carmen 77710 Mexico",
-                "tripAdvisorLocationId": "23651944"
+                "tripAdvisorLocationId": "23651944",
+                "description": "This is a description"
             },
             {
                 "name": "Buddha Statue",
                 "location": "Hussain Sagar Khairatabad, Hyderabad 500029 India",
-                "tripAdvisorLocationId": "6496303"
+                "tripAdvisorLocationId": "6496303",
+                "description": "This is a description"
             }
         ]
     },
@@ -123,12 +135,14 @@
             {
                 "name": "Time Out Market Lisboa",
                 "location": "Avenida 24 de Julho, 49 Mercado da Ribeira, Lisbon 1200-481 Portugal",
-                "tripAdvisorLocationId": "10769801"
+                "tripAdvisorLocationId": "10769801",
+                "description": "This is a description"
             },
             {
                 "name": "Los Angeles",
                 "location": "Los Angeles, CA",
-                "tripAdvisorLocationId": "32655"
+                "tripAdvisorLocationId": "32655",
+                "description": "This is a description"
             }
         ]
     },
@@ -142,12 +156,14 @@
             {
                 "name": "Rocky Statue",
                 "location": "2600 Benjamin Franklin Pkwy Center City Phila, Philadelphia, PA 19130-2302",
-                "tripAdvisorLocationId": "275364"
+                "tripAdvisorLocationId": "275364",
+                "description": "This is a description"
             },
             {
                 "name": "Hilton New York Times Square",
                 "location": "234 West 42nd Street, New York City, NY 10036",
-                "tripAdvisorLocationId": "208453"
+                "tripAdvisorLocationId": "208453",
+                "description": "This is a description"
             }
         ]
     },
@@ -161,12 +177,14 @@
             {
                 "name": "Sandals Regency La Toc",
                 "location": "La Toc Road, Castries St. Lucia",
-                "tripAdvisorLocationId": "214167"
+                "tripAdvisorLocationId": "214167",
+                "description": "This is a description"
             },
             {
                 "name": "Buddha Statue",
                 "location": "Hussain Sagar Khairatabad, Hyderabad 500029 India",
-                "tripAdvisorLocationId": "6496303"
+                "tripAdvisorLocationId": "6496303",
+                "description": "This is a description"
             }
         ]
     },
@@ -180,12 +198,14 @@
             {
                 "name": "Las Brisas Huatulco",
                 "location": "Lot 1 Blvd. Tangolunda Bah\u00eda de Tangolunda, Huatulco 70989 Mexico",
-                "tripAdvisorLocationId": "268104"
+                "tripAdvisorLocationId": "268104",
+                "description": "This is a description"
             },
             {
                 "name": "La Casa de La Playa by Hoteles Xcaret",
                 "location": "Carr. Chetumal Juarez Mexico km 282, Lot 023 2, Playa del Carmen 77710 Mexico",
-                "tripAdvisorLocationId": "23651944"
+                "tripAdvisorLocationId": "23651944",
+                "description": "This is a description"
             }
         ]
     },
@@ -199,12 +219,14 @@
             {
                 "name": "Melia Las Americas",
                 "location": "Crta. De Las Morlas, Varadero 42200 Cuba",
-                "tripAdvisorLocationId": "151643"
+                "tripAdvisorLocationId": "151643",
+                "description": "This is a description"
             },
             {
                 "name": "La Casa de La Playa by Hoteles Xcaret",
                 "location": "Carr. Chetumal Juarez Mexico km 282, Lot 023 2, Playa del Carmen 77710 Mexico",
-                "tripAdvisorLocationId": "23651944"
+                "tripAdvisorLocationId": "23651944",
+                "description": "This is a description"
             }
         ]
     },
@@ -218,12 +240,14 @@
             {
                 "name": "Paris Las Vegas",
                 "location": "3655 S Las Vegas Blvd, Paradise, NV 89109-4345",
-                "tripAdvisorLocationId": "143336"
+                "tripAdvisorLocationId": "143336",
+                "description": "This is a description"
             },
             {
                 "name": "Las Brisas Huatulco",
                 "location": "Lot 1 Blvd. Tangolunda Bah\u00eda de Tangolunda, Huatulco 70989 Mexico",
-                "tripAdvisorLocationId": "268104"
+                "tripAdvisorLocationId": "268104",
+                "description": "This is a description"
             }
         ]
     },
@@ -237,12 +261,14 @@
             {
                 "name": "Statue of Liberty",
                 "location": "Liberty Island, New York City, NY 10004",
-                "tripAdvisorLocationId": "103887"
+                "tripAdvisorLocationId": "103887",
+                "description": "This is a description"
             },
             {
                 "name": "Melia Las Dunas",
                 "location": "52610 Cuba",
-                "tripAdvisorLocationId": "637255"
+                "tripAdvisorLocationId": "637255",
+                "description": "This is a description"
             }
         ]
     },
@@ -256,12 +282,14 @@
             {
                 "name": "Margaritaville Resort Times Square",
                 "location": "560 7th Ave, New York City, NY 10018",
-                "tripAdvisorLocationId": "23462501"
+                "tripAdvisorLocationId": "23462501",
+                "description": "This is a description"
             },
             {
                 "name": "Molly Malone Statue",
                 "location": "Suffolk Street, Dublin Ireland",
-                "tripAdvisorLocationId": "216332"
+                "tripAdvisorLocationId": "216332",
+                "description": "This is a description"
             }
         ]
     },
@@ -275,12 +303,14 @@
             {
                 "name": "Paris Las Vegas",
                 "location": "3655 S Las Vegas Blvd, Paradise, NV 89109-4345",
-                "tripAdvisorLocationId": "143336"
+                "tripAdvisorLocationId": "143336",
+                "description": "This is a description"
             },
             {
                 "name": "Bellagio Las Vegas",
                 "location": "3600 Las Vegas Blvd S, Las Vegas, NV 89109-4303",
-                "tripAdvisorLocationId": "91703"
+                "tripAdvisorLocationId": "91703",
+                "description": "This is a description"
             }
         ]
     },
@@ -294,12 +324,14 @@
             {
                 "name": "Rocky Statue",
                 "location": "2600 Benjamin Franklin Pkwy Center City Phila, Philadelphia, PA 19130-2302",
-                "tripAdvisorLocationId": "275364"
+                "tripAdvisorLocationId": "275364",
+                "description": "This is a description"
             },
             {
                 "name": "Bellagio Las Vegas",
                 "location": "3600 Las Vegas Blvd S, Las Vegas, NV 89109-4303",
-                "tripAdvisorLocationId": "91703"
+                "tripAdvisorLocationId": "91703",
+                "description": "This is a description"
             }
         ]
     },
@@ -313,12 +345,14 @@
             {
                 "name": "Las Brisas Huatulco",
                 "location": "Lot 1 Blvd. Tangolunda Bah\u00eda de Tangolunda, Huatulco 70989 Mexico",
-                "tripAdvisorLocationId": "268104"
+                "tripAdvisorLocationId": "268104",
+                "description": "This is a description"
             },
             {
                 "name": "Thiruvalluvar Statue",
                 "location": "Kanyakumari India",
-                "tripAdvisorLocationId": "1373129"
+                "tripAdvisorLocationId": "1373129",
+                "description": "This is a description"
             }
         ]
     },
@@ -332,12 +366,14 @@
             {
                 "name": "Times Square",
                 "location": "Broadway, New York City, NY 10036",
-                "tripAdvisorLocationId": "110145"
+                "tripAdvisorLocationId": "110145",
+                "description": "This is a description"
             },
             {
                 "name": "Time Traveller",
                 "location": "144 - C/1 Kirloskar Rd Sai Vishram Business Hotel, Ground Floor, Bengaluru 560100 India",
-                "tripAdvisorLocationId": "1389538"
+                "tripAdvisorLocationId": "1389538",
+                "description": "This is a description"
             }
         ]
     },
@@ -351,12 +387,14 @@
             {
                 "name": "Molly Malone Statue",
                 "location": "Suffolk Street, Dublin Ireland",
-                "tripAdvisorLocationId": "216332"
+                "tripAdvisorLocationId": "216332",
+                "description": "This is a description"
             },
             {
                 "name": "Los Angeles",
                 "location": "Los Angeles, CA",
-                "tripAdvisorLocationId": "32655"
+                "tripAdvisorLocationId": "32655",
+                "description": "This is a description"
             }
         ]
     },
@@ -370,12 +408,14 @@
             {
                 "name": "W New York - Times Square",
                 "location": "1567 Broadway, New York City, NY 10036-1517",
-                "tripAdvisorLocationId": "235238"
+                "tripAdvisorLocationId": "235238",
+                "description": "This is a description"
             },
             {
                 "name": "La Casa de La Playa by Hoteles Xcaret",
                 "location": "Carr. Chetumal Juarez Mexico km 282, Lot 023 2, Playa del Carmen 77710 Mexico",
-                "tripAdvisorLocationId": "23651944"
+                "tripAdvisorLocationId": "23651944",
+                "description": "This is a description"
             }
         ]
     }

@@ -6,12 +6,14 @@
             {
                 "name": "Margaritaville Resort Times Square",
                 "location": "560 7th Ave, New York City, NY 10018",
-                "tripAdvisorLocationId": "23462501"
+                "tripAdvisorLocationId": "23462501",
+                "description": "This is a description"
             },
             {
                 "name": "Statue of Liberty",
                 "location": "Route de Strasbourg, 68000, Colmar France",
-                "tripAdvisorLocationId": "1806061"
+                "tripAdvisorLocationId": "1806061",
+                "description": "This is a description"
             }
         ]
     },
@@ -22,12 +24,14 @@
             {
                 "name": "Paris Las Vegas",
                 "location": "3655 S Las Vegas Blvd, Paradise, NV 89109-4345",
-                "tripAdvisorLocationId": "143336"
+                "tripAdvisorLocationId": "143336",
+                "description": "This is a description"
             },
             {
                 "name": "Statue of Liberty & Ellis Island Tour: All Options",
                 "location": "New York City, NY",
-                "tripAdvisorLocationId": "11451132"
+                "tripAdvisorLocationId": "11451132",
+                "description": "This is a description"
             }
         ]
     }
