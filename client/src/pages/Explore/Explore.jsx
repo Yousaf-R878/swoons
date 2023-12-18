@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import PostCard from "@/src/components/PostCard/PostCard";
+import Post from "@/src/components/PostCard/Post";
 import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
 
 import { Input } from "@/components/ui/input";
@@ -159,7 +160,7 @@ const Explore = () => {
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
                             {dates.map((date) => (
-                                <PostCard key={date._id} date={date} />
+                                <Post key={date._id} date={date} />
                             ))}
                         </div>
                     )}
