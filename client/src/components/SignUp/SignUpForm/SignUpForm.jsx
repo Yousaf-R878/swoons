@@ -78,6 +78,7 @@ const formSchema = z
 const SignupForm = () => {
   const { registerUser } = useContext(AuthorizeContext);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(undefined);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
@@ -116,6 +117,11 @@ const SignupForm = () => {
     } catch (e) {
       console.log("Error registering user");
       console.error(e);
+      if (e.message == "Firebase: Error (auth/email-already-in-use)."){
+        setError('That email address is already in use');
+      } else{
+        setError(e.message);
+      }
     }
   };
 
@@ -249,6 +255,8 @@ const SignupForm = () => {
             Sign Up
           </Button>
         </div>
+        {error &&
+        <div className="flex justify-center">{error}</div>}
       </form>
     </Form>
   );
