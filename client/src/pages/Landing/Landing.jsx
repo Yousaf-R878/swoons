@@ -9,8 +9,6 @@ import LoginDialog from "../../components/Login/LoginDialog/LoginDialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import "./Landing.css";
 
-import Post from "@/src/components/PostCard/Post";
-
 import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
 
 import API from "../../services/apiClient";
@@ -38,29 +36,22 @@ const Landing = () => {
     fetchMostLikedDates();
   }, []);
 
-    return (
-        <>
-            <Navbar />
-            <Hero />
-            <div className="my-8">
-                <h2 className="text-4xl text-center font-bold">
-                    Recent Activity
-                </h2>
-                <div className="relative my-8 mx-4">
-                    <div className="flex justify-center items-center">
-                        {isLoading ? (
-                            <LoadingProgress />
-                        ) : (
-                            <ScrollArea className="w-full whitespace-nowrap rounded-md border-2">
-                                <div className="flex w-max space-x-4 p-4">
-                                    {mostLikedDates.map((date) => (
-                                        <Post key={date._id} date={date} />
-                                    ))}
-                                </div>
-                                <ScrollBar orientation="horizontal" />
-                            </ScrollArea>
-                        )}
-                    </div>
+  return (
+    <>
+      <Navbar />
+      <Hero />
+      <div className="my-8">
+        <h2 className="text-4xl text-center font-bold">Recent Activity</h2>
+        <div className="relative my-8 mx-4">
+          <div className="flex justify-center items-center">
+            {isLoading ? (
+              <LoadingProgress />
+            ) : (
+              <ScrollArea className="w-full whitespace-nowrap rounded-md border-2">
+                <div className="flex w-max space-x-4 p-4">
+                  {mostLikedDates.map((date) => (
+                    <Post key={date._id} date={date} />
+                  ))}
                 </div>
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
