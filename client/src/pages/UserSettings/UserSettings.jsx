@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import AWS from "aws-sdk";
+import { AuthorizeContext } from "../../contexts/auth.jsx";
+import { useContext } from "react";
 
 import NavbarExplore from "@/src/components/Navbar/NavbarExplore";
 
@@ -49,7 +52,11 @@ const timeStampToDate = (timeStamp) => {
 };
 
 const UserSettings = () => {
+    const { authState, initialized } = useContext(AuthorizeContext);
+    console.log(authState);
+    console.log(initialized);
     const [user, setUser] = useState(fakeUser);
+    const [file, setFile] = useState(null);
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -62,6 +69,61 @@ const UserSettings = () => {
             bio: fakeUser.bio,
         },
     });
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setFile(file);
+    }
+
+    const uploadFile = async () => {
+        if (!file) {
+            return;
+        } else {
+            //S3 Bucket Name
+            const S3_BUCKET = "swoons-photos";2
+
+            //Bucket Region
+            const REGION = "us-east-1";
+
+            //Authenticate with AWS
+            AWS.config.update({
+                accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY,
+                secretAccessKey: import.meta.env.VITE_AWS_SECRET_KEY,
+            });
+
+            //Initialize S3 Bucket Object
+            const s3 = new AWS.S3({
+                params: { Bucket: S3_BUCKET },
+                region: REGION,
+            });
+
+            //File params
+            const params = {
+                Bucket: S3_BUCKET,
+                Key: file.name,
+                Body: file,
+            };
+
+            let upload = s3
+                .putObject(params)
+                .on("httpUploadProgress", (evt) => {
+                    // File uploading progress
+                    console.log(
+                    "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
+                    );
+                })
+                .promise();
+
+            await upload.then((err, data) => {
+                console.log(err);
+                console.log(data);
+                console.log(`https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`)
+                // Fille successfully uploaded
+                alert("File uploaded successfully.");
+                setFile(null);
+                });
+        }
+    }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -91,7 +153,8 @@ const UserSettings = () => {
                             </AvatarFallback>
                         </Avatar>
                     </div>
-                    <Button className="mb-2">Change Picture</Button>
+                    <input type="file" onChange={handleFileChange} />
+                    <Button className="mb-2" onClick={uploadFile} >Change Picture</Button>
                     <Button variant="danger">Delete Picture</Button>
                     <p className="text-gray-600 text-xs">
                         Your account was created on{" "}
