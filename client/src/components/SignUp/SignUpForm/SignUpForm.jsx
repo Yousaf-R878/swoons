@@ -16,54 +16,67 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { AuthorizeContext } from "@/src/contexts/auth";
+import { useContext } from "react";
 
-const formSchema = z.object({
-  firstName: z
-    .string()
-    .min(2, { message: "First name must be at least 2 characters long" })
-    .max(50, { message: "First name must be less than 50 characters long" })
-    .regex(/^[a-zA-Z'-]+$/, { message: "Invalid first name format" }),
-  lastName: z
-    .string()
-    .min(2, { message: "Last name must be at least 2 characters long" })
-    .max(50, { message: "Last name must be less than 50 characters long" })
-    .regex(/^[a-zA-Z'-]+$/, { message: "Invalid last name format" }),
-  email: z.string().email({ message: "Invalid email address." }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters long" })
-    .regex(/(?=.*[a-z])/, {
-      message: "Password must contain at least one lowercase letter",
-    })
-    .regex(/(?=.*[A-Z])/, {
-      message: "Password must contain at least one uppercase letter",
-    })
-    .regex(/(?=.*[0-9])/, {
-      message: "Password must contain at least one number",
-    })
-    .regex(/(?=.*[!@#$%^&*])/, {
-      message: "Password must contain at least one symbol (!@#$%^&*)",
-    }),
-  confirmPassword: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters long" })
-    .regex(/(?=.*[a-z])/, {
-      message: "Password must contain at least one lowercase letter",
-    })
-    .regex(/(?=.*[A-Z])/, {
-      message: "Password must contain at least one uppercase letter",
-    })
-    .regex(/(?=.*[0-9])/, {
-      message: "Password must contain at least one number",
-    })
-    .regex(/(?=.*[!@#$%^&*])/, {
-      message: "Password must contain at least one symbol (!@#$%^&*)",
-    }),
-});
+const formSchema = z
+  .object({
+    firstName: z
+      .string()
+      .min(2, { message: "First name must be at least 2 characters long" })
+      .max(50, { message: "First name must be less than 50 characters long" })
+      .regex(/^[a-zA-Z'-]+$/, { message: "Invalid first name format" }),
+    lastName: z
+      .string()
+      .min(2, { message: "Last name must be at least 2 characters long" })
+      .max(50, { message: "Last name must be less than 50 characters long" })
+      .regex(/^[a-zA-Z'-]+$/, { message: "Invalid last name format" }),
+    email: z.string().email({ message: "Invalid email address." }),
+    username: z
+      .string()
+      .min(3, { message: "Username must be at least 2 characters long" })
+      .max(20, { message: "Username must be less than 20 characters long" })
+      .regex(/^[a-z0-9]+$/i, { message: "Invalid username format" }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long" })
+      .regex(/(?=.*[a-z])/, {
+        message: "Password must contain at least one lowercase letter",
+      })
+      .regex(/(?=.*[A-Z])/, {
+        message: "Password must contain at least one uppercase letter",
+      })
+      .regex(/(?=.*[0-9])/, {
+        message: "Password must contain at least one number",
+      })
+      .regex(/(?=.*[!@#$%^&*])/, {
+        message: "Password must contain at least one symbol (!@#$%^&*)",
+      }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long" })
+      .regex(/(?=.*[a-z])/, {
+        message: "Password must contain at least one lowercase letter",
+      })
+      .regex(/(?=.*[A-Z])/, {
+        message: "Password must contain at least one uppercase letter",
+      })
+      .regex(/(?=.*[0-9])/, {
+        message: "Password must contain at least one number",
+      })
+      .regex(/(?=.*[!@#$%^&*])/, {
+        message: "Password must contain at least one symbol (!@#$%^&*)",
+      }),
+  })
+  .refine(
+    (schema) => {
+      return schema.password === schema.confirmPassword;
+    },
+    { message: "Passwords must match", path: ["confirmPassword"] }
+  );
 
-const SignupForm = ({ handleLogin }) => {
+const SignupForm = () => {
+  const { registerUser } = useContext(AuthorizeContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -75,32 +88,40 @@ const SignupForm = ({ handleLogin }) => {
       firstName: "",
       lastName: "",
       email: "",
+      username: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  function registerUser({ email, password }) {
-    console.log(email, password);
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed up
-        const user = userCredential.user;
-        console.log("yippee", user);
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorMessage);
-        // ..
+  const handleRegister = async () => {
+    console.log("Registering user...");
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        username,
+        password,
+        confirmPassword,
+      } = form.getValues();
+      await registerUser({
+        firstName,
+        lastName,
+        email,
+        username,
+        password,
+        confirmPassword,
       });
-  }
+    } catch (e) {
+      console.log("Error registering user");
+      console.error(e);
+    }
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(registerUser)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleRegister)} className="space-y-8">
         <FormField
           control={form.control}
           name="firstName"
@@ -135,6 +156,19 @@ const SignupForm = ({ handleLogin }) => {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input placeholder="example@email.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="johndoe" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -207,7 +241,6 @@ const SignupForm = ({ handleLogin }) => {
         {/* <FormDescription>
           
         </FormDescription> */}
-        {/* <DialogFooter></DialogFooter> */}
         <div className="flex justify-center">
           <Button
             type="submit"
@@ -216,17 +249,6 @@ const SignupForm = ({ handleLogin }) => {
             Sign Up
           </Button>
         </div>
-        {/* <div className="flex justify-center">
-          <span className="text-gray-600 mr-4">
-            Don't have an account? {""}
-            <Link
-              href="/signup"
-              className="text-secondary hover:text-secondary-hover"
-            >
-              Sign up
-            </Link>
-          </span>
-        </div> */}
       </form>
     </Form>
   );

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import * as z from "zod";
 import {
   Form,
@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { useState } from "react";
+import { AuthorizeContext } from "@/src/contexts/auth";
+import { useContext } from "react";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -23,7 +25,9 @@ const formSchema = z.object({
   password: z.string().min(1, { message: "Password required" }),
 });
 
-const LoginForm = ({ handleLogin }) => {
+const LoginForm = () => {
+  const { loginUser } = useContext(AuthorizeContext);
+  const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const form = useForm({
@@ -33,6 +37,15 @@ const LoginForm = ({ handleLogin }) => {
       password: "",
     },
   });
+
+  const handleLogin = async () => {
+    try {
+      const { email, password } = form.getValues();
+      await loginUser({ email, password });
+    } catch (e) {
+      setError("Invalid email or password.");
+    }
+  };
 
   return (
     <Form {...form}>
@@ -82,6 +95,7 @@ const LoginForm = ({ handleLogin }) => {
             </FormItem>
           )}
         />
+        {error ? <FormMessage>{error}</FormMessage> : null}
         <div className="flex justify-center">
           <Button
             type="submit"

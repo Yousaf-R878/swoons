@@ -1,13 +1,12 @@
 import { Navigate } from "react-router-dom";
-import { AuthorizeContext } from "../../contexts/authUser";
+import { AuthorizeContext } from "../../contexts/auth";
 import { useContext } from "react";
 
 const AuthRoute = ({ children }) => {
-  const { authState, initialized } = useContext(AuthorizeContext);
+  const { initialized, currentUser } = useContext(AuthorizeContext);
   if (!initialized) return null;
 
-  if (initialized && !authState.isAuthenticated)
-    return <Navigate to="/" replace />;
+  if (initialized && !currentUser) return <Navigate to="/" replace />;
 
   return <>{children}</>;
 };

@@ -27,4 +27,6 @@ dist-ssr
 *.lock
 .env
 
+serviceAccountKey.json
+
 config/settings.js
