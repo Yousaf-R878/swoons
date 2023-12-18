@@ -61,7 +61,6 @@ const CreatePostForm = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const inputRef = useRef(null);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -69,10 +68,8 @@ const CreatePostForm = () => {
       return;
     }
     const delayDebounceFn = setTimeout(() => {
-      console.log(searchTerm)
       // Send Axios request here
       apiClient.getEvents(searchTerm).then(({ data }) => {
-        console.log(data);
         const results = Array.isArray(data) ? data : [];
         setSearchResults(results);
       }).catch((error) => {
@@ -214,7 +211,6 @@ const CreatePostForm = () => {
                               onMouseUp={() => {
                                 form.setValue(`events.${index}.location`, result.name);
                                 form.setValue(`events.${index}.tripAdvisorLocationId`, result.tripAdvisorLocationId);
-                                console.log(form.getValues(`events`));
                                 setSearchTerm("");
                               }}
                             >
