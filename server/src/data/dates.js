@@ -88,11 +88,10 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
     };
 
     newDate.events.forEach((event) => {
-        event.tripAdvisorLocationImages = [];
-        event.tripAdvisorLocationUrl = "";
-        event.tripAdvisorRating = "";
-        event.tripAdvisorRatingImage = "";
-        event.tripAdvisorLocationId = "";
+        event.tripAdvisorLocationImages = event.tripAdvisorLocationImages || [];
+        event.tripAdvisorLocationUrl = event.tripAdvisorLocationUrl  || "";
+        event.tripAdvisorLocationRating = event.tripAdvisorLocationRating || "";
+        event.tripAdvisorLocationRatingImage = event.tripAdvisorLocationRatingImage || "";
     });
 
     const insertInfo = await dateCollection.insertOne(newDate);
