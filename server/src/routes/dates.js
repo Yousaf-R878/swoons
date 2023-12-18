@@ -98,7 +98,8 @@ router.route("/").post(async (req, res) => {
                 }
                 //TODO: ADD SOME LOGIC IF NO PHOTOS
             } catch (e) {
-                return res.status(404).json({ error: e });
+                // return res.status(404).json({ error: e });
+                eventArray[i]["tripAdvisorLocationImages"] = [];
             }
             try {
                 let locInfo = await axios.get(
@@ -112,7 +113,10 @@ router.route("/").post(async (req, res) => {
                 eventArray[i]["tripAdvisorLocationRatingImage"] =
                     locInfo.data.rating_image_url;
             } catch (e) {
-                return res.status(404).json({ error: e });
+                // return res.status(404).json({ error: e });
+                eventArray[i]["tripAdvisorLocationUrl"] = "";
+                eventArray[i]["tripAdvisorLocationRating"] = "";
+                eventArray[i]["tripAdvisorLocationRatingImage"] = "";
             }
         }
         //drjkkbn

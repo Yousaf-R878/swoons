@@ -39,10 +39,10 @@ try {
             console.error(`Error creating user ${userData.username}: ${e}`);
         }
     }
-
+   
     // Read dates from JSON file and create them with user IDs
     const datesData = JSON.parse(
-        fs.readFileSync(path.join(__dirname, "dates.json"), "utf-8")
+        fs.readFileSync(path.join(__dirname, "dates2.json"), "utf-8")
     );
 
     for (const [index, dateData] of datesData.entries()) {
@@ -50,13 +50,21 @@ try {
             // Assign a user ID from the created users at random
             const randomUserId =
                 userIds[Math.floor(Math.random() * userIds.length)];
-            const createdDate = await dateFuncs.createDate(
-                dateData.title,
-                dateData.tagArray,
-                dateData.eventArray,
-                randomUserId
-            );
-            dateIds.push(createdDate._id); // Store the date ID for later
+            // console.log({
+            //     title: dateData.title,
+            //     tagArray: dateData.tagArray,
+            //     eventArray: dateData.eventArray,
+            //     userId: randomUserId
+            // })
+            const createdDate = await axios.post("http://localhost:3000/dates", {
+                title: dateData.title,
+                tagArray: dateData.tagArray,
+                eventArray: dateData.eventArray,
+                userId: randomUserId
+            });
+            
+            console.log(createdDate.data._id)
+            dateIds.push(createdDate.data._id); // Store the date ID for later
             console.log(`Date ${dateData.title} created successfully.`);
         } catch (e) {
             console.error(`Error creating date ${dateData.title}: ${e}`);
