@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import NavbarExplore from "../../components/Navbar/NavbarExplore";
-import PostCard from "@/src/components/PostCard/PostCard";
 import Post from "@/src/components/PostCard/Post";
 import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
 

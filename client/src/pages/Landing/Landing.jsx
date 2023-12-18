@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Hero from "../../components/Hero/Hero";
-import PostCard from "@/src/components/PostCard/PostCard";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import LoginDialog from "../../components/Login/LoginDialog/LoginDialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import "./Landing.css";
+
+import Post from "@/src/components/PostCard/Post";
 
 import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
 
@@ -51,7 +52,7 @@ const Landing = () => {
                             <ScrollArea className="w-full whitespace-nowrap rounded-md border-2">
                                 <div className="flex w-max space-x-4 p-4">
                                     {mostLikedDates.map((date) => (
-                                    <PostCard key={date._id} date={date} />
+                                        <Post key={date._id} date={date} />
                                     ))}
                                 </div>
                                 <ScrollBar orientation="horizontal" />
