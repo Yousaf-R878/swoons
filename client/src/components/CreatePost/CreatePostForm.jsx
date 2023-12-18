@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -14,6 +14,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command";
+import apiClient from "../../services/apiClient";
 import { X } from "lucide-react";
 
 const eventSchema = z.object({
@@ -43,13 +55,38 @@ const CreatePostForm = () => {
     defaultValues: {
       title: "",
       tags: [],
-      events: [{ location: "", description: "" }],
+      events: [{ location: "", description: "", tripAdvisorLocationId: "" }],
     },
   });
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setSearchResults([]);
+      return;
+    }
+    const delayDebounceFn = setTimeout(() => {
+      console.log(searchTerm)
+      // Send Axios request here
+      apiClient.getEvents(searchTerm).then(({ data }) => {
+        console.log(data);
+        const results = Array.isArray(data) ? data : [];
+        setSearchResults(results);
+      }).catch((error) => {
+        console.log(error);
+        setSearchResults([]);
+      });
+    }, 1000)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [searchTerm]);
+
   const handleAddEvent = () => {
     const newEvents = form.getValues("events");
-    newEvents.push({ location: "", description: "" });
+    newEvents.push({ location: "", description: "", tripAdvisorLocationId: "" });
     form.setValue("events", newEvents);
   };
 
@@ -153,7 +190,41 @@ const CreatePostForm = () => {
                 <FormItem>
                   <FormLabel>Location</FormLabel>
                   <FormControl>
-                    <Input placeholder="Location" {...field} />
+                    <Command>
+                      { form.getValues(`events.${index}.location`) === "" ?
+                      <CommandInput placeholder="Look up an event..." 
+                      onKeyUp={(e)=> {
+                        setSearchTerm(e.target.value);
+                      }}
+                      />
+                      :
+                      <CommandInput placeholder="Look up an event..."
+                      value={form.getValues(`events.${index}.location`)}
+                      onKeyUp={(e)=> {
+                        setSearchTerm(e.target.value);
+                      }}
+                      />
+                      }
+                      <CommandList>
+                        <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandGroup heading="Locations">
+                          { searchResults.map((result) => (
+                            <CommandItem
+                              key={result.tripAdvisorLocationId}
+                              onMouseUp={() => {
+                                form.setValue(`events.${index}.location`, result.name);
+                                form.setValue(`events.${index}.tripAdvisorLocationId`, result.tripAdvisorLocationId);
+                                console.log(form.getValues(`events`));
+                                setSearchTerm("");
+                              }}
+                            >
+                              {result.name}
+                            </CommandItem>
+                          ))
+                        }
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -175,13 +246,15 @@ const CreatePostForm = () => {
           </div>
         ))}
 
-        <Button
-          type="button"
-          onClick={handleAddEvent}
-          className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-secondary hover:bg-secondary-hover hover:text-white"
-        >
-          Add Another Event
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            type="button"
+            onClick={handleAddEvent}
+            className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-secondary hover:bg-secondary-hover hover:text-white"
+          >
+            Add Another Event
+          </Button>
+        </div>
         <div className="flex justify-center">
           <Button
             type="submit"

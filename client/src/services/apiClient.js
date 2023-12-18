@@ -75,6 +75,13 @@ class ApiClient {
             method: `GET`,
         });
     }
+
+    async getEvents(searchParam = ""){
+        return await this.request({
+            endpoint: `dates/api/${searchParam}`,
+            method: `GET`,
+        });
+    }
 }
 
 const API = new ApiClient(import.meta.env.VITE_API_URL); // A little unsecure but whatever
