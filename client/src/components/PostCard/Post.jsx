@@ -14,13 +14,15 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ThumbsUp, MessageCircle, Forward } from "lucide-react";
+import { ThumbsUp, MessageCircle, Forward, PencilLine, Edit } from "lucide-react";
 
 import {
     BsFillArrowLeftCircleFill,
     BsFillArrowRightCircleFill,
 } from "react-icons/bs";
 import { Separator } from "@radix-ui/react-select";
+import EditPost from "../EditPost/EditPost";
+
 
 const timeStampToDate = (timeStamp) => {
     const date = new Date(timeStamp);
@@ -64,7 +66,7 @@ const Post = ({ date, images }) => {
                     <MessageCircle className="h-4 w-4" />{" "}
                     <span>{date.commentsCount}</span>
                 </div>
-
+                <EditPost date={date}/>
                 <Button
                     as="a"
                     href="link-to-post"
