@@ -34,7 +34,7 @@ const Explore = () => {
       await new Promise((r) => setTimeout(r, 100));
       try {
         const response = await API.getDates(tags, selectedSort, currentPage);
-        // console.log(response);
+        console.log(response);
         if (response.data) {
           setDates(response.data.dates);
           setTotalPages(response.data.totalPages);
