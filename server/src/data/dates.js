@@ -59,6 +59,17 @@ export const getDate = async (id) => {
     return date;
 };
 
+export const getLikedDatesbyUserId = async (userId) => {
+    const user = await get(userId);
+    const dates = await dates();
+
+    const likedDates = await dates
+        .find({ _id: { $in: user.likedDates } })
+        .toArray();
+
+    return likedDates;
+};
+
 export const createDate = async (title, tagArray, eventArray, userId) => {
     title = helpers.checkTitle(title, "Date Title");
     tagArray = helpers.checkTagArray(tagArray, "Tag Array");

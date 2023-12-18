@@ -68,6 +68,13 @@ class ApiClient {
             method: `GET`,
         });
     }
+
+    async getLikedDates() {
+        return await this.request({
+            endpoint: `dates/liked`,
+            method: `GET`,
+        });
+    }
 }
 
 const API = new ApiClient(import.meta.env.VITE_API_URL); // A little unsecure but whatever
