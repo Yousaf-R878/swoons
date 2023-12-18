@@ -1,61 +1,95 @@
 import { createContext, useState, useEffect } from "react";
 import apiClient from "../services/apiClient";
 
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  getAuth,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { set } from "react-hook-form";
+
 const AuthorizeContext = createContext();
 
 const AuthorizeProvider = ({ children }) => {
   const [initialized, setInitialized] = useState(false);
-  const [authState, setAuthState] = useState({
-    user: null,
-    isAuthenticated: false,
-  });
+  const [currentUser, setCurrentUser] = useState(null);
+
+  const auth = getAuth();
+
+  const initialize = async () => {
+    try {
+      const user = await apiClient.getUserFromToken();
+      if (user.data) {
+        setCurrentUser(user.data);
+      }
+      console.log(user.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const userToken = localStorage.getItem("token");
-      apiClient.setToken(userToken);
-      try {
-        if (userToken) {
-          const { data, error } = await apiClient.fetchUserFromToken();
-          if (data) {
-            setAuthState((state) => ({
-              ...state,
-              user: data.user,
-              isAuthenticated: true,
-            }));
-            setInitialized(true);
-          } else {
-            setAuthState((state) => ({
-              ...state,
-              isAuthenticated: false,
-            }));
-            setInitialized(true);
-            throw error;
-          }
-        } else {
-          setInitialized(true);
-        }
-      } catch (e) {
-        console.error(e);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        apiClient.setToken(user.accessToken);
+        await initialize();
+        setInitialized(true);
+      } else {
+        console.log("User is signed out");
+        apiClient.setToken(null);
       }
-    };
-    fetchUser();
-  }, [authState.isAuthenticated]);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  const registerUser = async (credentials) => {
+    try {
+      const user = await createUserWithEmailAndPassword(
+        auth,
+        credentials.email,
+        credentials.password
+      );
+      credentials["id"] = user.user.uid;
+      await apiClient.registerUser(credentials);
+      console.log("User Registered Succesfully!");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const loginUser = async (credentials) => {
+    try {
+      const user = await signInWithEmailAndPassword(
+        auth,
+        credentials.email,
+        credentials.password
+      );
+      console.log(user);
+    } catch (err) {
+      throw err;
+    }
+  };
 
   const logoutUser = async () => {
-    apiClient.logoutUser();
-    setAuthState({
-      user: null,
-      isAuthenticated: false,
-    });
+    try {
+      await auth.signOut();
+      console.log("User Logged Out Succesfully!");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const passedProps = {
-    authState,
-    setAuthState,
+    registerUser,
     logoutUser,
+    loginUser,
     initialized,
-    setInitialized,
+    currentUser,
   };
 
   return (

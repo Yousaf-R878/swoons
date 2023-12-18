@@ -1,73 +1,64 @@
 import axios from "axios";
 
 class ApiClient {
-    constructor(remoteHostUrl) {
-        this.remoteHostUrl = remoteHostUrl;
-        this.token = null;
-        this.tokenName = "token";
-    }
-    setToken(token) {
-        this.token = token;
-        localStorage.setItem(this.tokenName, token);
-    }
-    async request({ endpoint, method = `GET`, data = {} }) {
-        const url = `${this.remoteHostUrl}/${endpoint}`;
+  constructor(remoteHostUrl) {
+    this.remoteHostUrl = remoteHostUrl;
+    this.token = null;
+    this.tokenName = "token";
+  }
+  setToken(token) {
+    this.token = token;
+    localStorage.setItem(this.tokenName, token);
+  }
+  async request({ endpoint, method = `GET`, data = {} }) {
+    const url = `${this.remoteHostUrl}/${endpoint}`;
 
-        const headers = {
-            "Content-Type": "application/json",
-            Authorization: this.token ? `Bearer ${this.token}` : "",
-        };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: this.token ? `Bearer ${this.token}` : "",
+    };
 
-        try {
-            const res = await axios({ url, method, data, headers });
-            return { data: res.data, error: null };
-        } catch (error) {
-            console.error("APIclient.makeRequest.error:");
-            console.error({ errorResponse: error.response });
-            const message = error?.response?.data?.error?.message;
-            return { data: null, error: message || String(error) };
-        }
+    try {
+      const res = await axios({ url, method, data, headers });
+      return { data: res.data, error: null };
+    } catch (error) {
+      console.error("APIclient.makeRequest.error:");
+      console.error({ errorResponse: error.response });
+      const message = error?.response?.data?.error?.message;
+      return { data: null, error: message || String(error) };
+    }
+  }
+
+  async getUserFromToken() {
+    return await this.request({ endpoint: `users/me`, method: `GET` });
+  }
+  async registerUser(credentials) {
+    console.log(credentials);
+    return await this.request({
+      endpoint: "users/signup",
+      method: "POST",
+      data: credentials,
+    });
+  }
+
+  async getDates(tags = [], sorting = "disabled", page = 1, limit = 12) {
+    const queryString = new URLSearchParams();
+
+    if (tags.length > 0) {
+      queryString.set("tags", tags.join(","));
+    }
+    if (sorting !== "disabled") {
+      queryString.set("sorting", sorting);
     }
 
-    async fetchUserFromToken() {
-        return await this.request({ endpoint: `/auth/me`, method: `GET` });
-    }
-    async registerUser(credentials) {
-        return await this.request({
-            endpoint: `/auth/register`,
-            method: `POST`,
-            data: credentials,
-        });
-    }
-    async loginUser(credentials) {
-        return await this.request({
-            endpoint: `/auth/login`,
-            method: `POST`,
-            data: credentials,
-        });
-    }
-    async logoutUser() {
-        localStorage.removeItem(this.tokenName);
-    }
+    queryString.set("page", page);
+    queryString.set("limit", limit);
 
-    async getDates(tags = [], sorting = "disabled", page = 1, limit = 12) {
-        const queryString = new URLSearchParams();
-
-        if (tags.length > 0) {
-            queryString.set("tags", tags.join(","));
-        }
-        if (sorting !== "disabled") {
-            queryString.set("sorting", sorting);
-        }
-
-        queryString.set("page", page);
-        queryString.set("limit", limit);
-
-        return await this.request({
-            endpoint: `dates?${queryString.toString()}`,
-            method: `GET`,
-        });
-    }
+    return await this.request({
+      endpoint: `dates?${queryString.toString()}`,
+      method: `GET`,
+    });
+  }
 
     async getLikedDates() {
         return await this.request({

@@ -1,9 +1,9 @@
 import express from "express";
-import configRoutes from './routes/index.js'
-import cors from 'cors';
+import configRoutes from "./routes/index.js";
+import cors from "cors";
+import admin from "./config/firebase-config.js"; // DO NOT DELETE THIS
 
 const app = express();
-
 
 app.use(express.json());
 app.use(cors());

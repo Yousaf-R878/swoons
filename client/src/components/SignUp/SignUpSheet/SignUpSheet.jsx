@@ -16,13 +16,6 @@ import { useNavigation } from "react-router-dom";
 import "./SignUpSheet.css";
 
 const SignupButton = () => {
-  // 2. Define a submit handler.
-  function handleLogin(values) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
-
   async function handleGoogle() {
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
@@ -34,7 +27,7 @@ const SignupButton = () => {
   }
 
   return (
-    <SheetContent className="sm:max-w-[425px]">
+    <SheetContent className="sm:max-w-[425px] overflow-y-auto">
       <SheetHeader>
         <SheetTitle className="text-2xl text-center mx-10">Sign Up</SheetTitle>
         <Button
@@ -49,7 +42,7 @@ const SignupButton = () => {
         <span className="mx-4 text-gray-600">OR</span>
         <div className="flex-grow border-t border-gray-300"></div>
       </div>
-      <SignupForm handleLogin={handleLogin} />
+      <SignupForm />
     </SheetContent>
   );
 };

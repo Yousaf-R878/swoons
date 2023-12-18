@@ -1,18 +1,30 @@
 import { Router } from "express";
 const router = Router();
 import * as userFuncs from "../data/users.js";
-import * as dateFuncs from "../data/dates.js"
+import * as dateFuncs from "../data/dates.js";
 import * as helpers from "../data/helpers.js";
 import { users } from "../config/mongoCollections.js";
+import security from "../middlewares/security.js";
 
-router.route("/").get(async (req, res) => {
+router.route("/me").get(security.checkAuth, async (req, res) => {
+  let id = req.user.uid;
   try {
-    let allUsers = await userFuncs.getAll();
-    return res.status(200).json(allUsers);
+    let user = await userFuncs.get(id);
+    return res.status(200).json(user);
   } catch (e) {
     return res.status(500).json({ error: e });
   }
 });
+
+// Do we actually need this????
+// router.route("/").get(async (req, res) => {
+//   try {
+//     let allUsers = await userFuncs.getAll();
+//     return res.status(200).json(allUsers);
+//   } catch (e) {
+//     return res.status(500).json({ error: e });
+//   }
+// });
 
 router.route("/signup").post(async (req, res) => {
   let userInfo = req.body;
@@ -21,9 +33,10 @@ router.route("/signup").post(async (req, res) => {
       .status(400)
       .json({ error: "There are no fields in the request body" });
   }
-
+  let id = userInfo.id; //ADD VALIDATION FOR THIS!!!!!
   let firstName = userInfo.firstName;
   let lastName = userInfo.lastName;
+  let username = userInfo.username; //ADD VALIDATION FOR THIS!!!!!
   let email = userInfo.email;
   let password = userInfo.password;
 
@@ -44,9 +57,17 @@ router.route("/signup").post(async (req, res) => {
   }
 
   try {
-    let newUser = await userFuncs.create(firstName, lastName, email, password);
+    let newUser = await userFuncs.create(
+      id,
+      firstName,
+      lastName,
+      email,
+      username,
+      password
+    );
     return res.status(200).json(newUser);
   } catch (e) {
+    console.log(e);
     return res.status(500).json({ error: e });
   }
 });
@@ -57,7 +78,7 @@ router
     let id = req.params.id;
 
     try {
-      id = helpers.checkId(id, "ID");
+      // id = helpers.checkId(id, "ID");
     } catch (e) {
       return res.status(400).json({ error: e });
     }
@@ -276,7 +297,6 @@ router
     }
   })
   .delete(async (req, res) => {
-
     let userId = req.params.userId;
     let dateId = req.params.dateId;
 
@@ -313,7 +333,6 @@ router
     } catch (e) {
       return res.status(500).json({ error: e });
     }
-
   });
 
 export default router;
