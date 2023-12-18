@@ -103,10 +103,10 @@ export let checkLocationName = (name, variableName) => {
         throw `${variableName} must be less than 50 characters long`;
     }
 
-    const eventNameRegex = /^[a-zA-Z0-9\s'-]+$/;
-    if (!eventNameRegex.test(name)) {
-        throw `${variableName} (${name}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
-    }
+    // const eventNameRegex = /^[a-zA-Z0-9\s'-]+$/;
+    // if (!eventNameRegex.test(name)) {
+    //     throw `${variableName} (${name}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
+    // }
 
     return name;
 };
