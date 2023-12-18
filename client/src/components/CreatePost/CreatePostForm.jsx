@@ -112,6 +112,9 @@ const CreatePostForm = () => {
             return (
               <FormItem>
                 <FormLabel>Tags</FormLabel>
+                <FormDescription>
+                  Tags can be maximum of 13 characters
+                </FormDescription>
                 <FormControl>
                   <Input placeholder="Enter Tags" onKeyDown={handleKeyDown} />
                 </FormControl>
