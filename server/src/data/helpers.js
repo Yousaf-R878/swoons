@@ -95,20 +95,20 @@ export let checkPassword = (password, variableName) => {
 };
 
 export let checkLocationName = (name, variableName) => {
-  name = checkString(name, variableName);
-  if (name.length < 1) {
-    throw `${variableName} must be at least one character long`;
-  }
-  if (name.length > 50) {
-    throw `${variableName} must be less than 50 characters long`;
-  }
+    name = checkString(name, variableName);
+    if (name.length < 1) {
+        throw `${variableName} must be at least one character long`;
+    }
+    if (name.length > 50) {
+        throw `${variableName} must be less than 50 characters long`;
+    }
 
-  const eventNameRegex = /^[a-zA-Z0-9\s'-]+$/;
-  if (!eventNameRegex.test(name)) {
-    throw `${variableName} (${name}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
-  }
+    // const eventNameRegex = /^[a-zA-Z0-9\s'-]+$/;
+    // if (!eventNameRegex.test(name)) {
+    //     throw `${variableName} (${name}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
+    // }
 
-  return name;
+    return name;
 };
 
 export let checkTitle = (title, variableName) => {

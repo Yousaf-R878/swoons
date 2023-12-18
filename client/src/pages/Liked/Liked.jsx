@@ -31,19 +31,22 @@ const Liked = () => {
     }
   }, [user]);
 
-  return (
-    <>
-      <NavbarExplore />
-      <div className="my-8">
-        <h2 className="text-4xl text-center font-bold">Liked Dates</h2>
-        <div className="flex justify-center">
-          {isLoading ? (
-            <LoadingProgress />
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
-              {likedDates.map((date) => (
-                <Post key={date._id} date={date} />
-              ))}
+    return (
+        <>
+            <NavbarExplore />
+            <div className="my-8">
+                <h2 className="text-4xl text-center font-bold">Liked Dates</h2>
+                <div className="flex justify-center">
+                    {isLoading ? (
+                        <LoadingProgress />
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
+                            {likedDates.map((date) => (
+                                <Post key={date._id} date={date} />
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
           )}
         </div>
