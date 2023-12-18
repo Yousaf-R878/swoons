@@ -1,0 +1,34 @@
+[
+    {
+        "title": "chill hang",
+        "tagArray": ["Cozy", "Cultural"],
+        "eventArray": [
+            {
+                "name": "Margaritaville Resort Times Square",
+                "location": "560 7th Ave, New York City, NY 10018",
+                "tripAdvisorLocationId": "23462501"
+            },
+            {
+                "name": "Statue of Liberty",
+                "location": "Route de Strasbourg, 68000, Colmar France",
+                "tripAdvisorLocationId": "1806061"
+            }
+        ]
+    },
+    {
+        "title": "chill hang",
+        "tagArray": ["Cozy", "Cultural"],
+        "eventArray": [
+            {
+                "name": "Paris Las Vegas",
+                "location": "3655 S Las Vegas Blvd, Paradise, NV 89109-4345",
+                "tripAdvisorLocationId": "143336"
+            },
+            {
+                "name": "Statue of Liberty & Ellis Island Tour: All Options",
+                "location": "New York City, NY",
+                "tripAdvisorLocationId": "11451132"
+            }
+        ]
+    }
+]
