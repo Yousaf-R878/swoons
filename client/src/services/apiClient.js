@@ -50,7 +50,7 @@ class ApiClient {
         localStorage.removeItem(this.tokenName);
     }
 
-    async getDates(tags = [], sorting = "disabled") {
+    async getDates(tags = [], sorting = "disabled", page = 1, limit = 12) {
         const queryString = new URLSearchParams();
 
         if (tags.length > 0) {
@@ -60,8 +60,18 @@ class ApiClient {
             queryString.set("sorting", sorting);
         }
 
+        queryString.set("page", page);
+        queryString.set("limit", limit);
+
         return await this.request({
             endpoint: `dates?${queryString.toString()}`,
+            method: `GET`,
+        });
+    }
+
+    async getLikedDates() {
+        return await this.request({
+            endpoint: `dates/liked`,
             method: `GET`,
         });
     }

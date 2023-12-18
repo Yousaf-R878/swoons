@@ -4,7 +4,12 @@ import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 import { get } from "./users.js";
 
-export const getAllDates = async (tags = [], sorting = "disabled") => {
+export const getAllDates = async (
+    tags = [],
+    sorting = "disabled",
+    page = 1,
+    limit = 12
+) => {
     const dateCollection = await dates();
     let query = {};
 
@@ -18,7 +23,7 @@ export const getAllDates = async (tags = [], sorting = "disabled") => {
         } else if (sorting === "likes") {
             sortQuery = { likes: -1 };
         } else if (sorting === "comments") {
-            sortQuery = { commentsCount : -1 };
+            sortQuery = { commentsCount: -1 };
         } else if (sorting === "trending") {
             // put nothing for now
             sortQuery = {};
@@ -30,9 +35,18 @@ export const getAllDates = async (tags = [], sorting = "disabled") => {
     const datesByTags = await dateCollection
         .find(query)
         .sort(sortQuery)
+        .skip((page - 1) * limit)
+        .limit(limit)
         .toArray();
 
-    return datesByTags;
+    const totalPages = Math.ceil(
+        (await dateCollection.countDocuments(query)) / limit
+    );
+
+    return {
+        dates: datesByTags,
+        totalPages: totalPages,
+    };
 };
 
 export const getDate = async (id) => {
@@ -43,6 +57,17 @@ export const getDate = async (id) => {
     if (!date) throw "Date not found";
     date._id = date._id.toString();
     return date;
+};
+
+export const getLikedDatesbyUserId = async (userId) => {
+    const user = await get(userId);
+    const dates = await dates();
+
+    const likedDates = await dates
+        .find({ _id: { $in: user.likedDates } })
+        .toArray();
+
+    return likedDates;
 };
 
 export const createDate = async (title, tagArray, eventArray, userId) => {
@@ -74,11 +99,10 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
     };
 
     newDate.events.forEach((event) => {
-        event.tripAdvisorLocationImages = [];
-        event.tripAdvisorLocationUrl = "";
-        event.tripAdvisorRating = "";
-        event.tripAdvisorRatingImage = "";
-        event.tripAdvisorLocationId = "";
+        event.tripAdvisorLocationImages = event.tripAdvisorLocationImages || [];
+        event.tripAdvisorLocationUrl = event.tripAdvisorLocationUrl  || "";
+        event.tripAdvisorLocationRating = event.tripAdvisorLocationRating || "";
+        event.tripAdvisorLocationRatingImage = event.tripAdvisorLocationRatingImage || "";
     });
 
     const insertInfo = await dateCollection.insertOne(newDate);
@@ -169,3 +193,4 @@ export const removeEventFromDate = async (dateId, eventIndex) => {
 //   commentsCount:
 //   timeStamp: //for when date is created
 // }
+

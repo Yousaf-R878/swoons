@@ -105,11 +105,10 @@ const PostCard = ({ date }) => {
                     </CardFooter>
                 </Card>
             </DialogTrigger>
-            {/* <ViewCardModal
-                // works={works}
-                // cardInfo={cardInfo}
-                comments={date.comments}
-            /> */}
+            <ViewCardModal
+              date = {date}
+              timeStampToDate = {timeStampToDate}
+            />
         </Dialog>
     );
 };
