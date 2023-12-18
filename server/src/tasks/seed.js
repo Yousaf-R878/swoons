@@ -42,7 +42,7 @@ try {
    
     // Read dates from JSON file and create them with user IDs
     const datesData = JSON.parse(
-        fs.readFileSync(path.join(__dirname, "dates2.json"), "utf-8")
+        fs.readFileSync(path.join(__dirname, "datesModified.json"), "utf-8")
     );
 
     for (const [index, dateData] of datesData.entries()) {
