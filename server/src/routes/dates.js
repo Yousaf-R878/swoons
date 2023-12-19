@@ -79,7 +79,7 @@ router.route("/").post(async (req, res) => {
         title = helpers.checkTitle(title, "Title");
         tagArray = helpers.checkTagArray(tagArray, "Tag Array");
         eventArray = helpers.checkEventArray(eventArray, "Event Array");
-        userId = helpers.checkId(userId, "User ID");
+        //userId = helpers.checkId(userId, "User ID");
     } catch (e) {
         return res.status(400).json({ error: e });
     }
