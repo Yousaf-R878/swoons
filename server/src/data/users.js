@@ -96,13 +96,13 @@ export let get = async (id) => {
 };
 
 export let remove = async (id) => {
-  id = helpers.checkId(id, "User ID");
+  //id = helpers.checkId(id, "User ID");
 
   let user = await get(id);
 
   let usersCollection = await users();
   let deletionInfo = await usersCollection.findOneAndDelete({
-    _id: new ObjectId(id),
+    _id: id,
   });
 
   if (!deletionInfo) {
@@ -120,7 +120,7 @@ export let update = async (
   email,
   password
 ) => {
-  id = helpers.checkId(id, `User (${id})'s Id`);
+  //id = helpers.checkId(id, `User (${id})'s Id`);
 
   let usersCollection = await users();
 
@@ -161,7 +161,7 @@ export let update = async (
 };
 
 export let likeADate = async (userId, dateId) => {
-  userId = helpers.checkId(userId, `User (${userId})'s Id`);
+  //userId = helpers.checkId(userId, `User (${userId})'s Id`);
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
   let usersCollection = await users();
@@ -175,7 +175,7 @@ export let likeADate = async (userId, dateId) => {
   }
 
   let addInfo = await usersCollection.findOneAndUpdate(
-    { _id: new ObjectId(userId) },
+    { _id: userId },
     { $push: { likedDates: dateId } },
     { returnDocument: "after" }
   );
@@ -195,7 +195,7 @@ export let likeADate = async (userId, dateId) => {
 };
 
 export let unlikeADate = async (userId, dateId) => {
-  userId = helpers.checkId(userId, `User (${userId})'s Id`);
+  //userId = helpers.checkId(userId, `User (${userId})'s Id`);
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
   let usersCollection = await users();
@@ -208,7 +208,7 @@ export let unlikeADate = async (userId, dateId) => {
   }
 
   let removeInfo = await usersCollection.findOneAndUpdate(
-    { _id: new ObjectId(userId) },
+    { _id: userId },
     { $pull: { likedDates: dateId } },
     { returnDocument: "after" }
   );
@@ -250,7 +250,7 @@ export let unlikeADate = async (userId, dateId) => {
 // }
 
 export let removeDate = async (userId, dateId) => {
-  userId = helpers.checkId(userId, `User (${userId})'s Id`);
+  //userId = helpers.checkId(userId, `User (${userId})'s Id`);
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
   let usersCollection = await users();
@@ -264,7 +264,7 @@ export let removeDate = async (userId, dateId) => {
   }
 
   let removeInfo = await usersCollection.findOneAndUpdate(
-    { _id: new ObjectId(userId) },
+    { _id: userId },
     { $pull: { dates: dateId } },
     { returnDocument: "after" }
   );
