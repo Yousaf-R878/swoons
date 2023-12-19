@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Navbar from "../../components/Navbar/Navbar";
+import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import Hero from "../../components/Hero/Hero";
-
 import Post from "@/src/components/PostCard/Post";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import LoginDialog from "../../components/Login/LoginDialog/LoginDialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import "./Landing.css";
-
+import { AuthorizeContext } from "@/src/contexts/auth";
 import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
 
 import API from "../../services/apiClient";
 
 const Landing = () => {
+  const { currentUser } = useContext(AuthorizeContext);
   const [mostLikedDates, setMostLikedDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,7 +39,6 @@ const Landing = () => {
 
   return (
     <>
-      <Navbar />
       <Hero />
       <div className="my-8">
         <h2 className="text-4xl text-center font-bold">Recent Activity</h2>

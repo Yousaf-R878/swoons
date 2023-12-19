@@ -90,7 +90,6 @@ const Explore = () => {
 
   return (
     <>
-      <NavbarExplore />
       <div className="container mx-auto p-4">
         <div className="w-full max-w-lg mx-auto">
           <div className="relative mb-2">

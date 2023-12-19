@@ -2,10 +2,20 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Boxes } from "lucide-react";
 import CreatePost from "../CreatePost/CreatePost";
-
+import { LogOut, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import profilePic from "../../assets/profile.png";
+import { AuthorizeContext } from "@/src/contexts/auth";
+import { useContext } from "react";
 
 const LinkItems = [
   { name: "Explore", pathname: "/explore" },
@@ -23,6 +33,7 @@ const fakeUser = {
 };
 
 const Navbar = () => {
+  const { logoutUser } = useContext(AuthorizeContext);
   const NavItem = ({ name, pathname }) => {
     const location = useLocation();
     return (
@@ -41,7 +52,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white p-4 text-white flex justify-between items-center">
-      <div className="flex items-center">
+      <Link to="/" className="text-lg cursor-pointer flex items-center ">
         <Boxes
           size={40}
           strokeWidth={1}
@@ -51,7 +62,7 @@ const Navbar = () => {
         <span className="text-black font-semibold text-xl tracking-tight">
           Swoons
         </span>
-      </div>
+      </Link>
       <div className="flex">
         {LinkItems.map((link) => (
           <NavItem key={link.name} name={link.name} pathname={link.pathname} />
@@ -59,15 +70,38 @@ const Navbar = () => {
         <CreatePost />
       </div>
       <div className="flex items-center">
-        <Link to={"/settings"} className="flex items-center">
-          <span className="text-black font-semibold text-lg mr-4">
-            {fakeUser.firstName} {fakeUser.lastName}
-          </span>
-          <Avatar>
-            <AvatarImage src={fakeUser.profilePic} alt="Profile" />
-            <AvatarFallback>{fakeUser.firstName[0]}</AvatarFallback>
-          </Avatar>
-        </Link>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center">
+            <span className="text-black font-semibold text-lg mr-4">
+              {fakeUser.firstName} {fakeUser.lastName}
+            </span>
+            <Avatar>
+              <AvatarImage src={fakeUser.profilePic} alt="Profile" />
+              <AvatarFallback>{fakeUser.firstName[0]}</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <Link to="/profile">
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                logoutUser();
+              }}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </nav>
   );

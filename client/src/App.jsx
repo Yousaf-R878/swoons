@@ -2,10 +2,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Landing from "./pages/Landing/Landing";
 import Explore from "./pages/Explore/Explore";
 import Liked from "./pages/Liked/Liked";
-import UserSettings from "./pages/UserSettings/UserSettings";
+import UserProfile from "./pages/UserProfile/UserProfile";
 import { AuthorizeProvider } from "./contexts/auth";
 import Footer from "./components/Footer/Footer";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
+import Page from "./pages/Page/Page";
 
 function AppContainer() {
   return <App />;
@@ -17,20 +18,31 @@ function App() {
       <AuthorizeProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Landing />} />
+            <Route
+              path="/"
+              element={
+                <Page>
+                  <Landing />
+                </Page>
+              }
+            />
             <Route
               path="/explore"
               element={
                 <AuthRoute>
-                  <Explore />
+                  <Page>
+                    <Explore />
+                  </Page>
                 </AuthRoute>
               }
             />
             <Route
-              path="/settings"
+              path="/profile"
               element={
                 <AuthRoute>
-                  <UserSettings />
+                  <Page>
+                    <UserProfile />
+                  </Page>
                 </AuthRoute>
               }
             />
@@ -38,13 +50,14 @@ function App() {
               path="/likes"
               element={
                 <AuthRoute>
-                  <Liked />
+                  <Page>
+                    <Liked />
+                  </Page>
                 </AuthRoute>
               }
             />
           </Routes>
         </BrowserRouter>
-        <Footer />
       </AuthorizeProvider>
     </>
   );
