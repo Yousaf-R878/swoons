@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AWS from "aws-sdk";
-import { AuthorizeContext } from "../../contexts/auth.jsx";
+import { AuthorizeContext } from "../../contexts/auth"
 import { useContext } from "react";
 
 import NavbarExplore from "@/src/components/Navbar/NavbarExplore";
@@ -24,27 +24,29 @@ import * as z from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Timestamp } from "mongodb";
 
 const formSchema = z.object({
     firstName: z.string().min(1, { message: "First name required" }),
     lastName: z.string().min(1, { message: "Last name required" }),
     password: z.string().min(1, { message: "Password required" }),
-    bio: z.string().min(1, { message: "Bio required" }),
 });
 
-const fakeUser = {
-    id: "1",
-    firstName: "John",
-    lastName: "Doe",
-    email: "johndoe@gmail.com",
-    password: "password",
-    profilePic: profilePic,
-    accountCreationDate: "2021-10-01T00:00:00.000Z",
-    bio: "",
-};
+// const fakeUser = {
+//     id: "1",
+//     firstName: "John",
+//     lastName: "Doe",
+//     email: "johndoe@gmail.com",
+//     password: "password",
+//     profilePic: profilePic,
+//     accountCreationDate: "2021-10-01T00:00:00.000Z",
+//     bio: "",
+// };
 
 const timeStampToDate = (timeStamp) => {
+    console.log(timeStamp);
     const date = new Date(timeStamp);
+    console.log(date);
     const month = date.toLocaleString("default", { month: "long" });
     const day = date.getDate();
     const year = date.getFullYear();
@@ -52,21 +54,18 @@ const timeStampToDate = (timeStamp) => {
 };
 
 const UserSettings = () => {
-    const { authState, initialized } = useContext(AuthorizeContext);
-    console.log(authState);
-    console.log(initialized);
-    const [user, setUser] = useState(fakeUser);
+    const { currentUser } = useContext(AuthorizeContext);
+    const [user, setUser] = useState(currentUser);
     const [file, setFile] = useState(null);
 
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            firstName: fakeUser.firstName,
-            lastName: fakeUser.lastName,
-            email: fakeUser.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
             password: "", // Clear the password field
-            accountCreationDate: fakeUser.accountCreationDate,
-            bio: fakeUser.bio,
+            accountCreationDate: user.accountCreationDate,
         },
     });
 
@@ -80,7 +79,7 @@ const UserSettings = () => {
             return;
         } else {
             //S3 Bucket Name
-            const S3_BUCKET = "swoons-photos";2
+            const S3_BUCKET = "swoons-photos";
 
             //Bucket Region
             const REGION = "us-east-1";
@@ -145,11 +144,11 @@ const UserSettings = () => {
                     <div className="mb-4">
                         <Avatar className="w-24 h-24">
                             <AvatarImage
-                                src={fakeUser.profilePic}
+                                src={user.profilePic}
                                 alt="Profile"
                             />
                             <AvatarFallback>
-                                {fakeUser.firstName[0]}
+                                {user.firstName[0]}
                             </AvatarFallback>
                         </Avatar>
                     </div>
@@ -158,7 +157,7 @@ const UserSettings = () => {
                     <Button variant="danger">Delete Picture</Button>
                     <p className="text-gray-600 text-xs">
                         Your account was created on{" "}
-                        {timeStampToDate(fakeUser.accountCreationDate)}
+                        {timeStampToDate(user.accountCreationDate)}
                     </p>
                 </div>
                 <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
@@ -209,20 +208,6 @@ const UserSettings = () => {
                                         <FormLabel>Last Name</FormLabel>
                                         <FormControl>
                                             <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="bio"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Bio</FormLabel>
-                                        <FormControl>
-                                            <Textarea {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
