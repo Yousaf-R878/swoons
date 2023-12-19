@@ -33,7 +33,6 @@ const Liked = () => {
 
   return (
     <>
-      <NavbarExplore />
       <div className="my-8">
         <h2 className="text-4xl text-center font-bold">Liked Dates</h2>
         <div className="flex justify-center">

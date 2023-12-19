@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { DialogFooter } from "@/components/ui/dialog";
+import { useNavigate, Link } from "react-router-dom";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { useState } from "react";
@@ -77,6 +77,7 @@ const formSchema = z
 
 const SignupForm = () => {
   const { registerUser } = useContext(AuthorizeContext);
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -113,6 +114,7 @@ const SignupForm = () => {
         password,
         confirmPassword,
       });
+      navigate("/explore");
     } catch (e) {
       console.log("Error registering user");
       console.error(e);

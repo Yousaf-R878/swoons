@@ -17,6 +17,7 @@ import { EyeOff } from "lucide-react";
 import { useState } from "react";
 import { AuthorizeContext } from "@/src/contexts/auth";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -26,6 +27,7 @@ const formSchema = z.object({
 });
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const { loginUser } = useContext(AuthorizeContext);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -42,6 +44,7 @@ const LoginForm = () => {
     try {
       const { email, password } = form.getValues();
       await loginUser({ email, password });
+      navigate("/explore");
     } catch (e) {
       setError("Invalid email or password.");
     }

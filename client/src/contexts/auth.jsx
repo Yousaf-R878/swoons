@@ -9,7 +9,6 @@ import {
   getAuth,
   onAuthStateChanged,
 } from "firebase/auth";
-import { set } from "react-hook-form";
 
 const AuthorizeContext = createContext();
 
@@ -33,17 +32,18 @@ const AuthorizeProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setInitialized(false);
       if (user) {
         apiClient.setToken(user.accessToken);
         await initialize();
       } else {
         console.log("User is signed out");
+        setCurrentUser(null);
         apiClient.setToken(null);
       }
       setInitialized(true);
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
