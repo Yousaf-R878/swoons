@@ -14,13 +14,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ThumbsUp, MessageCircle, Forward } from "lucide-react";
+import { ThumbsUp, MessageCircle, Forward, PencilLine, Edit } from "lucide-react";
 
 import {
   BsFillArrowLeftCircleFill,
   BsFillArrowRightCircleFill,
 } from "react-icons/bs";
 import { Separator } from "@radix-ui/react-select";
+import EditPost from "../EditPost/EditPost";
+import ViewCardModal from "./ViewCardModal";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 const timeStampToDate = (timeStamp) => {
   const date = new Date(timeStamp);
@@ -30,12 +33,13 @@ const timeStampToDate = (timeStamp) => {
   return `${month} ${day}, ${year}`;
 };
 
-const Post = ({ date, images }) => {
+const Post = ({ date }) => {
   // const { name, username, title, badges, likes, comments } = cardInfo;
-
+  // conglomerate first image of every event into an images array
+  const images = date.events.map((event) => event.tripAdvisorLocationImages[0]);
   return (
     <Card className="post-card bg-white shadow-md rounded-lg overflow-hidden max-w-md mx-auto flex flex-col">
-      <CarouselCmp />
+      <CarouselCmp images={images}/>
       <CardContent className="p-4 flex-grow">
         <div className="flex flex-wrap gap-2 mb-4">
           {date.tags.map((tag, index) => (
@@ -47,7 +51,6 @@ const Post = ({ date, images }) => {
             </Badge>
           ))}
         </div>
-
         <h1 className="text-md font-semibold">{date.title}</h1>
         <CardDescription className="text-sm">
           @{date.creator.username}
@@ -57,7 +60,7 @@ const Post = ({ date, images }) => {
         </p>
         <p className="text-sm text-gray-600 mb-4">{date.description}</p>
       </CardContent>
-      <CardFooter className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
+      <CardFooter className="flex space-y-2 md:flex-row md:space-y-0 md:space-x-2">
         <Button
           variant="primary"
           className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
@@ -68,14 +71,21 @@ const Post = ({ date, images }) => {
           <MessageCircle className="h-4 w-4" />{" "}
           <span>{date.commentsCount}</span>
         </div>
-
-        <Button
-          as="a"
-          href="link-to-post"
-          className="flex flex-grow items-center justify-center rounded-md bg-secondary transition-colors duration-300 hover:bg-secondary-hover text-white p-2 text-xs"
-        >
-          <Forward className="h-4 w-4" /> <span>View Post</span>
-        </Button>
+        
+        <EditPost date={date} />
+          
+        <Dialog>
+          <DialogTrigger>
+            <Button
+              as="a"
+              href="link-to-post"
+              className="flex flex-grow items-center justify-center rounded-md bg-secondary transition-colors duration-300 hover:bg-secondary-hover text-white p-2 text-xs"
+            >
+              <Forward className="h-4 w-4" /> <span>View Post</span>
+            </Button>
+          </DialogTrigger>
+          <ViewCardModal date={date} timeStampToDate={timeStampToDate} Carousel={CarouselCmp} />
+        </Dialog>
       </CardFooter>
     </Card>
   );
@@ -123,6 +133,10 @@ const CarouselCmp = ({
   autoplay = false,
   startIndex = 0,
   className = "",
+  classStuff = "",
+  imgWidth = "54rem",
+  imgHeight = "16rem",
+  images = []
 }) => {
   const carouselParams = useMemo(() => {
     if (typeof window === "undefined") return {};
@@ -133,12 +147,6 @@ const CarouselCmp = ({
     else return {};
     return JSON.parse(paramsString);
   }, []);
-
-  const images = [
-    "https://images.unsplash.com/photo-1509721434272-b79147e0e708?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80",
-    "https://images.unsplash.com/photo-1506710507565-203b9f24669b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1536&q=80",
-    "https://images.unsplash.com/photo-1536987333706-fc9adfb10d91?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80",
-  ];
 
   return (
     <div className={clsx(className)}>
@@ -151,10 +159,11 @@ const CarouselCmp = ({
         renderCenterLeftControls={renderCenterLeftControls}
         renderCenterRightControls={renderCenterRightControls}
         {...carouselParams}
+        style={imgWidth != "54rem" ? {width: imgWidth, height: imgHeight} : {}}
       >
-        <img src={images[0]} alt="Slide 1" />
-        <img src={images[1]} alt="Slide 2" />
-        <img src={images[2]} alt="Slide 3" />
+        {images.map((image, index) => (
+          <img key={index} src={image} className={classStuff} style={{width: imgWidth, height: imgHeight}} />
+        ))}
       </Carousel>
     </div>
   );

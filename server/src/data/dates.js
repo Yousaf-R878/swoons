@@ -74,7 +74,7 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
     title = helpers.checkTitle(title, "Date Title");
     tagArray = helpers.checkTagArray(tagArray, "Tag Array");
     eventArray = helpers.checkEventArray(eventArray, "Event Array");
-    userId = helpers.checkId(userId, "User ID");
+    //userId = helpers.checkId(userId, "User ID");
 
     const dateCollection = await dates();
 
@@ -112,7 +112,7 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
 
     const userCollection = await users();
     const updateInfo = await userCollection.updateOne(
-        { _id: new ObjectId(userId) },
+        { _id: userId },
         { $push: { dates: newId } },
         { returnDocument: "after" }
     );

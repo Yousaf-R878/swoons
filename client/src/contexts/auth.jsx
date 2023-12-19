@@ -36,11 +36,11 @@ const AuthorizeProvider = ({ children }) => {
       if (user) {
         apiClient.setToken(user.accessToken);
         await initialize();
-        setInitialized(true);
       } else {
         console.log("User is signed out");
         apiClient.setToken(null);
       }
+      setInitialized(true);
     });
 
     // Cleanup subscription on unmount

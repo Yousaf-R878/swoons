@@ -73,6 +73,14 @@ class ApiClient {
             method: `GET`,
         });
     }
+
+    async createDate(date) {
+        return await this.request({
+            endpoint: `dates`,
+            method: `POST`,
+            data: date,
+        });
+    }
 }
 
 const API = new ApiClient(import.meta.env.VITE_API_URL); // A little unsecure but whatever
