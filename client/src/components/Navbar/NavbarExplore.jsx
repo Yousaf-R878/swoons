@@ -72,13 +72,18 @@ const Navbar = () => {
       <div className="flex items-center">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center">
-            <span className="text-black font-semibold text-lg mr-4">
-              {fakeUser.firstName} {fakeUser.lastName}
-            </span>
-            <Avatar>
+            <Avatar className="mr-2">
               <AvatarImage src={fakeUser.profilePic} alt="Profile" />
               <AvatarFallback>{fakeUser.firstName[0]}</AvatarFallback>
             </Avatar>
+            <div className="flex items-center">
+              <div className="flex flex-col text-left">
+                <p className="text-black font-semibold text-md">
+                  {fakeUser.firstName} {fakeUser.lastName}
+                </p>
+                <p className="text-gray-400 text-xs -mt-1">@johnDoe</p>
+              </div>
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
