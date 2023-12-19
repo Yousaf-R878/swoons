@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AuthorizeContext } from "../../contexts/auth";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import {
@@ -58,11 +59,11 @@ const EditPostForm = ({date}) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: date.title,
-      tagArray: date.tags,
-      eventArray: date.events,
+      tags: date.tags,
+      events: date.events,
     },
   });
-
+  const { initialized, currentUser } = useContext(AuthorizeContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
@@ -87,7 +88,7 @@ const EditPostForm = ({date}) => {
 
   const handleAddEvent = () => {
     const newEvents = form.getValues("events");
-    newEvents.push({ location: "", description: "", tripAdvisorLocationId: "" });
+    newEvents.push({ name: "", location: "", description: "", tripAdvisorLocationId: "" });
     form.setValue("events", newEvents);
   };
 
@@ -120,7 +121,21 @@ const EditPostForm = ({date}) => {
   };
 
   const handleSubmitData = (data) => {
+    data.events = form.getValues("events")
+    data["userId"] = currentUser._id;
+    console.log("Submitting")
     console.log(data);
+    apiClient.removeDate(currentUser._id, date._id).then(({ data }) => {
+      console.log("Removed Date:");
+      console.log(data);
+    }).catch((error) => {
+      console.log(error);
+    });
+    apiClient.createDate(data).then(({ data }) => {
+      console.log(data);
+    }).catch((error) => {
+      console.log(error);
+    });
   };
 
   return (
@@ -196,7 +211,7 @@ const EditPostForm = ({date}) => {
                   <FormLabel>Location</FormLabel>
                   <FormControl>
                     <Command>
-                      { form.getValues(`events.${index}.location`) === "" ?
+                      { form.getValues(`events.${index}.name`) === "" ?
                       <CommandInput placeholder="Look up an event..." 
                       onKeyUp={(e)=> {
                         setSearchTerm(e.target.value);
@@ -205,7 +220,7 @@ const EditPostForm = ({date}) => {
                       :
                       <div className="flex flex-row w-full justify-between">
                         <CommandInput placeholder="Look up an event..."
-                        value={form.getValues(`events.${index}.location`)}
+                        value={form.getValues(`events.${index}.name`)}
                         onKeyUp={(e)=> {
                           setSearchTerm(e.target.value);
                         }}
@@ -213,6 +228,7 @@ const EditPostForm = ({date}) => {
                         />
                         <button
                         onMouseUp={() => {
+                          form.setValue(`events.${index}.name`, "");
                           form.setValue(`events.${index}.location`, "")
                           form.setValue(`events.${index}.tripAdvisorLocationId`, "")
                         }}
@@ -229,6 +245,7 @@ const EditPostForm = ({date}) => {
                             <CommandItem
                               key={result.tripAdvisorLocationId}
                               onMouseUp={() => {
+                                form.setValue(`events.${index}.name`, result.name);
                                 form.setValue(`events.${index}.location`, result.name);
                                 form.setValue(`events.${index}.tripAdvisorLocationId`, result.tripAdvisorLocationId);
                                 setSearchTerm("");

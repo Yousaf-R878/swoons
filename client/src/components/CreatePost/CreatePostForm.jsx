@@ -62,7 +62,7 @@ const CreatePostForm = () => {
   const { initialized, currentUser } = useContext(AuthorizeContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  console.log(currentUser)
+
 
   useEffect(() => {
     if (searchTerm === "") {

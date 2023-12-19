@@ -134,16 +134,18 @@ router.route("/").post(async (req, res) => {
 });
 
 //ROUTE FOR DELETING DATE BY ID
-router.route("/:id").delete(async (req, res) => {
-    let id = req.params.id;
+router.route("/:userId/:dateId").delete(async (req, res) => {
+    let userId = req.params.userId;
+    let dateId = req.params.dateId;
     try {
-        id = helpers.checkId(id, "ID");
+        dateId = helpers.checkId(dateId, "Date ID");
+        //check userID
     } catch (e) {
         return res.status(400).json({ error: e });
     }
 
     try {
-        let deletedDate = await dateFuncts.deleteDate(id);
+        let deletedDate = await dateFuncts.deleteDate(dateId, userId);
         return res.status(200).json(deletedDate);
     } catch (e) {
         return res.status(404).json({ error: e });

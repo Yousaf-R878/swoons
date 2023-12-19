@@ -1,10 +1,11 @@
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
-import React, { useMemo } from "react";
+import React, { useMemo, useContext } from "react";
 import Carousel from "nuka-carousel";
 import clsx from "clsx";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { AuthorizeContext } from "../../contexts/auth";
 import {
   Card,
   CardContent,
@@ -36,6 +37,7 @@ const timeStampToDate = (timeStamp) => {
 const Post = ({ date }) => {
   // const { name, username, title, badges, likes, comments } = cardInfo;
   // conglomerate first image of every event into an images array
+  const { initialized, currentUser } = useContext(AuthorizeContext);
   const images = date.events.map((event) => event.tripAdvisorLocationImages[0]);
   return (
     <Card className="post-card bg-white shadow-md rounded-lg overflow-hidden max-w-md mx-auto flex flex-col">
@@ -72,8 +74,9 @@ const Post = ({ date }) => {
           <span>{date.commentsCount}</span>
         </div>
         
-        <EditPost date={date} />
-          
+        {currentUser && currentUser.username === date.creator.username ? (
+          <EditPost date={date} />
+        ): (<></>)}
         <Dialog>
           <DialogTrigger>
             <Button
