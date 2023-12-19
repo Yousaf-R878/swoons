@@ -58,8 +58,8 @@ const EditPostForm = ({date}) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: date.title,
-      tags: date.tags,
-      events: date.events,
+      tagArray: date.tags,
+      eventArray: date.events,
     },
   });
 
