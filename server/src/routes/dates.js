@@ -72,9 +72,10 @@ router.route("/:id").get(async (req, res) => {
 //ROUTE TO CREATE A NEW DATE
 router.route("/").post(async (req, res) => {
     let title = req.body.title;
-    let tagArray = req.body.tagArray;
-    let eventArray = req.body.eventArray;
+    let tagArray = req.body.tags;
+    let eventArray = req.body.events;
     let userId = req.body.userId;
+    console.log(req.body);
     try {
         title = helpers.checkTitle(title, "Title");
         tagArray = helpers.checkTagArray(tagArray, "Tag Array");
