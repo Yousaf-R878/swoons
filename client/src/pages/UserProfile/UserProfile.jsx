@@ -119,21 +119,13 @@ const UserProfile = () => {
             // console.log(updatedUser);
             let updatedUser = {...user, uploadToggle: !user.uploadToggle}
             console.log(updatedUser, 'updarted');
-            setUser(user => ({
-              ...user,
-              uploadToggle: !user.uploadToggle
-            }));
+            setUser(updatedUser);
         
             // File successfully uploaded
             setFile(null);
             });
     }
 }
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUser({ ...user, [name]: value });
-  };
 
   const onSubmit = (data) => {
     console.log(data);
