@@ -24,6 +24,7 @@ import * as z from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name required" }),
@@ -85,7 +86,7 @@ const UserProfile = () => {
         //File params
         const params = {
             Bucket: S3_BUCKET,
-            Key: file.name,
+            Key: `${currentUser._id}_${file.name}`,
             Body: file,
         };
 
@@ -99,11 +100,22 @@ const UserProfile = () => {
             })
             .promise();
 
-        await upload.then((err, data) => {
+        await upload.then(async (err, data) => {
             console.log(err);
             console.log(data);
-            console.log(`https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`)
-            // Fille successfully uploaded
+            let url = `https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`;
+            let apiUrl = import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`
+            let changeUser = await axios({
+              method: 'post',
+              url: apiUrl,
+              headers: {},
+              data: {
+                url: url
+              }
+            })
+            currentUser.profilePic = `https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`
+        
+            // File successfully uploaded
             alert("File uploaded successfully.");
             setFile(null);
             });
@@ -135,7 +147,7 @@ const UserProfile = () => {
           <Button variant="danger">Delete Picture</Button>
           <p className="text-gray-600 text-xs">
             Your account was created on{" "}
-            {timeStampToDate(currentUser.accountCreationDate)}
+            {currentUser && timeStampToDate(currentUser.accountCreationDate)}
           </p>
         </div>
         <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
