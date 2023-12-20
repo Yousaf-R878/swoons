@@ -148,9 +148,31 @@ const UserProfile = () => {
     }
 }
 
-  const onSubmit = (data) => {
+  const resetPic = () => {
+
+  }
+
+  const onSubmit = async (data) => {
     console.log(data);
-    let firstName = data.firstName
+    let firstName = data.firstName;
+    let lastName = data.lastName;
+    let username = data.username;
+    let password = '';
+
+    let apiUrl = import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`
+    let changeUser = await axios({
+      method: 'patch',
+      url: apiUrl,
+      headers: {},
+      data: {
+        firstName: firstName,
+        lastName: lastName,
+        username: username
+      }
+    })
+
+    let updatedUser = {...user, firstName: firstName, lastName: lastName, username: username}
+    setUser(updatedUser);
   };
 
   return (
@@ -181,7 +203,7 @@ const UserProfile = () => {
           </form>
           
           <Button className="mb-2" onClick={uploadFile} >Change Picture</Button>
-          <Button variant="danger">Delete Picture</Button>
+          <Button variant="danger" onClick={resetPic}>Delete Picture</Button>
           <p className="text-gray-600 text-xs">
             Your account was created on{" "}
             {user && timeStampToDate(user.accountCreationDate)}
