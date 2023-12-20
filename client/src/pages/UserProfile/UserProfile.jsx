@@ -148,7 +148,61 @@ const UserProfile = () => {
     }
 }
 
-  const resetPic = () => {
+  const resetPic = async () => {
+    //  //S3 Bucket Name
+    //  const S3_BUCKET = "swoons-photos";
+
+    //  //Bucket Region
+    //  const REGION = "us-east-1";
+
+    //  //Authenticate with AWS
+    //  AWS.config.update({
+    //      accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY,
+    //      secretAccessKey: import.meta.env.VITE_AWS_SECRET_KEY,
+    //  });
+
+    //  //Initialize S3 Bucket Object
+    //  const s3 = new AWS.S3({
+    //      params: { Bucket: S3_BUCKET },
+    //      region: REGION,
+    //  });
+
+    //  //Delete Params
+    //  const params = {
+    //      Bucket: S3_BUCKET,
+    //      Key: `${currentUser._id}_profile_pic.png`,
+    //  };
+
+    //  let deleteFile = s3
+    //  .deleteObject(params)
+    //  .on("httpUploadProgress", (evt) => {
+    //      // File uploading progress
+    //      console.log(
+    //      "Deleting " + parseInt((evt.loaded * 100) / evt.total) + "%"
+    //      );
+    //  })
+    //  .promise();
+
+    //  await deleteFile.then(async (err, data) => {
+    //     console.log(data);
+    //     if (err) {
+    //       console.log(err)
+    //       console.log("File not there");
+    //     } else {
+    //       console.log("File deleted");
+    //     }
+
+    //   })
+
+      let apiUrl = import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`
+      let changeUser = await axios({
+        method: 'post',
+        url: apiUrl,
+        headers: {},
+        data: {
+          url: "https://swoons-photos.s3.amazonaws.com/default_profile.png"
+        }
+      })
 
   }
 
