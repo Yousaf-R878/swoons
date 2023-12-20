@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import AWS from "aws-sdk";
+import { useContext } from "react";
+import { AuthorizeContext } from "../../contexts/auth";
 
 import NavbarExplore from "@/src/components/Navbar/NavbarExplore";
 
@@ -26,19 +29,7 @@ const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name required" }),
   lastName: z.string().min(1, { message: "Last name required" }),
   password: z.string().min(1, { message: "Password required" }),
-  bio: z.string().min(1, { message: "Bio required" }),
 });
-
-const fakeUser = {
-  id: "1",
-  firstName: "John",
-  lastName: "Doe",
-  email: "johndoe@gmail.com",
-  password: "password",
-  profilePic: profilePic,
-  accountCreationDate: "2021-10-01T00:00:00.000Z",
-  bio: "",
-};
 
 const timeStampToDate = (timeStamp) => {
   const date = new Date(timeStamp);
@@ -49,19 +40,75 @@ const timeStampToDate = (timeStamp) => {
 };
 
 const UserProfile = () => {
-  const [user, setUser] = useState(fakeUser);
+  const { currentUser } = useContext(AuthorizeContext);
+  const [user, setUser] = useState(currentUser);
+  const [file, setFile] = useState(null);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: fakeUser.firstName,
-      lastName: fakeUser.lastName,
-      email: fakeUser.email,
+      firstName: currentUser.firstName,
+      lastName: currentUser.lastName,
+      email: currentUser.email,
       password: "", // Clear the password field
-      accountCreationDate: fakeUser.accountCreationDate,
-      bio: fakeUser.bio,
+      accountCreationDate: currentUser.accountCreationDate,
     },
   });
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFile(file);
+}
+
+  const uploadFile = async () => {
+    if (!file) {
+        return;
+    } else {
+        //S3 Bucket Name
+        const S3_BUCKET = "swoons-photos";
+
+        //Bucket Region
+        const REGION = "us-east-1";
+
+        //Authenticate with AWS
+        AWS.config.update({
+            accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY,
+            secretAccessKey: import.meta.env.VITE_AWS_SECRET_KEY,
+        });
+
+        //Initialize S3 Bucket Object
+        const s3 = new AWS.S3({
+            params: { Bucket: S3_BUCKET },
+            region: REGION,
+        });
+
+        //File params
+        const params = {
+            Bucket: S3_BUCKET,
+            Key: file.name,
+            Body: file,
+        };
+
+        let upload = s3
+            .putObject(params)
+            .on("httpUploadProgress", (evt) => {
+                // File uploading progress
+                console.log(
+                "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
+                );
+            })
+            .promise();
+
+        await upload.then((err, data) => {
+            console.log(err);
+            console.log(data);
+            console.log(`https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`)
+            // Fille successfully uploaded
+            alert("File uploaded successfully.");
+            setFile(null);
+            });
+    }
+}
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -79,15 +126,16 @@ const UserProfile = () => {
           <h1 className="text-2xl font-semibold mb-6">Profile Picture</h1>
           <div className="mb-4">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={fakeUser.profilePic} alt="Profile" />
-              <AvatarFallback>{fakeUser.firstName[0]}</AvatarFallback>
+              <AvatarImage src={currentUser.profilePic} alt="Profile" />
+              <AvatarFallback>{currentUser.firstName[0]}</AvatarFallback>
             </Avatar>
           </div>
-          <Button className="mb-2">Change Picture</Button>
+          <input type="file" onChange={handleFileChange} />
+          <Button className="mb-2" onClick={uploadFile} >Change Picture</Button>
           <Button variant="danger">Delete Picture</Button>
           <p className="text-gray-600 text-xs">
             Your account was created on{" "}
-            {timeStampToDate(fakeUser.accountCreationDate)}
+            {timeStampToDate(currentUser.accountCreationDate)}
           </p>
         </div>
         <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
@@ -135,20 +183,6 @@ const UserProfile = () => {
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
                       <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bio</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
