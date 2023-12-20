@@ -58,21 +58,19 @@ const timeStampToDate = (timeStamp) => {
 };
 
 const UserProfile = () => {
-  const { currentUser } = useContext(AuthorizeContext);
-  const [user, setUser] = useState({...currentUser, uploadToggle: false});
-  console.log(user);
+  const { currentUser, updateUser } = useContext(AuthorizeContext);
   const [file, setFile] = useState(null);
   const [fileName, setfileName] = useState("No file chosen");
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
+      firstName: currentUser.firstName,
+      lastName: currentUser.lastName,
+      email: currentUser.email,
       password: "", // Clear the password field
-      username: user.username,
-      accountCreationDate: user.accountCreationDate,
+      username: currentUser.username,
+      accountCreationDate: currentUser.accountCreationDate,
     },
   });
 
@@ -134,12 +132,7 @@ const UserProfile = () => {
                 url: url
               }
             })
-            // let updatedUser = {...user};
-            // updatedUser.picture =`https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`
-            // console.log(updatedUser);
-            let updatedUser = {...user, uploadToggle: !user.uploadToggle}
-            console.log(updatedUser, 'updarted');
-            setUser(updatedUser);
+           updateUser({...currentUser, picture: `https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}` })
         
             // File successfully uploaded
             setFile(null);
@@ -203,7 +196,8 @@ const UserProfile = () => {
           url: "https://swoons-photos.s3.amazonaws.com/default_profile.png"
         }
       })
-
+      console.log("Profile Pic deleted");
+      updateUser({...currentUser, picture: "https://swoons-photos.s3.amazonaws.com/default_profile.png", uploadToggle: !currentUser.uploadToggle })
   }
 
   const onSubmit = async (data) => {
@@ -225,8 +219,8 @@ const UserProfile = () => {
       }
     })
 
-    let updatedUser = {...user, firstName: firstName, lastName: lastName, username: username}
-    setUser(updatedUser);
+    let updatedUser = {...currentUser, firstName: firstName, lastName: lastName, username: username}
+    updateUser(updatedUser);
   };
 
   return (
@@ -236,8 +230,8 @@ const UserProfile = () => {
           <h1 className="text-2xl font-semibold mb-6">Profile Picture</h1>
           <div className="mb-4">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={user.picture} alt="Profile" />
-              <AvatarFallback>{user.firstName[0]}</AvatarFallback>
+              <AvatarImage src={currentUser.picture} alt="Profile" />
+              <AvatarFallback>{currentUser.firstName[0]}</AvatarFallback>
             </Avatar>
           </div>
           <form>
@@ -260,7 +254,7 @@ const UserProfile = () => {
           <Button variant="danger" onClick={resetPic}>Delete Picture</Button>
           <p className="text-gray-600 text-xs">
             Your account was created on{" "}
-            {user && timeStampToDate(user.accountCreationDate)}
+            {currentUser && timeStampToDate(currentUser.accountCreationDate)}
           </p>
         </div>
         <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
