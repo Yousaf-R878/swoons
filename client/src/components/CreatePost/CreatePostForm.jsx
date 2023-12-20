@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AuthorizeContext } from "../../contexts/auth";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import {
@@ -55,12 +56,13 @@ const CreatePostForm = () => {
     defaultValues: {
       title: "",
       tags: [],
-      events: [{ location: "", description: "", tripAdvisorLocationId: "" }],
+      events: [{ name: "", location: "", description: "", tripAdvisorLocationId: "" }],
     },
   });
-
+  const { initialized, currentUser } = useContext(AuthorizeContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -83,7 +85,7 @@ const CreatePostForm = () => {
 
   const handleAddEvent = () => {
     const newEvents = form.getValues("events");
-    newEvents.push({ location: "", description: "", tripAdvisorLocationId: "" });
+    newEvents.push({ name: "", location: "", description: "", tripAdvisorLocationId: "" });
     form.setValue("events", newEvents);
   };
 
@@ -116,7 +118,15 @@ const CreatePostForm = () => {
   };
 
   const handleSubmitData = (data) => {
+    console.log("submitting")
+    data.events = form.getValues("events")
+    data["userId"] = currentUser._id;
     console.log(data);
+    apiClient.createDate(data).then(({ data }) => {
+      console.log(data);
+    }).catch((error) => {
+      console.log(error);
+    });
   };
 
   return (
@@ -192,7 +202,7 @@ const CreatePostForm = () => {
                   <FormControl>
                     <Command>
                       {/* this goofy ahh workaround is required because commandinput cant have a {...field}... lovely */}
-                      { form.getValues(`events.${index}.location`) === "" ?
+                      { form.getValues(`events.${index}.name`) === "" ?
                       <CommandInput placeholder="Look up an event..." 
                       onKeyUp={(e)=> {
                         setSearchTerm(e.target.value);
@@ -201,7 +211,7 @@ const CreatePostForm = () => {
                       :
                       <div className="flex flex-row w-full justify-between">
                         <CommandInput placeholder="Look up an event..."
-                        value={form.getValues(`events.${index}.location`)}
+                        value={form.getValues(`events.${index}.name`)}
                         onKeyUp={(e)=> {
                           setSearchTerm(e.target.value);
                         }}
@@ -209,6 +219,7 @@ const CreatePostForm = () => {
                         />
                         <button
                         onMouseUp={() => {
+                          form.setValue(`events.${index}.name`, "");
                           form.setValue(`events.${index}.location`, "")
                           form.setValue(`events.${index}.tripAdvisorLocationId`, "")
                         }}
@@ -225,7 +236,8 @@ const CreatePostForm = () => {
                             <CommandItem
                               key={result.tripAdvisorLocationId}
                               onMouseUp={() => {
-                                form.setValue(`events.${index}.location`, result.name);
+                                form.setValue(`events.${index}.name`, result.name);
+                                form.setValue(`events.${index}.location`, result.location)
                                 form.setValue(`events.${index}.tripAdvisorLocationId`, result.tripAdvisorLocationId);
                                 setSearchTerm("");
                               }}
@@ -242,6 +254,13 @@ const CreatePostForm = () => {
                 </FormItem>
               )}
             />
+            {/* <FormField 
+              control={form.control}
+              name={`events.${index}.name`}
+              render = {({ field }) => (
+                {form.setValue(`events.${index}.name`, field.value)}
+              )}
+            /> */}
             <FormField
               control={form.control}
               name={`events.${index}.description`}

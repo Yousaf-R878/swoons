@@ -17,16 +17,6 @@ router.route("/me").get(security.checkAuth, async (req, res) => {
   }
 });
 
-// Do we actually need this????
-// router.route("/").get(async (req, res) => {
-//   try {
-//     let allUsers = await userFuncs.getAll();
-//     return res.status(200).json(allUsers);
-//   } catch (e) {
-//     return res.status(500).json({ error: e });
-//   }
-// });
-
 router.route("/signup").post(async (req, res) => {
   let userInfo = req.body;
   if (!userInfo || Object.keys(userInfo).length === 0) {
@@ -34,24 +24,29 @@ router.route("/signup").post(async (req, res) => {
       .status(400)
       .json({ error: "There are no fields in the request body" });
   }
-  let id = userInfo.id; //ADD VALIDATION FOR THIS!!!!!
+  let id = userInfo.id;
   let firstName = userInfo.firstName;
   let lastName = userInfo.lastName;
-  let username = userInfo.username; //ADD VALIDATION FOR THIS!!!!!
+  let username = userInfo.username;
   let email = userInfo.email;
-  let password = userInfo.password;
 
   try {
-    //VALIDATE FIELDS
+    id = helpers.checkUserId(id, "ID");
     firstName = helpers.checkName(firstName, "First Name");
     lastName = helpers.checkName(lastName, "Last Name");
     email = helpers.checkEmail(email, "Email");
-    password = helpers.checkPassword(password, "Password");
+    username = helpers.checkUsername(username, "Username");
 
     const usersCollection = await users();
     let userExists = await usersCollection.findOne({ email: email });
     if (userExists) {
       throw `User with that email (${email}) already exists!`;
+    }
+    const usernameExists = await usersCollection.findOne({
+      username: username,
+    });
+    if (usernameExists) {
+      throw `User with that username (${username}) already exists!`;
     }
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -63,13 +58,28 @@ router.route("/signup").post(async (req, res) => {
       firstName,
       lastName,
       email,
-      username,
-      password
+      username
     );
     return res.status(200).json(newUser);
   } catch (e) {
     console.log(e);
     return res.status(500).json({ error: e });
+  }
+});
+
+router.route("/user/checkUsernames/:username").get(async (req, res) => {
+  let username = req.params.username;
+  try {
+    username = helpers.checkUsername(username, "Username");
+    const usernameExists = await usersCollection.findOne({
+      username: username,
+    });
+    if (usernameExists) {
+      return res.status(200).json({ exists: true });
+    }
+    return res.status(200).json({ exists: false });
+  } catch (e) {
+    return res.status(400).json({ error: e });
   }
 });
 
@@ -79,7 +89,7 @@ router
     let id = req.params.id;
 
     try {
-      // id = helpers.checkId(id, "ID");
+      id = helpers.checkUserId(id, "User ID");
     } catch (e) {
       return res.status(400).json({ error: e });
     }
@@ -135,12 +145,10 @@ router
     let id = req.params.id;
 
     try {
-      id = helpers.checkId(id, "ID");
+      id = helpers.checkUserId(id, "ID");
     } catch (e) {
       return res.status(400).json({ error: e });
     }
-
-    const usersCollection = await users();
     let user;
 
     try {
@@ -157,24 +165,12 @@ router
 
     let firstName = userInfo.firstName;
     let lastName = userInfo.lastName;
-    let password = userInfo.password;
-
-    if (!firstName) {
-      firstName = user.firstName;
-    }
-
-    if (!lastName) {
-      lastName = user.lastName;
-    }
-
-    if (!password) {
-      password = user.password;
-    }
+    let username = userInfo.username;
 
     try {
       firstName = helpers.checkName(firstName, "First Name");
       lastName = helpers.checkName(lastName, "Last Name");
-      password = helpers.checkPassword(password, "Password");
+      username = helpers.checkUsername(username, "Username");
     } catch (e) {
       return res.status(400).json({ error: e });
     }
@@ -184,7 +180,7 @@ router
         id,
         firstName,
         lastName,
-        password
+        username
       );
       return res.status(200).json(updatedUser);
     } catch (e) {
@@ -195,7 +191,7 @@ router
     let id = req.params.id;
 
     try {
-      id = helpers.checkId(id, "ID");
+      id = helpers.checkUserId(id, "ID");
     } catch (e) {
       return res.status(400).json({ error: e });
     }
@@ -225,7 +221,7 @@ router
     let dateId = req.params.dateId;
 
     try {
-      userId = helpers.checkId(userId, "User ID");
+      userId = helpers.checkUserId(userId, "User ID");
       dateId = helpers.checkId(dateId, "Date ID");
     } catch (e) {
       return res.status(400).json({ error: e });
@@ -260,7 +256,7 @@ router
     let dateId = req.params.dateId;
 
     try {
-      userId = helpers.checkId(userId, "User Id");
+      userId = helpers.checkUserId(userId, "User Id");
       dateId = helpers.checkId(dateId, "Date Id");
     } catch (e) {
       return res.status(400).json({ error: e });
@@ -299,7 +295,7 @@ router
     let dateId = req.params.dateId;
 
     try {
-      userId = helpers.checkId(userId, "User Id");
+      userId = helpers.checkUserId(userId, "User Id");
       dateId = helpers.checkId(dateId, "Date Id");
     } catch (e) {
       return res.status(400).json({ error: e });
@@ -337,7 +333,7 @@ router
     let dateId = req.params.dateId;
 
     try {
-      userId = helpers.checkId(userId, "User Id");
+      userId = helpers.checkUserId(userId, "User Id");
       dateId = helpers.checkId(dateId, "Date Id");
     } catch (e) {
       return res.status(400).json({ error: e });
