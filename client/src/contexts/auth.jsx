@@ -84,12 +84,17 @@ const AuthorizeProvider = ({ children }) => {
     }
   };
 
+  const updateUser = async (user) => {
+    setCurrentUser(user);
+  }
+
   const passedProps = {
     registerUser,
     logoutUser,
     loginUser,
     initialized,
     currentUser,
+    updateUser
   };
 
   return (
