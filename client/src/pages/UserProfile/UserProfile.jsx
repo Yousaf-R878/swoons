@@ -27,9 +27,26 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 
 const formSchema = z.object({
-  firstName: z.string().min(1, { message: "First name required" }),
-  lastName: z.string().min(1, { message: "Last name required" }),
-  password: z.string().min(1, { message: "Password required" }),
+  firstName: z.string().min(2, { message: "First name must be at least 2 characters long" }).max(50, { message: "First name must be less than 50 characters long" }).regex(/^[a-zA-Z'-]+$/, { message: "Invalid first name format" }),
+  lastName: z.string().min(2, { message: "Last name must be at least 2 characters long" }).max(50, { message: "Last name must be less than 50 characters long" }).regex(/^[a-zA-Z'-]+$/, { message: "Invalid last name format" }),
+  username: z.string().min(3, { message: "Username must be at least 2 characters long" }).max(20, { message: "Username must be less than 20 characters long" }).regex(/^[a-z0-9]+$/i, { message: "Invalid username format" }),
+  password: z
+  .string()
+  .min(8, { message: "Password must be at least 8 characters long" })
+  .regex(/(?=.*[a-z])/, {
+    message: "Password must contain at least one lowercase letter",
+  })
+  .regex(/(?=.*[A-Z])/, {
+    message: "Password must contain at least one uppercase letter",
+  })
+  .regex(/(?=.*[0-9])/, {
+    message: "Password must contain at least one number",
+  })
+  .regex(/(?=.*[!@#$%^&*])/, {
+    message: "Password must contain at least one symbol (!@#$%^&*)",
+  })
+  .optional()
+  .or(z.literal(''))
 });
 
 const timeStampToDate = (timeStamp) => {
@@ -45,6 +62,7 @@ const UserProfile = () => {
   const [user, setUser] = useState({...currentUser, uploadToggle: false});
   console.log(user);
   const [file, setFile] = useState(null);
+  const [fileName, setfileName] = useState("No file chosen");
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -53,12 +71,14 @@ const UserProfile = () => {
       lastName: user.lastName,
       email: user.email,
       password: "", // Clear the password field
+      username: user.username,
       accountCreationDate: user.accountCreationDate,
     },
   });
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setfileName(file.name)
     setFile(file);
 }
 
@@ -123,12 +143,14 @@ const UserProfile = () => {
         
             // File successfully uploaded
             setFile(null);
+            setfileName("No file chosen")
             });
     }
 }
 
   const onSubmit = (data) => {
     console.log(data);
+    let firstName = data.firstName
   };
 
   return (
@@ -142,7 +164,22 @@ const UserProfile = () => {
               <AvatarFallback>{user.firstName[0]}</AvatarFallback>
             </Avatar>
           </div>
-          <input className="mb-2" type="file" onChange={handleFileChange} />
+          <form>
+            <div className="flex flex-row items-center mb-2">
+              <input id="custom-input" type="file" onChange={handleFileChange} hidden />
+              <label
+                htmlFor="custom-input"
+                className="block text-sm text-slate-500 mr-4 py-2 px-4
+                  rounded-md border-0 text-sm font-semibold bg-pink-50
+                  text-pink-700 hover:bg-pink-100 cursor-pointer"
+              >
+                Choose file
+              </label>
+              <label class="text-sm text-slate-500">{fileName}</label>
+            </div>
+
+          </form>
+          
           <Button className="mb-2" onClick={uploadFile} >Change Picture</Button>
           <Button variant="danger">Delete Picture</Button>
           <p className="text-gray-600 text-xs">
@@ -193,6 +230,20 @@ const UserProfile = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
