@@ -42,17 +42,18 @@ const timeStampToDate = (timeStamp) => {
 
 const UserProfile = () => {
   const { currentUser } = useContext(AuthorizeContext);
-  const [user, setUser] = useState(currentUser);
+  const [user, setUser] = useState({...currentUser, uploadToggle: false});
+  console.log(user);
   const [file, setFile] = useState(null);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: currentUser.firstName,
-      lastName: currentUser.lastName,
-      email: currentUser.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
       password: "", // Clear the password field
-      accountCreationDate: currentUser.accountCreationDate,
+      accountCreationDate: user.accountCreationDate,
     },
   });
 
@@ -86,7 +87,7 @@ const UserProfile = () => {
         //File params
         const params = {
             Bucket: S3_BUCKET,
-            Key: `${currentUser._id}_${file.name}`,
+            Key: `${currentUser._id}_profile_pic.png`,
             Body: file,
         };
 
@@ -113,10 +114,17 @@ const UserProfile = () => {
                 url: url
               }
             })
-            currentUser.profilePic = `https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`
+            // let updatedUser = {...user};
+            // updatedUser.picture =`https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`
+            // console.log(updatedUser);
+            let updatedUser = {...user, uploadToggle: !user.uploadToggle}
+            console.log(updatedUser, 'updarted');
+            setUser(user => ({
+              ...user,
+              uploadToggle: !user.uploadToggle
+            }));
         
             // File successfully uploaded
-            alert("File uploaded successfully.");
             setFile(null);
             });
     }
@@ -138,16 +146,16 @@ const UserProfile = () => {
           <h1 className="text-2xl font-semibold mb-6">Profile Picture</h1>
           <div className="mb-4">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={currentUser.profilePic} alt="Profile" />
-              <AvatarFallback>{currentUser.firstName[0]}</AvatarFallback>
+              <AvatarImage src={user.picture} alt="Profile" />
+              <AvatarFallback>{user.firstName[0]}</AvatarFallback>
             </Avatar>
           </div>
-          <input type="file" onChange={handleFileChange} />
+          <input className="mb-2" type="file" onChange={handleFileChange} />
           <Button className="mb-2" onClick={uploadFile} >Change Picture</Button>
           <Button variant="danger">Delete Picture</Button>
           <p className="text-gray-600 text-xs">
             Your account was created on{" "}
-            {currentUser && timeStampToDate(currentUser.accountCreationDate)}
+            {user && timeStampToDate(user.accountCreationDate)}
           </p>
         </div>
         <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
