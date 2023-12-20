@@ -72,9 +72,10 @@ router.route("/:id").get(async (req, res) => {
 //ROUTE TO CREATE A NEW DATE
 router.route("/").post(async (req, res) => {
     let title = req.body.title;
-    let tagArray = req.body.tagArray;
-    let eventArray = req.body.eventArray;
+    let tagArray = req.body.tags;
+    let eventArray = req.body.events;
     let userId = req.body.userId;
+    console.log(req.body);
     try {
         title = helpers.checkTitle(title, "Title");
         tagArray = helpers.checkTagArray(tagArray, "Tag Array");
@@ -133,16 +134,18 @@ router.route("/").post(async (req, res) => {
 });
 
 //ROUTE FOR DELETING DATE BY ID
-router.route("/:id").delete(async (req, res) => {
-    let id = req.params.id;
+router.route("/:userId/:dateId").delete(async (req, res) => {
+    let userId = req.params.userId;
+    let dateId = req.params.dateId;
     try {
-        id = helpers.checkId(id, "ID");
+        dateId = helpers.checkId(dateId, "Date ID");
+        //check userID
     } catch (e) {
         return res.status(400).json({ error: e });
     }
 
     try {
-        let deletedDate = await dateFuncts.deleteDate(id);
+        let deletedDate = await dateFuncts.deleteDate(dateId, userId);
         return res.status(200).json(deletedDate);
     } catch (e) {
         return res.status(404).json({ error: e });
