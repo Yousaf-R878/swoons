@@ -75,7 +75,6 @@ try {
         userId: randomUserId,
       });
 
-      console.log(createdDate.data._id);
       dateIds.push(createdDate.data._id); // Store the date ID for later
       console.log(`Date ${dateData.title} created successfully.`);
     } catch (e) {

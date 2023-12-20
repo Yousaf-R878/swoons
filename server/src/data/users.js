@@ -145,7 +145,7 @@ export let likeADate = async (userId, dateId) => {
   }
 
   let addInfo = await usersCollection.findOneAndUpdate(
-    { _id: new ObjectId(userId) },
+    { _id: userId },
     { $push: { likedDates: dateId } },
     { returnDocument: "after" }
   );
@@ -178,7 +178,7 @@ export let unlikeADate = async (userId, dateId) => {
   }
 
   let removeInfo = await usersCollection.findOneAndUpdate(
-    { _id: new ObjectId(userId) },
+    { _id: userId },
     { $pull: { likedDates: dateId } },
     { returnDocument: "after" }
   );
@@ -234,7 +234,7 @@ export let removeDate = async (userId, dateId) => {
   }
 
   let removeInfo = await usersCollection.findOneAndUpdate(
-    { _id: new ObjectId(userId) },
+    { _id: userId },
     { $pull: { dates: dateId } },
     { returnDocument: "after" }
   );
