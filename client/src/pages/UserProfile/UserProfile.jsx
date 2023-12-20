@@ -132,7 +132,10 @@ const UserProfile = () => {
                 url: url
               }
             })
-           updateUser({...currentUser, picture: `https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}` })
+
+            // let updatedUser = {...currentUser, uploadToggle: !currentUser.uploadToggle}
+            // console.log(updatedUser);
+            // updateUser(updatedUser)
         
             // File successfully uploaded
             setFile(null);
