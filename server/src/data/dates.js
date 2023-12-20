@@ -125,16 +125,26 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
   return date;
 };
 
-export const deleteDate = async (id) => {
-  id = helpers.checkId(id, "Date ID");
-  const dateCollection = await dates();
-  const date = await getDate(id);
-  //TODO DELETE ID FROM THE USER
-  const deletionInfo = await dateCollection.removeOne({
-    _id: new ObjectId(id),
-  });
-  if (deletionInfo.deletedCount === 0) throw "Could not delete date";
-  return date;
+export const deleteDate = async (dateId, userId) => {
+    dateId = helpers.checkId(dateId, "Date ID");
+    const dateCollection = await dates();
+    //TODO DELETE ID FROM THE USER
+    const userCollection = await users();
+    const updateInfo = await userCollection.updateOne(
+        { _id: userId },
+        { $pull: { dates: dateId } },
+        { returnDocument: "after" }
+    );
+    if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
+        throw "Could not delete date from user";
+        
+    const deletionInfo = await dateCollection.deleteOne({
+        _id: new ObjectId(dateId),
+    }, {returnDocument: "after"});
+    if (deletionInfo.deletedCount === 0) {
+        throw `Could not delete date with id of ${id}`;
+    }
+    return deletionInfo; 
 };
 
 //TODO: CHANGE TO IMAGEURL ARRAY AND THEN UPDATE FRONTEND TO HAVE MULTIPLE IMAGES PER LOCATION

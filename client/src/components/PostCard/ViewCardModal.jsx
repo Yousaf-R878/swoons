@@ -10,8 +10,14 @@ import { MessagesSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+import { useEffect } from "react";
   
-const ViewCardModal = ({date, timeStampToDate}) => {
+const ViewCardModal = ({date, timeStampToDate, Carousel}) => {
+
+    useEffect(() => {
+        console.log(date);
+    }
+    )
 
     return (
         <DialogContent className="sm:max-w-[925px] sm:max-h-[700px] overflow-y-auto">
@@ -37,18 +43,18 @@ const ViewCardModal = ({date, timeStampToDate}) => {
                 <Separator/>
             </DialogHeader>
             <div className="flex items-center my-4 flex-col">
-                {/* {works.map((work, index) => (
+                {date.events.map((event, index) => (
                     <div key={index} className="flex justify-between items-center w-full py-10">
-                        <img src={work.art} alt={work.artist} className="w-40 h-40 mr-4 object-cover rounded-sm" />
-                        <div className="flex w-full flex-col px-2">
+                        <Carousel images={event.tripAdvisorLocationImages} classStuff ="w-56 h-56 mr-4  rounded-sm" imgWidth="14rem" imgHeight="14rem"/>
+                        <div className="flex w-full flex-col px-10">
                             <div className="flex flex-col justify-center items-start text-xl font-bold">
-                                <h2>{work.title}</h2>
+                                <h2>{event.name}</h2>
                                 <Separator/>
                             </div>
-                            <p className="pt-4">{work.description}</p>
+                            <p className="pt-4">{event.description}</p>
                         </div>
                     </div>
-                ))} */}
+                ))}
             </div>
             <Separator />
             <DialogFooter>

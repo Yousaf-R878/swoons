@@ -81,7 +81,7 @@ export let remove = async (id) => {
 
   let usersCollection = await users();
   let deletionInfo = await usersCollection.findOneAndDelete({
-    _id: new ObjectId(id),
+    _id: id,
   });
 
   const firebaseUser = await getAuth().getUser(id);
@@ -131,6 +131,7 @@ export let update = async (id, firstName, lastName, username) => {
 };
 
 export let likeADate = async (userId, dateId) => {
+
   userId = helpers.checkUserId(userId, `User (${userId})'s Id`);
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
@@ -165,7 +166,9 @@ export let likeADate = async (userId, dateId) => {
 };
 
 export let unlikeADate = async (userId, dateId) => {
+
   userId = helpers.checkUserId(userId, `User (${userId})'s Id`);
+
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
   let usersCollection = await users();

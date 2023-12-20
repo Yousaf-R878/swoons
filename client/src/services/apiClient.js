@@ -73,6 +73,21 @@ class ApiClient {
             method: `GET`,
         });
     }
+
+    async createDate(date) {
+        return await this.request({
+            endpoint: `dates`,
+            method: `POST`,
+            data: date,
+        });
+    }
+
+    async removeDate(userId, dateId) {
+        return await this.request({
+            endpoint: `dates/${userId}/${dateId}`,
+            method: `DELETE`
+        });
+    }
 }
 
 const API = new ApiClient(import.meta.env.VITE_API_URL); // A little unsecure but whatever

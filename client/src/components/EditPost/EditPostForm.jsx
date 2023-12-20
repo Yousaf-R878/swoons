@@ -50,19 +50,22 @@ const formSchema = z.object({
     .nonempty({ message: "At least one event is required" }),
 });
 
-const CreatePostForm = () => {
+const EditPostForm = ({date}) => {
+    console.log(date)
+    const tags = date.tags;
+    const title = date.title;
+  
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      tags: [],
-      events: [{ name: "", location: "", description: "", tripAdvisorLocationId: "" }],
+      title: date.title,
+      tags: date.tags,
+      events: date.events,
     },
   });
   const { initialized, currentUser } = useContext(AuthorizeContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -118,10 +121,16 @@ const CreatePostForm = () => {
   };
 
   const handleSubmitData = (data) => {
-    console.log("submitting")
     data.events = form.getValues("events")
     data["userId"] = currentUser._id;
+    console.log("Submitting")
     console.log(data);
+    apiClient.removeDate(currentUser._id, date._id).then(({ data }) => {
+      console.log("Removed Date:");
+      console.log(data);
+    }).catch((error) => {
+      console.log(error);
+    });
     apiClient.createDate(data).then(({ data }) => {
       console.log(data);
     }).catch((error) => {
@@ -142,7 +151,7 @@ const CreatePostForm = () => {
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Date Title" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -153,6 +162,7 @@ const CreatePostForm = () => {
           name="tags"
           render={({ field }) => {
             console.log(field);
+            console.log(tags)
             return (
               <FormItem>
                 <FormLabel>Tags</FormLabel>
@@ -201,7 +211,6 @@ const CreatePostForm = () => {
                   <FormLabel>Location</FormLabel>
                   <FormControl>
                     <Command>
-                      {/* this goofy ahh workaround is required because commandinput cant have a {...field}... lovely */}
                       { form.getValues(`events.${index}.name`) === "" ?
                       <CommandInput placeholder="Look up an event..." 
                       onKeyUp={(e)=> {
@@ -237,7 +246,7 @@ const CreatePostForm = () => {
                               key={result.tripAdvisorLocationId}
                               onMouseUp={() => {
                                 form.setValue(`events.${index}.name`, result.name);
-                                form.setValue(`events.${index}.location`, result.location)
+                                form.setValue(`events.${index}.location`, result.name);
                                 form.setValue(`events.${index}.tripAdvisorLocationId`, result.tripAdvisorLocationId);
                                 setSearchTerm("");
                               }}
@@ -254,13 +263,6 @@ const CreatePostForm = () => {
                 </FormItem>
               )}
             />
-            {/* <FormField 
-              control={form.control}
-              name={`events.${index}.name`}
-              render = {({ field }) => (
-                {form.setValue(`events.${index}.name`, field.value)}
-              )}
-            /> */}
             <FormField
               control={form.control}
               name={`events.${index}.description`}
@@ -291,7 +293,7 @@ const CreatePostForm = () => {
             type="submit"
             className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover w-full text-xl my-2"
           >
-            Create
+            Finish
           </Button>
         </div>
       </form>
@@ -299,4 +301,4 @@ const CreatePostForm = () => {
   );
 };
 
-export default CreatePostForm;
+export default EditPostForm;

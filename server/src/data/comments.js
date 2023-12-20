@@ -11,6 +11,7 @@ export const getAllComments = async (dateId) => {
 
 export const postComment = async (dateId, userId, comment) => {
     comment = helpers.checkComment(comment, "Comment");
+
     userId = helpers.checkUserId(userId, "User ID");
     dateId = helpers.checkId(dateId, "Date ID");
 
