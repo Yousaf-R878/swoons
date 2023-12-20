@@ -44,9 +44,7 @@ const formSchema = z.object({
 // };
 
 const timeStampToDate = (timeStamp) => {
-    console.log(timeStamp);
     const date = new Date(timeStamp);
-    console.log(date);
     const month = date.toLocaleString("default", { month: "long" });
     const day = date.getDate();
     const year = date.getFullYear();
