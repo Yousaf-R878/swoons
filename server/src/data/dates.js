@@ -74,7 +74,7 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
     title = helpers.checkTitle(title, "Date Title");
     tagArray = helpers.checkTagArray(tagArray, "Tag Array");
     eventArray = helpers.checkEventArray(eventArray, "Event Array");
-    userId = helpers.checkId(userId, "User ID");
+    userId = helpers.checkUserId(userId, "User ID");
 
     const dateCollection = await dates();
 

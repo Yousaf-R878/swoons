@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import * as EmailValidator from "email-validator";
+import { getAuth } from "firebase-admin/auth";
 
 export let checkString = (string, variableName) => {
   if (!string) {
@@ -22,6 +23,27 @@ export let checkAlphanumeric = (string, variableName) => {
     throw `${variableName} must be alphanumeric!`;
   }
   return string;
+};
+
+export let checkUsername = (username, variableName) => {
+  username = checkString(username, variableName);
+  if (username.length < 3 && username.length > 20) {
+    throw `${variableName} must be between 3 and 20 characters long`;
+  }
+  let regex = /^(?![_.])(?!.*[_.]{2})[a-zA-Z][a-zA-Z0-9._]+[a-zA-Z0-9]$/;
+  if (!regex.test(username)) {
+    throw `${variableName} must be alphanumeric and can only contain underscores and periods!`;
+  }
+  return username;
+};
+
+export let checkUserId = (id, variableName) => {
+  id = checkString(id, variableName);
+  const user = getAuth().getUser(id);
+  if (!user) {
+    throw `${variableName}: Invalid User Id`;
+  }
+  return id;
 };
 
 export let checkId = (id, variableName) => {
@@ -59,56 +81,21 @@ export let checkEmail = (email, variableName) => {
   return email;
 };
 
-export let checkPassword = (password, variableName) => {
-  /*
-    At least one uppercase, lowercase, number, and symbol
-    At least 8 chars long
-    Upper limit?
-    */
-  password = checkString(password, variableName);
-
-  if (password.length < 8) {
-    throw `${variableName} must be at least eight characters long`;
-  }
-
-  let uppercaseRegex = /[A-Z]/;
-  if (!uppercaseRegex.test(password)) {
-    throw `${variableName} must contain at least one uppercase letter`;
-  }
-
-  let lowercaseRegex = /[a-z]/;
-  if (!lowercaseRegex.test(password)) {
-    throw `${variableName} must contain at least one lowercase letter`;
-  }
-
-  let numberRegex = /\d/;
-  if (!numberRegex.test(password)) {
-    throw `${variableName} must contain at least one number`;
-  }
-
-  let symbolRegex = /[~`!@#$%^&*()_+\-={[}\]|:;"'<,>.?/]/;
-  if (!symbolRegex.test(password)) {
-    throw `${variableName} must contain at least one symbol`;
-  }
-
-  return password;
-};
-
 export let checkLocationName = (name, variableName) => {
-    name = checkString(name, variableName);
-    if (name.length < 1) {
-        throw `${variableName} must be at least one character long`;
-    }
-    if (name.length > 50) {
-        throw `${variableName} must be less than 50 characters long`;
-    }
+  name = checkString(name, variableName);
+  if (name.length < 1) {
+    throw `${variableName} must be at least one character long`;
+  }
+  if (name.length > 50) {
+    throw `${variableName} must be less than 50 characters long`;
+  }
 
-    // const eventNameRegex = /^[a-zA-Z0-9\s'-]+$/;
-    // if (!eventNameRegex.test(name)) {
-    //     throw `${variableName} (${name}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
-    // }
+  // const eventNameRegex = /^[a-zA-Z0-9\s'-]+$/;
+  // if (!eventNameRegex.test(name)) {
+  //     throw `${variableName} (${name}) must only contain letters, numbers, spaces, apostrophes, or hypens`;
+  // }
 
-    return name;
+  return name;
 };
 
 export let checkTitle = (title, variableName) => {

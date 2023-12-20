@@ -2,24 +2,14 @@ import * as helpers from "./helpers.js";
 import * as dateFuncs from "./dates.js";
 import { dates, users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
-import bcrypt from "bcrypt";
+import { getAuth } from "firebase-admin/auth";
 
 //User: { id: firstName: lastName: email: password: likedPosts: [] dates: [] picture }
-export let create = async (
-  id,
-  firstName,
-  lastName,
-  email,
-  username,
-  password
-) => {
-  //Input Validation
-  // Add validation for ids!!!!!!!
+export let create = async (id, firstName, lastName, email, username) => {
   firstName = helpers.checkName(firstName, "First Name");
   lastName = helpers.checkName(lastName, "Last Name");
-  username = helpers.checkAlphanumeric(username, "Username");
+  username = helpers.checkUsername(username, "Username");
   email = helpers.checkEmail(email, "Email");
-  password = helpers.checkPassword(password, "Password");
 
   //Check if email is already associated with user
   const usersCollection = await users();
@@ -27,9 +17,12 @@ export let create = async (
   if (userExists) {
     throw `User with that email (${email}) already exists!`;
   }
-
-  let saltRounds = 10;
-  let hashed_password = await bcrypt.hash(password, saltRounds);
+  const usernameExists = await usersCollection.findOne({
+    username: username,
+  });
+  if (usernameExists) {
+    throw `User with that username (${username}) already exists!`;
+  }
 
   let newUser = {
     _id: id,
@@ -37,7 +30,6 @@ export let create = async (
     lastName: lastName,
     email: email,
     username: username,
-    password: hashed_password,
     likedDates: [],
     dates: [],
     picture: "../public/default_profile_pic.jpg",
@@ -55,22 +47,8 @@ export let create = async (
   return user;
 };
 
-export let getAll = async () => {
-  let usersCollection = await users();
-  let usersList = await usersCollection.find({}).toArray();
-  if (!usersList) {
-    throw `Could not get all users`;
-  }
-
-  let returnList = usersList.map((user) => {
-    user._id = user._id.toString();
-    return user;
-  });
-  return returnList;
-};
-
 export let get = async (id) => {
-  //   id = helpers.checkId(id, "User ID");
+  id = helpers.checkUserId(id, "User ID");
 
   let usersCollection = await users();
   let user = await usersCollection.findOne({
@@ -87,16 +65,17 @@ export let get = async (id) => {
     lastName: user.lastName,
     username: user.username,
     email: user.email,
-    password: user.password,
     likedDates: user.likedDates,
     dates: user.dates,
     picture: user.picture,
+    accountCreationDate: user.accountCreationDate,
   };
   return returnUser;
 };
 
+// This has to be updated
 export let remove = async (id) => {
-  id = helpers.checkId(id, "User ID");
+  id = helpers.checkUserId(id, "User ID");
 
   let user = await get(id);
 
@@ -105,6 +84,11 @@ export let remove = async (id) => {
     _id: new ObjectId(id),
   });
 
+  const firebaseUser = await getAuth().getUser(id);
+  if (firebaseUser) {
+    await getAuth().deleteUser(firebaseUser.uid);
+  }
+
   if (!deletionInfo) {
     throw `Could not delete User with ID ${id}`;
   }
@@ -112,40 +96,26 @@ export let remove = async (id) => {
   return `User ${id} has been successfully deleted!`;
 };
 
-export let update = async (
-  id,
-  firstName,
-  lastName,
-  username,
-  email,
-  password
-) => {
-  id = helpers.checkId(id, `User (${id})'s Id`);
+export let update = async (id, firstName, lastName, username) => {
+  id = helpers.checkUserId(id, "User ID");
 
   let usersCollection = await users();
 
-  let user = await get(id);
-
   firstName = helpers.checkName(firstName, `User (${id})'s First Name`);
   lastName = helpers.checkName(lastName, `User (${id})'s Last Name`);
+  username = helpers.checkUsername(username, `User (${id})'s Username`);
 
-  username = helpers.checkAlphanumeric(username, `User (${id})'s Username`);
-  email = helpers.checkEmail(email, `User (${id})'s Email`);
-
-  password = helpers.checkPassword(password, `User (${id})'s Password`);
-
-  // let userPassHash = user.password;
-  // let compare = bcrypt.compare(password, userPassHash);
-  // if (compare){
-  //     throw `User (${id})'s `
-  // }
+  const usernameExists = await usersCollection.findOne({
+    username: username,
+  });
+  if (usernameExists && usernameExists._id.toString() !== id) {
+    throw `User with that username (${username}) already exists!`;
+  }
 
   let updatedUser = {
     firstName: firstName,
     lastName: lastName,
     username: username,
-    email: email,
-    password: password,
   };
   let updateInfo = await usersCollection.findOneAndUpdate(
     { _id: new ObjectId(id) },
@@ -161,7 +131,7 @@ export let update = async (
 };
 
 export let likeADate = async (userId, dateId) => {
-  userId = helpers.checkId(userId, `User (${userId})'s Id`);
+  userId = helpers.checkUserId(userId, `User (${userId})'s Id`);
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
   let usersCollection = await users();
@@ -195,7 +165,7 @@ export let likeADate = async (userId, dateId) => {
 };
 
 export let unlikeADate = async (userId, dateId) => {
-  userId = helpers.checkId(userId, `User (${userId})'s Id`);
+  userId = helpers.checkUserId(userId, `User (${userId})'s Id`);
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
   let usersCollection = await users();
@@ -250,7 +220,7 @@ export let unlikeADate = async (userId, dateId) => {
 // }
 
 export let removeDate = async (userId, dateId) => {
-  userId = helpers.checkId(userId, `User (${userId})'s Id`);
+  userId = helpers.checkUserId(userId, `User (${userId})'s Id`);
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
   let usersCollection = await users();
