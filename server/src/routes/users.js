@@ -61,7 +61,6 @@ router.route("/signup").post(async (req, res) => {
     );
     return res.status(200).json(newUser);
   } catch (e) {
-    console.log(e);
     return res.status(500).json({ error: e });
   }
 });
@@ -73,7 +72,6 @@ router.route("/checkUsernames/:username").get(async (req, res) => {
     let exists = await userFuncs.checkForUsername(username);
     return res.status(200).json({ exists: exists });
   } catch (e) {
-    console.log(e);
     return res.status(400).json({ error: e });
   }
 });
@@ -197,7 +195,7 @@ router
     let likedDates = user.likedDates;
 
     try {
-      if (likedDates.includes(dateId)) {
+      if (likedDates.includes(dateId.toString())) {
         throw `User (${userId}) already liked that date (${dateId})`;
       }
     } catch (e) {
@@ -205,8 +203,8 @@ router
     }
 
     try {
-      let addInfo = await userFuncs.addLikedDate(userId, dateId);
-      return res.status(200).json(addInfo);
+      let { success } = await userFuncs.likeADate(userId, dateId);
+      return res.status(200).json({ success: success });
     } catch (e) {
       return res.status(500).json({ error: e });
     }
@@ -234,7 +232,7 @@ router
     let likedDates = user.likedDates;
 
     try {
-      if (!likedDates.includes(dateId)) {
+      if (!likedDates.includes(dateId.toString())) {
         throw `User (${userId}) has not liked Date (${dateId})`;
       }
     } catch (e) {
@@ -242,8 +240,8 @@ router
     }
 
     try {
-      let deleteInfo = await userFuncs.removeLikedDate(userId, dateId);
-      return res.status(200).json(deleteInfo);
+      let { success } = await userFuncs.unlikeADate(userId, dateId);
+      return res.status(200).json({ success: success });
     } catch (e) {
       return res.status(500).json({ error: e });
     }

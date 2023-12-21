@@ -149,21 +149,21 @@ router.route("/").post(async (req, res) => {
 
 //ROUTE FOR DELETING DATE BY ID
 router.route("/:userId/:dateId").delete(async (req, res) => {
-    let userId = req.params.userId;
-    let dateId = req.params.dateId;
-    try {
-        dateId = helpers.checkId(dateId, "Date ID");
-        userId = helpers.checkUserId(userId, "User ID");
-    } catch (e) {
-        return res.status(400).json({ error: e });
-    }
+  let userId = req.params.userId;
+  let dateId = req.params.dateId;
+  try {
+    dateId = helpers.checkId(dateId, "Date ID");
+    userId = helpers.checkUserId(userId, "User ID");
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
 
-    try {
-        let deletedDate = await dateFuncts.deleteDate(dateId, userId);
-        return res.status(200).json(deletedDate);
-    } catch (e) {
-        return res.status(404).json({ error: e });
-    }
+  try {
+    let deletedDate = await dateFuncts.deleteDate(dateId, userId);
+    return res.status(200).json(deletedDate);
+  } catch (e) {
+    return res.status(404).json({ error: e });
+  }
 });
 
 //ROUTE FOR SEARCHING FOR LOCATIONS

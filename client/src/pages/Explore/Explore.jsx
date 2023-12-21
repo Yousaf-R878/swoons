@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import Post from "@/src/components/PostCard/Post";
 import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
@@ -24,7 +24,7 @@ const Explore = () => {
   const [selectedSort, setSelectedSort] = useState("disabled");
   const [dates, setDates] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const cardListRef = useRef(null); // Create a ref for the card list container
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -34,7 +34,6 @@ const Explore = () => {
       await new Promise((r) => setTimeout(r, 100));
       try {
         const response = await API.getDates(tags, selectedSort, currentPage);
-        // console.log(response);
         if (response.data) {
           setDates(response.data.dates);
           setTotalPages(response.data.totalPages);
@@ -49,6 +48,15 @@ const Explore = () => {
 
     fetchData();
   }, [tags, selectedSort, currentPage]);
+  useEffect(() => {
+    // Whenever currentPage changes, scroll to the top of the card list
+    if (cardListRef.current) {
+      window.scrollTo({
+        top: cardListRef.current.offsetTop,
+        behavior: "smooth",
+      });
+    }
+  }, [currentPage]);
 
   const goToNextPage = () => {
     setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
@@ -90,7 +98,7 @@ const Explore = () => {
 
   return (
     <>
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto p-4" ref={cardListRef}>
         <div className="w-full max-w-lg mx-auto">
           <div className="relative mb-2">
             <Input
@@ -106,9 +114,9 @@ const Explore = () => {
           </div>
           <div className="flex flex-wrap gap-2">
             {tags.map((badge, index) => (
-              <div
+              <Badge
                 key={index}
-                className="flex items-center bg-palecyan text-sm py-1 px-2.5 rounded-full mr-1 text-gray-500"
+                className="bg-blue-100 hover:bg-blue-200 transition-colors duration-300 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full"
               >
                 {badge}
                 <button
@@ -117,7 +125,7 @@ const Explore = () => {
                 >
                   <X size={17} />
                 </button>
-              </div>
+              </Badge>
             ))}
           </div>
         </div>
@@ -144,7 +152,7 @@ const Explore = () => {
         <div className="flex justify-center">
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
-              {[...Array(6)].map((_, index) => (
+              {[...Array(12)].map((_, index) => (
                 <PostSkeleton key={index} />
               ))}
             </div>
