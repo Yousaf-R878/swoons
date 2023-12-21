@@ -25,7 +25,7 @@ const Landing = () => {
       try {
         const response = await API.getDates([], "likes");
         if (response.data) {
-          setMostLikedDates(response.data.dates.slice(0, 5)); // Take the top 5 most liked dates
+          setMostLikedDates(response.data.dates.slice(0, 3)); // Take the top 3 most liked dates
         } else {
           console.error("Failed to fetch dates:", response.error);
         }
@@ -41,20 +41,17 @@ const Landing = () => {
     <>
       <Hero />
       <div className="my-8">
-        <h2 className="text-4xl text-center font-bold">Recent Activity</h2>
-        <div className="relative my-8 mx-4">
+        <h2 className="text-4xl text-center font-bold">Trending</h2>
+        <div className="relative my-8 mx-10">
           <div className="flex justify-center items-center">
             {isLoading ? (
               <LoadingProgress />
             ) : (
-              <ScrollArea className="w-full whitespace-nowrap rounded-md border-2">
-                <div className="flex w-max space-x-4 p-4">
-                  {mostLikedDates.map((date) => (
-                    <Post key={date._id} date={date} />
-                  ))}
-                </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
+                {mostLikedDates.map((date) => (
+                  <Post key={date._id} date={date} />
+                ))}
+              </div>
             )}
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthorizeContext } from "../../contexts/auth";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import * as z from "zod";
 import {
   Form,
@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import {
   Command,
   CommandDialog,
@@ -42,6 +43,7 @@ const formSchema = z.object({
   tags: z
     .array(z.string())
     .nonempty({ message: "You must add at least one tag" })
+    .max(6, { message: "You cannot have more than 6 tags" })
     .refine((items) => new Set(items).size === items.length, {
       message: "Cannot have duplicate tags",
     }),
@@ -56,13 +58,15 @@ const CreatePostForm = () => {
     defaultValues: {
       title: "",
       tags: [],
-      events: [{ name: "", location: "", description: "", tripAdvisorLocationId: "" }],
+      events: [
+        { name: "", location: "", description: "", tripAdvisorLocationId: "" },
+      ],
     },
   });
-  const { initialized, currentUser } = useContext(AuthorizeContext);
+  const { currentUser } = useContext(AuthorizeContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -70,22 +74,32 @@ const CreatePostForm = () => {
       return;
     }
     const delayDebounceFn = setTimeout(() => {
-      // Send Axios request here
-      apiClient.getEvents(searchTerm).then(({ data }) => {
-        const results = Array.isArray(data) ? data : [];
-        setSearchResults(results);
-      }).catch((error) => {
-        console.log(error);
-        setSearchResults([]);
-      });
-    }, 1000)
+      setIsFetching(true);
+      apiClient
+        .getEvents(searchTerm)
+        .then(({ data }) => {
+          const results = Array.isArray(data) ? data : [];
+          setIsFetching(false);
+          setSearchResults(results);
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsFetching(false);
+          setSearchResults([]);
+        });
+    }, 1000);
 
-    return () => clearTimeout(delayDebounceFn)
+    return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
 
   const handleAddEvent = () => {
     const newEvents = form.getValues("events");
-    newEvents.push({ name: "", location: "", description: "", tripAdvisorLocationId: "" });
+    newEvents.push({
+      name: "",
+      location: "",
+      description: "",
+      tripAdvisorLocationId: "",
+    });
     form.setValue("events", newEvents);
   };
 
@@ -110,23 +124,23 @@ const CreatePostForm = () => {
   };
 
   const handleRemoveBadge = (indexToRemove) => {
-    console.log("remove badge");
     const updatedTags = form.getValues("tags");
     updatedTags.splice(indexToRemove, 1);
-    form.setValue("tags", updatedTags, { shouldValidate: true });
+    form.setValue("tags", updatedTags);
     form.trigger("tags");
   };
 
   const handleSubmitData = (data) => {
-    console.log("submitting")
-    data.events = form.getValues("events")
+    data.events = form.getValues("events");
     data["userId"] = currentUser._id;
-    console.log(data);
-    apiClient.createDate(data).then(({ data }) => {
-      console.log(data);
-    }).catch((error) => {
-      console.log(error);
-    });
+    apiClient
+      .createDate(data)
+      .then(({ data }) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -152,7 +166,6 @@ const CreatePostForm = () => {
           control={form.control}
           name="tags"
           render={({ field }) => {
-            console.log(field);
             return (
               <FormItem>
                 <FormLabel>Tags</FormLabel>
@@ -164,9 +177,9 @@ const CreatePostForm = () => {
                 </FormControl>
                 <div className="flex flex-wrap gap-2">
                   {field.value.map((tag, index) => (
-                    <div
+                    <Badge
                       key={index}
-                      className="flex items-center bg-palecyan text-sm py-1 px-2.5 rounded-full mr-1 text-gray-500"
+                      className="bg-blue-100 hover:bg-blue-200 transition-colors duration-300 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full"
                     >
                       {tag}
                       <button
@@ -175,7 +188,7 @@ const CreatePostForm = () => {
                       >
                         <X size={17} />
                       </button>
-                    </div>
+                    </Badge>
                   ))}
                 </div>
                 <FormMessage />
@@ -202,50 +215,70 @@ const CreatePostForm = () => {
                   <FormControl>
                     <Command>
                       {/* this goofy ahh workaround is required because commandinput cant have a {...field}... lovely */}
-                      { form.getValues(`events.${index}.name`) === "" ?
-                      <CommandInput placeholder="Look up an event..." 
-                      onKeyUp={(e)=> {
-                        setSearchTerm(e.target.value);
-                      }}
-                      />
-                      :
-                      <div className="flex flex-row w-full justify-between">
-                        <CommandInput placeholder="Look up an event..."
-                        value={form.getValues(`events.${index}.name`)}
-                        onKeyUp={(e)=> {
-                          setSearchTerm(e.target.value);
-                        }}
-                        disabled={true}
+                      {form.getValues(`events.${index}.name`) === "" ? (
+                        <CommandInput
+                          placeholder="Look up an event..."
+                          onKeyUp={(e) => {
+                            setSearchTerm(e.target.value);
+                          }}
                         />
-                        <button
-                        onMouseUp={() => {
-                          form.setValue(`events.${index}.name`, "");
-                          form.setValue(`events.${index}.location`, "")
-                          form.setValue(`events.${index}.tripAdvisorLocationId`, "")
-                        }}
-                        className="ml-1"
-                        >
-                        <X size={17} />
-                        </button>
-                      </div>
-                      }
+                      ) : (
+                        <div className="flex flex-row w-full justify-between">
+                          <CommandInput
+                            placeholder="Look up an event..."
+                            value={form.getValues(`events.${index}.name`)}
+                            onKeyUp={(e) => {
+                              setSearchTerm(e.target.value);
+                            }}
+                            disabled={true}
+                          />
+                          <button
+                            onMouseUp={() => {
+                              form.setValue(`events.${index}.name`, "");
+                              form.setValue(`events.${index}.location`, "");
+                              form.setValue(
+                                `events.${index}.tripAdvisorLocationId`,
+                                ""
+                              );
+                              form.trigger(`events.${index}.location`);
+                              setSearchTerm("");
+                            }}
+                            className="ml-1"
+                          >
+                            <X size={17} />
+                          </button>
+                        </div>
+                      )}
                       <CommandList>
-                        <CommandEmpty>No results found.</CommandEmpty>
-                        <CommandGroup heading="Locations">
-                          { searchResults.map((result) => (
+                        <CommandEmpty>
+                          {isFetching
+                            ? "Fetching Results..."
+                            : "No results found."}
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {searchResults.map((result) => (
                             <CommandItem
                               key={result.tripAdvisorLocationId}
                               onMouseUp={() => {
-                                form.setValue(`events.${index}.name`, result.name);
-                                form.setValue(`events.${index}.location`, result.location)
-                                form.setValue(`events.${index}.tripAdvisorLocationId`, result.tripAdvisorLocationId);
+                                form.setValue(
+                                  `events.${index}.name`,
+                                  result.name
+                                );
+                                form.setValue(
+                                  `events.${index}.location`,
+                                  result.location
+                                );
+                                form.setValue(
+                                  `events.${index}.tripAdvisorLocationId`,
+                                  result.tripAdvisorLocationId
+                                );
+                                form.trigger(`events.${index}.location`);
                                 setSearchTerm("");
                               }}
                             >
                               {result.name}
                             </CommandItem>
-                          ))
-                        }
+                          ))}
                         </CommandGroup>
                       </CommandList>
                     </Command>
@@ -254,13 +287,6 @@ const CreatePostForm = () => {
                 </FormItem>
               )}
             />
-            {/* <FormField 
-              control={form.control}
-              name={`events.${index}.name`}
-              render = {({ field }) => (
-                {form.setValue(`events.${index}.name`, field.value)}
-              )}
-            /> */}
             <FormField
               control={form.control}
               name={`events.${index}.description`}
@@ -268,7 +294,7 @@ const CreatePostForm = () => {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input placeholder="Description" {...field} />
+                    <Textarea placeholder="Description" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

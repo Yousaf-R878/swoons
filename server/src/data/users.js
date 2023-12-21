@@ -130,8 +130,19 @@ export let update = async (id, firstName, lastName, username) => {
   return updateInfo;
 };
 
-export let likeADate = async (userId, dateId) => {
+export let checkForUsername = async (username) => {
+  username = helpers.checkUsername(username, "Username");
+  let usersCollection = await users();
+  const usernameExists = await usersCollection.findOne({
+    username: username,
+  });
+  if (usernameExists) {
+    return true;
+  }
+  return false;
+};
 
+export let likeADate = async (userId, dateId) => {
   userId = helpers.checkUserId(userId, `User (${userId})'s Id`);
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
@@ -166,7 +177,6 @@ export let likeADate = async (userId, dateId) => {
 };
 
 export let unlikeADate = async (userId, dateId) => {
-
   userId = helpers.checkUserId(userId, `User (${userId})'s Id`);
 
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);

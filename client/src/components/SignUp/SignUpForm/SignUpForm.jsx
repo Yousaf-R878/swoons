@@ -18,6 +18,7 @@ import { EyeOff } from "lucide-react";
 import { useState } from "react";
 import { AuthorizeContext } from "@/src/contexts/auth";
 import { useContext } from "react";
+import apiClient from "../../../services/apiClient";
 
 const formSchema = z
   .object({
@@ -77,6 +78,7 @@ const formSchema = z
 
 const SignupForm = () => {
   const { registerUser } = useContext(AuthorizeContext);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -106,6 +108,11 @@ const SignupForm = () => {
         password,
         confirmPassword,
       } = form.getValues();
+      const usernameExists = await apiClient.checkUsername(username);
+      if (usernameExists.data.exists) {
+        setError("Username already exists!");
+        return;
+      }
       await registerUser({
         firstName,
         lastName,
@@ -240,9 +247,7 @@ const SignupForm = () => {
             </FormItem>
           )}
         />
-        {/* <FormDescription>
-          
-        </FormDescription> */}
+        <FormMessage>{error}</FormMessage>
         <div className="flex justify-center">
           <Button
             type="submit"

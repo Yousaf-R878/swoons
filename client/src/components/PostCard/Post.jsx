@@ -15,7 +15,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ThumbsUp, MessageCircle, Forward, PencilLine, Edit } from "lucide-react";
+import {
+  ThumbsUp,
+  MessageCircle,
+  Forward,
+  PencilLine,
+  Edit,
+} from "lucide-react";
 
 import {
   BsFillArrowLeftCircleFill,
@@ -41,7 +47,7 @@ const Post = ({ date }) => {
   const images = date.events.map((event) => event.tripAdvisorLocationImages[0]);
   return (
     <Card className="post-card bg-white shadow-md rounded-lg overflow-hidden max-w-md mx-auto flex flex-col">
-      <CarouselCmp images={images}/>
+      <CarouselCmp images={images} />
       <CardContent className="p-4 flex-grow">
         <div className="flex flex-wrap gap-2 mb-4">
           {date.tags.map((tag, index) => (
@@ -73,12 +79,14 @@ const Post = ({ date }) => {
           <MessageCircle className="h-4 w-4" />{" "}
           <span>{date.commentsCount}</span>
         </div>
-        
+
         {currentUser && currentUser.username === date.creator.username ? (
           <EditPost date={date} />
-        ): (<></>)}
+        ) : (
+          <></>
+        )}
         <Dialog>
-          <DialogTrigger>
+          <DialogTrigger asChild>
             <Button
               as="a"
               href="link-to-post"
@@ -87,7 +95,11 @@ const Post = ({ date }) => {
               <Forward className="h-4 w-4" /> <span>View Post</span>
             </Button>
           </DialogTrigger>
-          <ViewCardModal date={date} timeStampToDate={timeStampToDate} Carousel={CarouselCmp} />
+          <ViewCardModal
+            date={date}
+            timeStampToDate={timeStampToDate}
+            Carousel={CarouselCmp}
+          />
         </Dialog>
       </CardFooter>
     </Card>
@@ -139,7 +151,7 @@ const CarouselCmp = ({
   classStuff = "",
   imgWidth = "54rem",
   imgHeight = "16rem",
-  images = []
+  images = [],
 }) => {
   const carouselParams = useMemo(() => {
     if (typeof window === "undefined") return {};
@@ -162,10 +174,17 @@ const CarouselCmp = ({
         renderCenterLeftControls={renderCenterLeftControls}
         renderCenterRightControls={renderCenterRightControls}
         {...carouselParams}
-        style={imgWidth != "54rem" ? {width: imgWidth, height: imgHeight} : {}}
+        style={
+          imgWidth != "54rem" ? { width: imgWidth, height: imgHeight } : {}
+        }
       >
         {images.map((image, index) => (
-          <img key={index} src={image} className={classStuff} style={{width: imgWidth, height: imgHeight}} />
+          <img
+            key={index}
+            src={image}
+            className={classStuff}
+            style={{ width: imgWidth, height: imgHeight }}
+          />
         ))}
       </Carousel>
     </div>
