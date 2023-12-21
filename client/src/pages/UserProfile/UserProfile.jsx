@@ -138,6 +138,7 @@ const UserProfile = () => {
             // updateUser(updatedUser)
         
             // File successfully uploaded
+            window.location.reload();
             setFile(null);
             setfileName("No file chosen")
             });
@@ -199,8 +200,8 @@ const UserProfile = () => {
           url: "https://swoons-photos.s3.amazonaws.com/default_profile.png"
         }
       })
-      console.log("Profile Pic deleted");
-      updateUser({...currentUser, picture: "https://swoons-photos.s3.amazonaws.com/default_profile.png", uploadToggle: !currentUser.uploadToggle })
+      //console.log("Profile Pic deleted");
+      window.location.reload();
   }
 
   const onSubmit = async (data) => {
