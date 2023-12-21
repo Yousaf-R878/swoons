@@ -64,16 +64,24 @@ export const getDate = async (id) => {
 
 export const getLikedDatesbyUserId = async (userId) => {
     const user = await get(userId);
-    // console.log(user);
+    if (!user) {
+        throw "User not found";
+    }
+
     const dateCollection = await dates();
 
-    // const likedDates implement
+    const objectIds = user.likedDates.map((id) => new ObjectId(id));
+
+    const likedDates = await dateCollection
+        .find({
+            _id: { $in: objectIds },
+        })
+        .toArray();
 
     return likedDates;
 };
 
 export const getCreatedDatesbyUserId = async (userId) => {
-    // Assuming `db` is your connected MongoDB client and `dates` is your collection name
 
     const user = await get(userId);
     if (!user) {
