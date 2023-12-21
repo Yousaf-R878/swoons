@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import Post from "@/src/components/PostCard/Post";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
 import API from "../../services/apiClient";
 import { AuthorizeContext, AuthorizeProvider } from "../../contexts/auth";
@@ -32,22 +30,22 @@ const Liked = () => {
   }, [user]);
 
   return (
-    <>
-      <div className="my-8">
-        <h2 className="text-4xl text-center font-bold">Liked Dates</h2>
-        <div className="flex justify-center">
-          {isLoading ? (
-            <LoadingProgress />
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
-              {likedDates.map((date) => (
-                <Post key={date._id} date={date} />
-              ))}
-            </div>
-          )}
-        </div>
+      <div className="container mx-auto p-4">
+          <div className="my-8">
+              <h2 className="text-4xl text-center font-bold">Liked Dates</h2>
+              <div className="flex justify-center">
+                  {isLoading ? (
+                      <LoadingProgress />
+                  ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
+                          {likedDates.map((date) => (
+                              <Post key={date._id} date={date} />
+                          ))}
+                      </div>
+                  )}
+              </div>
+          </div>
       </div>
-    </>
   );
 };
 

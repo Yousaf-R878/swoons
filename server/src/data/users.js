@@ -153,7 +153,7 @@ export let likeADate = async (userId, dateId) => {
 
   let userLikedDates = user.likedDates;
   if (userLikedDates.includes(dateId)) {
-    throw `User (${userId}) already liked that date (${dateId})`;
+    throw `User (${userId}) already liked Date (${dateId})`;
   }
 
   let addInfo = await usersCollection.findOneAndUpdate(
