@@ -33,7 +33,9 @@ const fakeUser = {
 };
 
 const Navbar = () => {
-  const { logoutUser } = useContext(AuthorizeContext);
+  
+  const { currentUser, logoutUser } = useContext(AuthorizeContext);
+
   const NavItem = ({ name, pathname }) => {
     const location = useLocation();
     return (
@@ -73,15 +75,15 @@ const Navbar = () => {
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center">
             <Avatar className="mr-2">
-              <AvatarImage src={fakeUser.profilePic} alt="Profile" />
-              <AvatarFallback>{fakeUser.firstName[0]}</AvatarFallback>
+              <AvatarImage src={currentUser.profilePic} alt="Profile" />
+              <AvatarFallback>{currentUser.firstName[0]}</AvatarFallback>
             </Avatar>
             <div className="flex items-center">
               <div className="flex flex-col text-left">
                 <p className="text-black font-semibold text-md">
-                  {fakeUser.firstName} {fakeUser.lastName}
+                  {currentUser.firstName} {currentUser.lastName}
                 </p>
-                <p className="text-gray-400 text-xs -mt-1">@johnDoe</p>
+                <p className="text-gray-400 text-xs -mt-1">{currentUser.username}</p>
               </div>
             </div>
           </DropdownMenuTrigger>
