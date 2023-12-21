@@ -10,6 +10,7 @@ router.route("/me").get(security.checkAuth, async (req, res) => {
   let id = req.user.uid;
   try {
     let user = await userFuncs.get(id);
+    console.log(user);
     return res.status(200).json(user);
   } catch (e) {
     return res.status(500).json({ error: e });
@@ -109,6 +110,41 @@ router
       }
     }
   })
+  .post(async (req, res) =>{
+    let userInfo = req.body;
+    if (!userInfo || Object.keys(userInfo).length === 0) {
+      return res
+        .status(400)
+        .json({ error: "There are no fields in the request body" });
+    }
+    let id = req.params.id;
+    let url = userInfo.url;
+
+    try {
+      // id = helpers.checkId(id, "ID");
+      url = helpers.checkString(url, "Profile Pic Url");
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+
+    let user;
+    try {
+      user = await userFuncs.get(id);
+    } catch (e) {
+      if (e === `No User with that ID (${id})`) {
+        return res.status(404).json({ error: e });
+      } else {
+        return res.status(500).json({ error: e });
+      }
+    }
+
+    try {
+      let updatedUser = await userFuncs.updatePhoto(id,url);
+      return res.status(200).json(updatedUser);
+    } catch (e){
+      return res.status(500).json({error: e})
+    }
+  })
   .patch(async (req, res) => {
     let userInfo = req.body;
     let id = req.params.id;
@@ -182,7 +218,7 @@ router
       return res.status(500).json({ error: e });
     }
   });
-
+  
 router
   .route("/user/:userId/like/:dateId")
   .post(async (req, res) => {
