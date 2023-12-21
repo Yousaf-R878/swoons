@@ -45,11 +45,14 @@ router.route("/").get(async (req, res) => {
 
 router.get("/liked", async (req, res) => {
     try {
-        const userId = req.user._id;
+        const userId = req.query.user;
+        // console.log("Fetching dates for user:", userId);
         const dates = await dateFuncts.getLikedDatesbyUserId(userId);
+        
         return res.status(200).json(dates);
     } catch (e) {
-        return res.status(500).json({ error: e });
+        // console.error("Server error while fetching dates:", e);
+        return res.status(500).json({ error: "Server error" });
     }
 });
 
@@ -60,7 +63,7 @@ router.get("/user", async (req, res) => {
         const dates = await dateFuncts.getCreatedDatesbyUserId(userId);
         return res.status(200).json(dates);
     } catch (e) {
-        console.error("Server error while fetching dates:", e);
+        // console.error("Server error while fetching dates:", e);
         return res.status(500).json({ error: "Server error" });
     }
 });
