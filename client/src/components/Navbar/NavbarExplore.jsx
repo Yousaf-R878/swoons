@@ -23,17 +23,16 @@ const LinkItems = [
   { name: "My Posts", pathname: "/myposts" },
 ];
 
-const fakeUser = {
-  id: "1",
-  firstName: "John",
-  lastName: "Doe",
-  email: "johndoe@gmail.com",
-  password: "password",
-  profilePic: profilePic,
-};
+// const fakeUser = {
+//   id: "1",
+//   firstName: "John",
+//   lastName: "Doe",
+//   email: "johndoe@gmail.com",
+//   password: "password",
+//   profilePic: profilePic,
+// };
 
 const Navbar = () => {
-  
   const { currentUser, logoutUser } = useContext(AuthorizeContext);
 
   const NavItem = ({ name, pathname }) => {
@@ -75,7 +74,7 @@ const Navbar = () => {
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center">
             <Avatar className="mr-2">
-              <AvatarImage src={currentUser.profilePic} alt="Profile" />
+              <AvatarImage src={currentUser.picture} alt="Profile" />
               <AvatarFallback>{currentUser.firstName[0]}</AvatarFallback>
             </Avatar>
             <div className="flex items-center">
@@ -83,7 +82,7 @@ const Navbar = () => {
                 <p className="text-black font-semibold text-md">
                   {currentUser.firstName} {currentUser.lastName}
                 </p>
-                <p className="text-gray-400 text-xs -mt-1">{currentUser.username}</p>
+                <p className="text-gray-400 text-xs -mt-1">@{currentUser.username}</p>
               </div>
             </div>
           </DropdownMenuTrigger>

@@ -32,7 +32,7 @@ export let create = async (id, firstName, lastName, email, username) => {
     username: username,
     likedDates: [],
     dates: [],
-    picture: "../public/default_profile_pic.jpg",
+    picture: "https://swoons-photos.s3.amazonaws.com/default_profile.png",
     accountCreationDate: new Date(),
     bio: "",
   };
@@ -104,7 +104,7 @@ export let update = async (id, firstName, lastName, username) => {
   firstName = helpers.checkName(firstName, `User (${id})'s First Name`);
   lastName = helpers.checkName(lastName, `User (${id})'s Last Name`);
   username = helpers.checkUsername(username, `User (${id})'s Username`);
-
+ 
   const usernameExists = await usersCollection.findOne({
     username: username,
   });
@@ -118,7 +118,7 @@ export let update = async (id, firstName, lastName, username) => {
     username: username,
   };
   let updateInfo = await usersCollection.findOneAndUpdate(
-    { _id: new ObjectId(id) },
+    { _id: id },
     { $set: updatedUser },
     { returnDocument: "after" }
   );
@@ -126,7 +126,7 @@ export let update = async (id, firstName, lastName, username) => {
   if (!updateInfo) {
     throw `Could not update User (${id})`;
   }
-  updateInfo._id = updateInfo._id.toString();
+
   return updateInfo;
 };
 
@@ -264,3 +264,27 @@ export let removeDate = async (userId, dateId) => {
   removeInfo._id = removeInfo._id.toString();
   return removeInfo;
 };
+
+export let updatePhoto = async (id, url) => {
+  // id = helpers.checkId(id,"User's Id");
+  url = helpers.checkString(url, "Profile Picture URL");
+
+  const usersCollection = await users();
+  let user = get(id);
+
+  let newProfilePic = {
+      picture: url
+  }
+
+  let updateInfo = await usersCollection.findOneAndUpdate(
+      {_id: id}, 
+      {$set: newProfilePic},
+      {returnDocument: 'after'}
+  );
+
+  if (!updateInfo){
+      throw `Could not update User (${id})'s profile pic!`
+  }
+
+  return updateInfo;
+}
