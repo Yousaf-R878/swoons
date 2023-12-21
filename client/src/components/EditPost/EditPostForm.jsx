@@ -139,6 +139,7 @@ const EditPostForm = ({ date }) => {
             .then(({ data }) => {
                 // console.log("Removed Date:");
                 // console.log(data);
+                window.location.reload();
             })
             .catch((error) => {
                 console.log(error);
@@ -147,11 +148,11 @@ const EditPostForm = ({ date }) => {
             .createDate(data)
             .then(({ data }) => {
                 // console.log(data);
+                window.location.reload();
             })
             .catch((error) => {
                 console.log(error);
             });
-        window.location.reload();
     };
 
     return (

@@ -142,11 +142,12 @@ const CreatePostForm = () => {
             .createDate(data)
             .then(({ data }) => {
                 // console.log(data);
+                window.location.reload();
             })
             .catch((error) => {
                 console.log(error);
             });
-        window.location.reload();
+        
     };
 
     return (
