@@ -142,6 +142,18 @@ export let checkForUsername = async (username) => {
   return false;
 };
 
+export let checkForEmail = async (email) => {
+  email = helpers.checkEmail(email, "Email");
+  let usersCollection = await users();
+  const emailExists = await usersCollection.findOne({
+    email: email,
+  });
+  if (emailExists) {
+    return true;
+  }
+  return false;
+};
+
 export let likeADate = async (userId, dateId) => {
   userId = helpers.checkUserId(userId, `User (${userId})'s Id`);
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);

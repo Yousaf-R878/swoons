@@ -76,6 +76,17 @@ router.route("/checkUsernames/:username").get(async (req, res) => {
   }
 });
 
+router.route("/checkEmails/:email").get(async (req, res) => {
+  let email = req.params.email;
+  try {
+    email = helpers.checkEmail(email, "Email");
+    let exists = await userFuncs.checkForEmail(email);
+    return res.status(200).json({ exists: exists });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+});
+
 router
   .route("/user/:id")
   .get(async (req, res) => {

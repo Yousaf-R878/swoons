@@ -33,7 +33,6 @@ class ApiClient {
     return await this.request({ endpoint: `users/me`, method: `GET` });
   }
   async registerUser(credentials) {
-    console.log(credentials);
     return await this.request({
       endpoint: "users/signup",
       method: "POST",
@@ -44,6 +43,13 @@ class ApiClient {
   async checkUsername(username) {
     return await this.request({
       endpoint: `users/checkUsernames/${username}`,
+      method: `GET`,
+    });
+  }
+
+  async checkEmail(email) {
+    return await this.request({
+      endpoint: `users/checkEmails/${email}`,
       method: `GET`,
     });
   }
