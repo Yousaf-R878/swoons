@@ -66,18 +66,14 @@ router.route("/signup").post(async (req, res) => {
   }
 });
 
-router.route("/user/checkUsernames/:username").get(async (req, res) => {
+router.route("/checkUsernames/:username").get(async (req, res) => {
   let username = req.params.username;
   try {
     username = helpers.checkUsername(username, "Username");
-    const usernameExists = await usersCollection.findOne({
-      username: username,
-    });
-    if (usernameExists) {
-      return res.status(200).json({ exists: true });
-    }
-    return res.status(200).json({ exists: false });
+    let exists = await userFuncs.checkForUsername(username);
+    return res.status(200).json({ exists: exists });
   } catch (e) {
+    console.log(e);
     return res.status(400).json({ error: e });
   }
 });

@@ -41,6 +41,13 @@ class ApiClient {
     });
   }
 
+  async checkUsername(username) {
+    return await this.request({
+      endpoint: `users/checkUsernames/${username}`,
+      method: `GET`,
+    });
+  }
+
   async getDates(tags = [], sorting = "disabled", page = 1, limit = 12) {
     const queryString = new URLSearchParams();
 
@@ -60,34 +67,34 @@ class ApiClient {
     });
   }
 
-    async getLikedDates() {
-        return await this.request({
-            endpoint: `dates/liked`,
-            method: `GET`,
-        });
-    }
+  async getLikedDates() {
+    return await this.request({
+      endpoint: `dates/liked`,
+      method: `GET`,
+    });
+  }
 
-    async getEvents(searchParam = ""){
-        return await this.request({
-            endpoint: `dates/api/${searchParam}`,
-            method: `GET`,
-        });
-    }
+  async getEvents(searchParam = "") {
+    return await this.request({
+      endpoint: `dates/api/${searchParam}`,
+      method: `GET`,
+    });
+  }
 
-    async createDate(date) {
-        return await this.request({
-            endpoint: `dates`,
-            method: `POST`,
-            data: date,
-        });
-    }
+  async createDate(date) {
+    return await this.request({
+      endpoint: `dates`,
+      method: `POST`,
+      data: date,
+    });
+  }
 
-    async removeDate(userId, dateId) {
-        return await this.request({
-            endpoint: `dates/${userId}/${dateId}`,
-            method: `DELETE`
-        });
-    }
+  async removeDate(userId, dateId) {
+    return await this.request({
+      endpoint: `dates/${userId}/${dateId}`,
+      method: `DELETE`,
+    });
+  }
 }
 
 const API = new ApiClient(import.meta.env.VITE_API_URL); // A little unsecure but whatever

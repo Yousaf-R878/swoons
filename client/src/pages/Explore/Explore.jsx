@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import Post from "@/src/components/PostCard/Post";
 import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
-
+import PostSkeleton from "@/src/components/PostCard/PostSkeleton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
@@ -143,7 +143,11 @@ const Explore = () => {
         </div>
         <div className="flex justify-center">
           {isLoading ? (
-            <LoadingProgress />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
+              {[...Array(6)].map((_, index) => (
+                <PostSkeleton key={index} />
+              ))}
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
               {dates.map((date) => (
