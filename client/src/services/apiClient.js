@@ -95,6 +95,20 @@ class ApiClient {
       method: `DELETE`,
     });
   }
+
+  async likeDate(userId, dateId) {
+    return await this.request({
+      endpoint: `users/user/${userId}/like/${dateId}`,
+      method: `POST`,
+    });
+  }
+
+  async unlikeDate(userId, dateId) {
+    return await this.request({
+      endpoint: `users/user/${userId}/like/${dateId}`,
+      method: `DELETE`,
+    });
+  }
 }
 
 const API = new ApiClient(import.meta.env.VITE_API_URL); // A little unsecure but whatever

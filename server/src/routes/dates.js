@@ -107,7 +107,6 @@ router.route("/").post(async (req, res) => {
         let locInfo = await axios.get(
           `https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/details?key=${apiKey}`
         );
-        console.log(locInfo.data);
         eventArray[i]["tripAdvisorLocationUrl"] = locInfo.data.web_url;
         eventArray[i]["tripAdvisorLocationRating"] = locInfo.data.rating;
         eventArray[i]["tripAdvisorLocationRatingImage"] =
@@ -128,29 +127,27 @@ router.route("/").post(async (req, res) => {
     );
     return res.status(200).json(newDate);
   } catch (e) {
-    console.log(e);
     return res.status(500).json({ error: e });
   }
 });
 
 //ROUTE FOR DELETING DATE BY ID
 router.route("/:userId/:dateId").delete(async (req, res) => {
-    let userId = req.params.userId;
-    let dateId = req.params.dateId;
-    try {
-        dateId = helpers.checkId(dateId, "Date ID");
-        userId = helpers.checkUserId(userId, "User ID");
-    } catch (e) {
-        return res.status(400).json({ error: e });
-    }
+  let userId = req.params.userId;
+  let dateId = req.params.dateId;
+  try {
+    dateId = helpers.checkId(dateId, "Date ID");
+    userId = helpers.checkUserId(userId, "User ID");
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
 
-    try {
-        let deletedDate = await dateFuncts.deleteDate(dateId, userId);
-        return res.status(200).json(deletedDate);
-    } catch (e) {
-        return res.status(404).json({ error: e });
-    }
-
+  try {
+    let deletedDate = await dateFuncts.deleteDate(dateId, userId);
+    return res.status(200).json(deletedDate);
+  } catch (e) {
+    return res.status(404).json({ error: e });
+  }
 });
 
 //ROUTE FOR SEARCHING FOR LOCATIONS
@@ -163,7 +160,6 @@ router.route("/api/:searchTerm").get(async (req, res) => {
   }
 
   try {
-    console.log("here");
     let data;
     const options = {
       method: "GET",
@@ -186,7 +182,6 @@ router.route("/api/:searchTerm").get(async (req, res) => {
       loc["tripAdvisorLocationId"] = loc.location_id;
       delete loc.address_obj;
       delete loc.location_id;
-      console.log(loc);
     }
     return res.status(200).json(data);
   } catch (e) {

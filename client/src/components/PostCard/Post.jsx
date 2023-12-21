@@ -1,6 +1,6 @@
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
-import React, { useMemo, useContext } from "react";
+import { useMemo, useContext, useState } from "react";
 import Carousel from "nuka-carousel";
 import clsx from "clsx";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,13 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  ThumbsUp,
-  MessageCircle,
-  Forward,
-  PencilLine,
-  Edit,
-} from "lucide-react";
+import { Heart, MessageCircle, Forward, PencilLine, Edit } from "lucide-react";
 
 import {
   BsFillArrowLeftCircleFill,
@@ -31,6 +25,7 @@ import { Separator } from "@radix-ui/react-select";
 import EditPost from "../EditPost/EditPost";
 import ViewCardModal from "./ViewCardModal";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import apiClient from "../../services/apiClient";
 
 const timeStampToDate = (timeStamp) => {
   const date = new Date(timeStamp);
@@ -41,9 +36,41 @@ const timeStampToDate = (timeStamp) => {
 };
 
 const Post = ({ date }) => {
-  // const { name, username, title, badges, likes, comments } = cardInfo;
-  // conglomerate first image of every event into an images array
-  const { initialized, currentUser } = useContext(AuthorizeContext);
+  const { currentUser } = useContext(AuthorizeContext);
+  const [isLiked, setIsLiked] = useState(
+    currentUser?.likedDates.includes(date._id)
+  );
+  const [likesCount, setLikesCount] = useState(date.likes);
+
+  const handleLike = async () => {
+    if (currentUser && date) {
+      if (isLiked) {
+        try {
+          const response = await apiClient.unlikeDate(
+            currentUser._id,
+            date._id
+          );
+          if (response?.data?.success) {
+            setIsLiked(false);
+            setLikesCount((prevLikesCount) => prevLikesCount - 1);
+          }
+        } catch (error) {
+          console.error("Error unliking the date:", error);
+        }
+      } else {
+        try {
+          const response = await apiClient.likeDate(currentUser._id, date._id);
+          if (response?.data?.success) {
+            setIsLiked(true);
+            setLikesCount((prevLikesCount) => prevLikesCount + 1);
+          }
+        } catch (error) {
+          console.error("Error liking the date:", error);
+        }
+      }
+    }
+  };
+
   const images = date.events.map((event) => event.tripAdvisorLocationImages[0]);
   return (
     <Card className="post-card bg-white shadow-md rounded-lg overflow-hidden max-w-md mx-auto flex flex-col">
@@ -72,8 +99,10 @@ const Post = ({ date }) => {
         <Button
           variant="primary"
           className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
+          onClick={handleLike}
         >
-          <ThumbsUp className="h-4 w-4" /> <span>{date.likes}</span>
+          <Heart className={`h-4 w-4 `} fill={isLiked ? "#FFA39C" : "none"} />
+          <span>{likesCount}</span>
         </Button>
         <div className="flex flex-grow items-center justify-center rounded-md bg-white text-gray-700 p-2 text-xs">
           <MessageCircle className="h-4 w-4" />{" "}

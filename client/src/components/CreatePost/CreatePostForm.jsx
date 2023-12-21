@@ -14,21 +14,10 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/components/ui/command";
 import apiClient from "../../services/apiClient";
 import { X } from "lucide-react";
+import EventField from "./EventField";
 
 const eventSchema = z.object({
   location: z.string().min(1, { message: "Location is required" }),
@@ -64,33 +53,6 @@ const CreatePostForm = () => {
     },
   });
   const { currentUser } = useContext(AuthorizeContext);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
-
-  useEffect(() => {
-    if (searchTerm === "") {
-      setSearchResults([]);
-      return;
-    }
-    const delayDebounceFn = setTimeout(() => {
-      setIsFetching(true);
-      apiClient
-        .getEvents(searchTerm)
-        .then(({ data }) => {
-          const results = Array.isArray(data) ? data : [];
-          setIsFetching(false);
-          setSearchResults(results);
-        })
-        .catch((error) => {
-          console.log(error);
-          setIsFetching(false);
-          setSearchResults([]);
-        });
-    }, 1000);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm]);
 
   const handleAddEvent = () => {
     const newEvents = form.getValues("events");
@@ -198,109 +160,7 @@ const CreatePostForm = () => {
         />
         <h2 className="text-2xl font-bold">Events</h2>
         {form.watch("events").map((event, index) => (
-          <div key={index} className="border p-4 rounded">
-            {form.watch("events").length > 1 && (
-              <div className="w-full flex justify-end">
-                <button onClick={() => handleRemoveEvent(index)}>
-                  <X size={20} />
-                </button>
-              </div>
-            )}
-            <FormField
-              control={form.control}
-              name={`events.${index}.location`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location</FormLabel>
-                  <FormControl>
-                    <Command>
-                      {/* this goofy ahh workaround is required because commandinput cant have a {...field}... lovely */}
-                      {form.getValues(`events.${index}.name`) === "" ? (
-                        <CommandInput
-                          placeholder="Look up an event..."
-                          onKeyUp={(e) => {
-                            setSearchTerm(e.target.value);
-                          }}
-                        />
-                      ) : (
-                        <div className="flex flex-row w-full justify-between">
-                          <CommandInput
-                            placeholder="Look up an event..."
-                            value={form.getValues(`events.${index}.name`)}
-                            onKeyUp={(e) => {
-                              setSearchTerm(e.target.value);
-                            }}
-                            disabled={true}
-                          />
-                          <button
-                            onMouseUp={() => {
-                              form.setValue(`events.${index}.name`, "");
-                              form.setValue(`events.${index}.location`, "");
-                              form.setValue(
-                                `events.${index}.tripAdvisorLocationId`,
-                                ""
-                              );
-                              form.trigger(`events.${index}.location`);
-                              setSearchTerm("");
-                            }}
-                            className="ml-1"
-                          >
-                            <X size={17} />
-                          </button>
-                        </div>
-                      )}
-                      <CommandList>
-                        <CommandEmpty>
-                          {isFetching
-                            ? "Fetching Results..."
-                            : "No results found."}
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {searchResults.map((result) => (
-                            <CommandItem
-                              key={result.tripAdvisorLocationId}
-                              onMouseUp={() => {
-                                form.setValue(
-                                  `events.${index}.name`,
-                                  result.name
-                                );
-                                form.setValue(
-                                  `events.${index}.location`,
-                                  result.location
-                                );
-                                form.setValue(
-                                  `events.${index}.tripAdvisorLocationId`,
-                                  result.tripAdvisorLocationId
-                                );
-                                form.trigger(`events.${index}.location`);
-                                setSearchTerm("");
-                              }}
-                            >
-                              {result.name}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name={`events.${index}.description`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Description" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <EventField key={index} index={index} event={event} form={form} />
         ))}
 
         <div className="flex justify-center">

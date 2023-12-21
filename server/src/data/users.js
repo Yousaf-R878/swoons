@@ -165,15 +165,13 @@ export let likeADate = async (userId, dateId) => {
   if (!addInfo) {
     throw `Could not add liked date (${dateId}) to User (${id})`;
   }
-
   let updatedDate = await dateCollection.findOneAndUpdate(
     { _id: new ObjectId(dateId) },
     { $inc: { likes: 1 } },
     { returnDocument: "after" }
   );
 
-  addInfo._id = addInfo._id.toString();
-  return addInfo;
+  return { success: true };
 };
 
 export let unlikeADate = async (userId, dateId) => {
@@ -182,6 +180,7 @@ export let unlikeADate = async (userId, dateId) => {
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
   let usersCollection = await users();
+  let dateCollection = await dates();
   let date = await dateFuncs.getDate(dateId);
   let user = await get(userId);
 
@@ -196,12 +195,18 @@ export let unlikeADate = async (userId, dateId) => {
     { returnDocument: "after" }
   );
 
+  let updatedDate = await dateCollection.findOneAndUpdate(
+    { _id: new ObjectId(dateId) },
+    { $inc: { likes: -1 } },
+    { returnDocument: "after" }
+  );
+
   if (!removeInfo) {
     throw `Could not remove liked Date (${dateId}) from User (${id})`;
   }
 
   removeInfo._id = removeInfo._id.toString();
-  return removeInfo;
+  return { success: true };
 };
 
 // export let addDate = async (userId,dateId) => {
