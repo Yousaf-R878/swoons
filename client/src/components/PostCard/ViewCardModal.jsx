@@ -14,10 +14,10 @@ import { useEffect } from "react";
   
 const ViewCardModal = ({date, timeStampToDate, Carousel}) => {
 
-    useEffect(() => {
-        console.log(date);
-    }
-    )
+    // useEffect(() => {
+    //     console.log(date);
+    // }
+    // )
 
     return (
         <DialogContent className="sm:max-w-[925px] sm:max-h-[700px] overflow-y-auto">
