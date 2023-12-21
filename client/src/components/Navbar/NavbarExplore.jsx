@@ -33,8 +33,8 @@ const LinkItems = [
 // };
 
 const Navbar = () => {
-  const { currentUser } = useContext(AuthorizeContext);
-  const { logoutUser } = useContext(AuthorizeContext);
+  const { currentUser, logoutUser } = useContext(AuthorizeContext);
+
   const NavItem = ({ name, pathname }) => {
     const location = useLocation();
     return (

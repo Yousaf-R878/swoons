@@ -130,8 +130,19 @@ export let update = async (id, firstName, lastName, username) => {
   return updateInfo;
 };
 
-export let likeADate = async (userId, dateId) => {
+export let checkForUsername = async (username) => {
+  username = helpers.checkUsername(username, "Username");
+  let usersCollection = await users();
+  const usernameExists = await usersCollection.findOne({
+    username: username,
+  });
+  if (usernameExists) {
+    return true;
+  }
+  return false;
+};
 
+export let likeADate = async (userId, dateId) => {
   userId = helpers.checkUserId(userId, `User (${userId})'s Id`);
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
@@ -142,7 +153,7 @@ export let likeADate = async (userId, dateId) => {
 
   let userLikedDates = user.likedDates;
   if (userLikedDates.includes(dateId)) {
-    throw `User (${userId}) already liked that date (${dateId})`;
+    throw `User (${userId}) already liked Date (${dateId})`;
   }
 
   let addInfo = await usersCollection.findOneAndUpdate(
@@ -154,24 +165,22 @@ export let likeADate = async (userId, dateId) => {
   if (!addInfo) {
     throw `Could not add liked date (${dateId}) to User (${id})`;
   }
-
   let updatedDate = await dateCollection.findOneAndUpdate(
     { _id: new ObjectId(dateId) },
     { $inc: { likes: 1 } },
     { returnDocument: "after" }
   );
 
-  addInfo._id = addInfo._id.toString();
-  return addInfo;
+  return { success: true };
 };
 
 export let unlikeADate = async (userId, dateId) => {
-
   userId = helpers.checkUserId(userId, `User (${userId})'s Id`);
 
   dateId = helpers.checkId(dateId, `Date (${dateId})'s Id`);
 
   let usersCollection = await users();
+  let dateCollection = await dates();
   let date = await dateFuncs.getDate(dateId);
   let user = await get(userId);
 
@@ -186,12 +195,18 @@ export let unlikeADate = async (userId, dateId) => {
     { returnDocument: "after" }
   );
 
+  let updatedDate = await dateCollection.findOneAndUpdate(
+    { _id: new ObjectId(dateId) },
+    { $inc: { likes: -1 } },
+    { returnDocument: "after" }
+  );
+
   if (!removeInfo) {
     throw `Could not remove liked Date (${dateId}) from User (${id})`;
   }
 
   removeInfo._id = removeInfo._id.toString();
-  return removeInfo;
+  return { success: true };
 };
 
 // export let addDate = async (userId,dateId) => {

@@ -140,8 +140,17 @@ export let checkTagArray = (tagArray, variableName) => {
   if (tagArray.length === 0) {
     throw `${variableName} must have at least one tag`;
   }
+  if (tagArray.length > 6) {
+    throw `${variableName} must be 6 tags or less`;
+  }
+  const uniqueTags = new Set();
   for (let i = 0; i < tagArray.length; i++) {
-    tagArray[i] = checkTag(tagArray[i], `${variableName}[${i}]`);
+    const tag = checkTag(tagArray[i], `${variableName}[${i}]`);
+    if (uniqueTags.has(tag)) {
+      throw `${variableName} contains duplicate tags: ${tag}`;
+    }
+    uniqueTags.add(tag);
+    tagArray[i] = tag;
   }
 
   return tagArray;
