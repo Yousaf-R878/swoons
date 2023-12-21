@@ -27,12 +27,22 @@ import ViewCardModal from "./ViewCardModal";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import apiClient from "../../services/apiClient";
 
-const timeStampToDate = (timeStamp) => {
+const timeStampToDate = (timeStamp, displayTime = false) => {
+  
   const date = new Date(timeStamp);
   const month = date.toLocaleString("default", { month: "long" });
   const day = date.getDate();
   const year = date.getFullYear();
+
+  if (displayTime) {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    return `${month} ${day}, ${year} at ${hours}:${minutes}`;
+  } 
+
   return `${month} ${day}, ${year}`;
+
 };
 
 const Post = ({ date }) => {

@@ -32,8 +32,9 @@ class ApiClient {
     async getUserFromToken() {
         return await this.request({ endpoint: `users/me`, method: `GET` });
     }
+
     async registerUser(credentials) {
-        console.log(credentials);
+        // console.log(credentials);
         return await this.request({
             endpoint: "users/signup",
             method: "POST",
@@ -117,6 +118,21 @@ class ApiClient {
     async unlikeDate(userId, dateId) {
         return await this.request({
             endpoint: `users/user/${userId}/like/${dateId}`,
+            method: `DELETE`,
+        });
+    }
+
+    async postComment(userId, dateId, comment) {
+        return await this.request({
+            endpoint: `comments/${userId}/${dateId}`,
+            method: `POST`,
+            data: { comment },
+        });
+    }
+
+    async deleteComment(userId, dateId, timeStamp) {
+        return await this.request({
+            endpoint: `comments/${userId}/${dateId}/${timeStamp}`,
             method: `DELETE`,
         });
     }
