@@ -45,7 +45,16 @@ const ViewCardModal = ({ date, timeStampToDate, Carousel }) => {
         resolver: zodResolver(commentSchema),
     });
 
+    useEffect(() => {
+        if (!currentUser) {
+            // console.log("No user is signed in.");
+        }
+    }, [currentUser]);
+
     const handlePostComment = async (data) => {
+        if (!currentUser) {
+            return;
+        }
         setIsSubmitting(true);
         // console.log("Submitting comment:", data.comment);
         // console.log("Date ID:", date?._id);
@@ -61,14 +70,18 @@ const ViewCardModal = ({ date, timeStampToDate, Carousel }) => {
         setIsSubmitting(false);
     };
 
-      const handleDeleteComment = async (timeStamp) => {
-          try {
-              await API.deleteComment(currentUser._id, date._id, timeStamp);
-              window.location.reload(); // or use another method to refresh comments
-          } catch (error) {
-              console.error("Failed to delete comment", error);
-          }
-      };
+    const handleDeleteComment = async (timeStamp) => {
+        if (!currentUser) {
+            return;
+        }
+
+        try {
+            await API.deleteComment(currentUser._id, date._id, timeStamp);
+            window.location.reload(); // or use another method to refresh comments
+        } catch (error) {
+            console.error("Failed to delete comment", error);
+        }
+    };
 
     return (
         <DialogContent className="sm:max-w-[925px] sm:max-h-[700px] overflow-y-auto">
@@ -126,37 +139,43 @@ const ViewCardModal = ({ date, timeStampToDate, Carousel }) => {
                     </div>
                 ))}
             </div>
-            <Separator />
+
             <DialogFooter>
                 <div className="flex flex-col w-full">
-                    <form
-                        onSubmit={handleSubmit(handlePostComment)}
-                        className="w-full flex justify-center items-center"
-                    >
-                        <Controller
-                            name="comment"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <Input
-                                    {...field}
-                                    id="newComment"
-                                    placeholder="Leave a comment..."
-                                    className={`w-full active:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-0 ${
-                                        errors.comment ? "border-red-500" : ""
-                                    }`}
-                                    disabled={isSubmitting}
-                                />
-                            )}
-                        />
-                        <Button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover text-xl my-2 ml-4"
+                    <h2 className="text-2xl font-bold">Comments</h2>
+                    <Separator />
+                    {currentUser && (
+                        <form
+                            onSubmit={handleSubmit(handlePostComment)}
+                            className="w-full flex justify-center items-center"
                         >
-                            Comment
-                        </Button>
-                    </form>
+                            <Controller
+                                name="comment"
+                                control={control}
+                                defaultValue=""
+                                render={({ field }) => (
+                                    <Input
+                                        {...field}
+                                        id="newComment"
+                                        placeholder="Leave a comment..."
+                                        className={`w-full active:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-0 ${
+                                            errors.comment
+                                                ? "border-red-500"
+                                                : ""
+                                        }`}
+                                        disabled={isSubmitting}
+                                    />
+                                )}
+                            />
+                            <Button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover text-xl my-2 ml-4"
+                            >
+                                Comment
+                            </Button>
+                        </form>
+                    )}
                     {date.comments.map((comment, index) => (
                         <div
                             key={index}
@@ -174,16 +193,19 @@ const ViewCardModal = ({ date, timeStampToDate, Carousel }) => {
                                         {timeStampToDate(comment.time, true)}
                                     </p>
                                 </div>
-                                {currentUser._id === comment.userId && (
-                                    <button
-                                        onClick={() =>
-                                            handleDeleteComment(comment.time)
-                                        }
-                                        className="absolute top-0 right-0 mt-2 mr-2 text-red-500 hover:text-red-700 transition duration-150 ease-in-out"
-                                    >
-                                        <X size={20} />
-                                    </button>
-                                )}
+                                {currentUser &&
+                                    currentUser._id === comment.userId && (
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteComment(
+                                                    comment.time
+                                                )
+                                            }
+                                            className="absolute top-0 right-0 mt-2 mr-2 text-red-500 hover:text-red-700 transition duration-150 ease-in-out"
+                                        >
+                                            <X size={20} />
+                                        </button>
+                                    )}
                             </div>
                             <Separator />
                             <p className="px-4 pt-4">{comment.comment}</p>
