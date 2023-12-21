@@ -35,32 +35,6 @@ const CreatePost = () => {
           </DialogDescription>
         </DialogHeader>
         <CreatePostForm />
-        {/* <div className="grid gap-4 py-4">
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" placeholder="Date title" />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="tags">Tags</Label>
-            <div className="flex items-center gap-2">
-              {tags.map((tag, index) => (
-                <Badge key={index}>
-                  {tag}
-                  <X
-                    className="ml-2 cursor-pointer"
-                    onClick={() => removeTag(tag)}
-                  />
-                </Badge>
-              ))}
-              <Input
-                value={tagInput}
-                id="tags"
-                placeholder="Add tags"
-                onKeyDown={handleKeyDown}
-              />
-            </div>
-          </div>
-        </div> */}
       </DialogContent>
     </Dialog>
   );

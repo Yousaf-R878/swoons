@@ -10,19 +10,28 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import SignupForm from "../SignUpForm/SignUpForm";
-import { Separator } from "@/components/ui/separator";
 import { signInWithPopup, GoogleAuthProvider, getAuth } from "firebase/auth";
-import { useNavigation } from "react-router-dom";
 import "./SignUpSheet.css";
+import apiClient from "@/src/services/apiClient";
+import { AuthorizeContext } from "@/src/contexts/auth";
 
 const SignupButton = () => {
   async function handleGoogle() {
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
-    const userCred = await signInWithPopup(auth, provider);
-    console.log(userCred);
-    if (userCred.user) {
-      console.log("navigate or smn");
+    const result = await signInWithPopup(auth, provider);
+    const userExists = await apiClient.checkEmail(result.user.email);
+    if (!userExists.data.exists) {
+      const username = result.user.email.split("@")[0];
+      const firstName = result.user.displayName.split(" ")[0];
+      const lastName = result.user.displayName.split(" ")[1];
+      await apiClient.registerUser({
+        id: result.user.uid,
+        email: result.user.email,
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+      });
     }
   }
 
