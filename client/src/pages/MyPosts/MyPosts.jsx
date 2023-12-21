@@ -54,9 +54,9 @@ const MyPosts = () => {
                             ))}
                         </div>
                     ) : (userDates.length === 0) ? (
-                        <div className="text-2xl font-semibold mb-2">
+                        <div className="text-2xl text-center font-semibold mb-2">
                             You have not created any dates yet :{"("} <br />
-                            Create one now!
+                            Create one now! <br />
                             <CreatePost />
                         </div>
                     ) : (
