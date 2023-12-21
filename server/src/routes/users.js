@@ -10,7 +10,7 @@ router.route("/me").get(security.checkAuth, async (req, res) => {
   let id = req.user.uid;
   try {
     let user = await userFuncs.get(id);
-    console.log(user);
+    // console.log(user);
     return res.status(200).json(user);
   } catch (e) {
     return res.status(500).json({ error: e });
