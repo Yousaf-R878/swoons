@@ -107,6 +107,9 @@ const LoginForm = () => {
             Login
           </Button>
         </div>
+        <FormDescription className="text-center">
+          <a href="/forgot-password">Forgot Password?</a>
+        </FormDescription>
       </form>
     </Form>
   );

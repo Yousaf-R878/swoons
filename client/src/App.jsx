@@ -7,6 +7,7 @@ import { AuthorizeProvider } from "./contexts/auth";
 import Footer from "./components/Footer/Footer";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import Page from "./pages/Page/Page";
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 
 function AppContainer() {
   return <App />;
@@ -34,6 +35,14 @@ function App() {
                     <Explore />
                   </Page>
                 </AuthRoute>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <Page>
+                  <ForgotPassword />
+                </Page>
               }
             />
             <Route
