@@ -2,7 +2,7 @@ import React from "react";
 import THero from "../../assets/THero.png";
 import { Button } from "@/components/ui/button";
 
-const Hero = () => {
+const Hero = ({scrollToLearnMore}) => {
   return (
     <div className="bg-secondary h-[50vh] flex items-center justify-center overflow-hidden">
       <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
@@ -13,7 +13,7 @@ const Hero = () => {
           <p className="text-white text-lg mb-6">
           Welcome to Swoons, where every date becomes a curated experience! Create and share your perfect moments with ease, as Swoons takes you on a journey of seamless connections. From charming cafes to scenic strolls, craft your ideal date by selecting from a variety of handpicked events and places. Elevate your dating game with Swoons – because extraordinary connections deserve extraordinary experiences. Get ready to embark on unforgettable dates, one Swoon at a time!
           </p>
-          <Button className="bg-white text-black w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-white-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
+          <Button onMouseUp={scrollToLearnMore} className="bg-white text-black w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-white-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
             Learn More
           </Button>
         </div>

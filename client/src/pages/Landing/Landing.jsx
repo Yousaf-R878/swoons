@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import NavbarExplore from "../../components/Navbar/NavbarExplore";
 import Hero from "../../components/Hero/Hero";
@@ -19,6 +19,12 @@ const Landing = () => {
   const { currentUser } = useContext(AuthorizeContext);
   const [mostLikedDates, setMostLikedDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const learnMoreRef = useRef(null);
+
+  const scrollToLearnMore = () => {
+    console.log('yo')
+    learnMoreRef.current.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     const fetchMostLikedDates = async () => {
@@ -41,8 +47,8 @@ const Landing = () => {
 
   return (
     <>
-      <Hero />
-      <div className="my-8">
+      <Hero scrollToLearnMore={scrollToLearnMore}/>
+      <div className="mt-8">
         <h2 className="text-4xl text-center font-bold">Trending</h2>
         <div className="relative my-8 mx-10">
           <div className="flex justify-center items-center">
@@ -68,7 +74,7 @@ const Landing = () => {
           <LoginDialog />
         </Dialog>
 
-        <div className="flex flex-row bg-secondary mt-4 justify-around">
+        <div className="flex flex-row bg-secondary mt-4 justify-around" ref={learnMoreRef}>
           <div className="flex flex-col">
             <div className="flex flex-row my-12 max-w-[45vw]">
               <svg xmlns="http://www.w3.org/2000/svg" width="82" height="82" viewBox="0 0 24 24" className="fill-white"><path d="M23 18h-2v2h-1v-2h-2v-1h2v-2h1v2h2v1zm-15.999-10c-2.493 0-4.227 2.383-1.866 6.839.774 1.464-.826 1.812-2.545 2.209-1.491.345-1.59 1.072-1.59 2.334l.002.618h1.329c0-1.918-.186-1.385 1.824-1.973 1.014-.295 1.91-.723 2.316-1.612.212-.463.355-1.22-.162-2.197-.952-1.798-1.219-3.374-.712-4.215.547-.909 2.27-.908 2.819.015.935 1.567-.793 3.982-1.02 4.982h1.396c.44-1 1.206-2.208 1.206-3.9.001-2.01-1.31-3.1-2.997-3.1zm7.754-1.556c.895-1.487 3.609-1.494 4.512.022.77 1.291.423 3.484-.949 6.017-.098.18-.17.351-.232.517h1.464c3.057-5.744.816-9-2.548-9-3.323 0-5.635 3.177-2.488 9.119 1.033 1.952-1.101 2.416-3.394 2.946-1.988.458-2.12 1.429-2.12 3.11l.003.825h1.331c0-2.069-.08-2.367 1.173-2.657 1.918-.442 3.729-.86 4.39-2.305.241-.527.401-1.397-.206-2.543-1.362-2.572-1.704-4.777-.936-6.051z"/></svg>
@@ -76,7 +82,6 @@ const Landing = () => {
                     <h2 className="text-2xl text-center text-white font-bold">Share Experiences</h2>
                     <Separator/>
                     <p className="mt-2 text-white text-lg">Had a great time out and about? Share your experiences with others and start a trend!</p>
-                    <a className="text-white font-bold mt-2">Learn more →</a>
                   </div>
                   
               </div>
@@ -86,7 +91,6 @@ const Landing = () => {
                     <h2 className="text-2xl text-center text-white font-bold">Find New Adventures</h2>
                     <Separator/>
                     <p className="mt-2 text-white text-lg">Find the right date for you and any (or all) of your partners and friends.</p>
-                    <a className="text-white font-bold mt-2">Learn more →</a>
                   </div>
                   
               </div>
@@ -98,7 +102,6 @@ const Landing = () => {
                     <h2 className="text-2xl text-center text-white font-bold">See the World in a New Light</h2>
                     <Separator/>
                     <p className="mt-2 text-white text-lg">There is always more to an area than meets the eye. Find a new way to enjoy your city!</p>
-                    <a className="text-white font-bold mt-2">Learn more →</a>
                   </div>
               </div>
               <div className="flex flex-row my-12 max-w-[45vw]">
@@ -107,7 +110,6 @@ const Landing = () => {
                     <h2 className="text-2xl text-center text-white font-bold">Explore Your City</h2>
                     <Separator/>
                     <p className="mt-2 text-white text-lg">Have a fun time anywhere within your city. There is always something to do!</p>
-                    <a className="text-white font-bold mt-2">Learn more →</a>
                   </div>
                   
               </div>
