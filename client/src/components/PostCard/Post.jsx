@@ -37,9 +37,11 @@ const timeStampToDate = (timeStamp, displayTime = false) => {
 
   if (displayTime) {
     const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
-    return `${month} ${day}, ${year} at ${hours}:${minutes}`;
+    // 2 mintues should display as 02
+    const minutes = ("0" + date.getMinutes()).slice(-2);
+    const ampm = hours >= 12 ? "pm" : "am";
+    const displayHours = hours % 12 || 12;
+    return `${month} ${day}, ${year} at ${displayHours}:${minutes} ${ampm}`;
   } 
 
   return `${month} ${day}, ${year}`;
@@ -107,7 +109,6 @@ const Post = ({ date }) => {
               <p className="text-sm text-gray-600 mb-4">{date.description}</p>
           </CardContent>
           <CardFooter className="flex space-y-2 md:flex-row md:space-y-0 md:space-x-2">
-
               <Button
                   variant="primary"
                   className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
@@ -130,8 +131,7 @@ const Post = ({ date }) => {
                   <></>
               )}
               <Dialog>
-                  <DialogTrigger asChild> 
-                  
+                  <DialogTrigger asChild>
                       <Button
                           as="a"
                           href="link-to-post"
@@ -144,6 +144,11 @@ const Post = ({ date }) => {
                       date={date}
                       timeStampToDate={timeStampToDate}
                       Carousel={CarouselCmp}
+                      handleLike={handleLike}
+                      isLiked={isLiked}
+                      likesCount={likesCount}
+                      setIsLiked={setIsLiked} // pass this to be able to update from child
+                      setLikesCount={setLikesCount} // pass this to be able to update from child
                   />
               </Dialog>
               {currentUser && currentUser.username === date.creator.username ? (

@@ -10,13 +10,10 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Heart } from "lucide-react";
-import { MessagesSquare } from "lucide-react";
+import { Heart, MessageCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-
-import { X } from "lucide-react";
 
 import { AuthorizeContext } from "../../contexts/auth";
 
@@ -32,7 +29,16 @@ const commentSchema = z.object({
         .trim(),
 });
 
-const ViewCardModal = ({ date, timeStampToDate, Carousel }) => {
+const ViewCardModal = ({
+    date,
+    timeStampToDate,
+    Carousel,
+    handleLike,
+    isLiked,
+    likesCount,
+    setIsLiked,
+    setLikesCount,
+}) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { currentUser } = useContext(AuthorizeContext);
 
@@ -84,135 +90,148 @@ const ViewCardModal = ({ date, timeStampToDate, Carousel }) => {
     };
 
     return (
-        <DialogContent className="sm:max-w-[925px] sm:max-h-[700px] overflow-y-auto">
-            <DialogHeader>
-                <DialogTitle className="text-2xl text-center">
-                    {date.title}
-                </DialogTitle>
-                <div className="flex flex-col justify-center items-center">
-                    <p className="text-xl mr-2 text-gray-300">
-                        By: {date.creator.username}
-                    </p>
-                    <div className="flex flex-row">
-                        {date.tags.map((badge, index) => (
+        <DialogContent className="flex gap-8 max-w-[925px] max-h-[700px] overflow-y-auto">
+            <div className="flex flex-col w-3/5 space-y-2 overflow-y-auto max-h-[700px]">
+                {/* Title and Meta Data */}
+                <DialogHeader>
+                    <DialogTitle className="text-2xl font-semibold">
+                        {date.title}
+                    </DialogTitle>
+                    <div className="text-md text-gray-600">
+                        {date.creator.firstName} {date.creator.lastName}
+                    </div>
+                    <div className="text-md text-gray-300">
+                        @{date.creator.username}
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 my-2">
+                        {date.tags.map((tag, index) => (
                             <Badge
                                 key={index}
-                                className="bg-palecyan my-2 mx-1 h-5 text-xs text-gray-500"
+                                className="bg-blue-100 hover:bg-blue-200 transition-colors duration-300 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full"
                             >
-                                {badge}
+                                {tag}
                             </Badge>
                         ))}
                     </div>
-                    <div className="flex flex-row">
-                        <Heart size={30} color="#FFA39C" className="mr-2" />
-                        <span>{date.likes}</span>
-                        {/* Maybe make comments blue? */}
-                        <MessagesSquare
-                            size={30}
-                            color="gray"
-                            className="ml-2 mr-2"
-                        />
-                        <span>{date.commentsCount}</span>
-                    </div>
-                </div>
-                <Separator />
-            </DialogHeader>
-            <div className="flex items-center my-4 flex-col">
+                </DialogHeader>
+
+                {/* Event List */}
                 {date.events.map((event, index) => (
-                    <div
-                        key={index}
-                        className="flex justify-between items-center w-full py-10"
-                    >
+                    <div key={index} className="flex gap-4 py-4">
                         <Carousel
                             images={event.tripAdvisorLocationImages}
-                            classStuff="w-56 h-56 mr-4  rounded-sm"
-                            imgWidth="14rem"
-                            imgHeight="14rem"
+                            classStuff="w-28 h-28 rounded-sm"
+                            imgWidth="112px"
+                            imgHeight="112px"
                         />
-                        <div className="flex w-full flex-col px-10">
-                            <div className="flex flex-col justify-center items-start text-xl font-bold">
-                                <h2>{event.name}</h2>
-                                <Separator />
-                            </div>
-                            <p className="pt-4">{event.description}</p>
+                        <div className="flex flex-col">
+                            <h2 className="text-xl font-semibold ">
+                                {event.name}
+                            </h2>
+                            <p className="text-gray-600">{event.description}</p>
                         </div>
                     </div>
                 ))}
             </div>
 
-            <DialogFooter>
-                <div className="flex flex-col w-full">
-                    <h2 className="text-2xl font-bold">Comments</h2>
-                    <Separator />
-                    {currentUser && (
-                        <form
-                            onSubmit={handleSubmit(handlePostComment)}
-                            className="w-full flex justify-center items-center"
+            {/* Comments Column */}
+            <div className="w-2/5 space-y-4 overflow-y-auto max-h-[700px]">
+                {/* Comments Heading */}
+                <div className="flex items-center gap-2">
+                    <div className="flex flex-grow items-center justify-center rounded-md bg-white text-gray-700 p-2 text-xs">
+                        <MessageCircle className="h-4 w-4 mr-1" />{" "}
+                        <span>{date.commentsCount}</span>
+                    </div>
+                    <Button
+                        variant="primary"
+                        className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
+                        onClick={handleLike}
+                    >
+                        <Heart
+                            className={`h-4 w-4 mr-1`}
+                            fill={isLiked ? "#FFA39C" : "none"}
+                        />
+                        <span>{likesCount}</span>
+                    </Button>
+                </div>
+
+                <Separator />
+
+                {/* New Comment Form */}
+                {currentUser && (
+                    <form
+                        onSubmit={handleSubmit(handlePostComment)}
+                        className="flex gap-2"
+                    >
+                        <Controller
+                            name="comment"
+                            control={control}
+                            defaultValue=""
+                            render={({ field }) => (
+                                <Input
+                                    {...field}
+                                    id="newComment"
+                                    placeholder="Leave a comment..."
+                                    className={`w-full active:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-0 ${
+                                        errors.comment ? "border-red-500" : ""
+                                    }`}
+                                    disabled={isSubmitting}
+                                />
+                            )}
+                        />
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            variant="outline"
+                            className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-secondary hover:bg-secondary-hover hover:text-white"
                         >
-                            <Controller
-                                name="comment"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <Input
-                                        {...field}
-                                        id="newComment"
-                                        placeholder="Leave a comment..."
-                                        className={`w-full active:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-0 ${
-                                            errors.comment
-                                                ? "border-red-500"
-                                                : ""
-                                        }`}
-                                        disabled={isSubmitting}
-                                    />
-                                )}
-                            />
-                            <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover text-xl my-2 ml-4"
-                            >
-                                Comment
-                            </Button>
-                        </form>
-                    )}
-                    {date.comments.map((comment, index) => (
-                        <div
-                            key={index}
-                            className="relative border-2 my-3 rounded-sm"
-                        >
-                            <div className="flex justify-between items-start p-4">
-                                <div>
-                                    <h3 className="text-xl font-bold">
-                                        {comment.firstName} {comment.lastName}
-                                    </h3>
-                                    <p className="text-gray-300">
+                            Comment
+                        </Button>
+                    </form>
+                )}
+
+                {/* Comments List */}
+                {date.comments.map((comment, index) => (
+                    <div
+                        key={index}
+                        className="relative border-2 my-3 rounded-sm p-4"
+                    >
+                        <div className="flex justify-between items-center  w-full">
+                            <div>
+                                <h3 className="text-lg font-semibold">
+                                    {comment.firstName} {comment.lastName}
+                                </h3>
+                                <div className="flex items-center">
+                                    <p className="text-xs text-gray-500 mr-2">
                                         @{comment.username}
                                     </p>
-                                    <p className="text-gray-300">
+                                    <p className="text-xs text-gray-400">
                                         {timeStampToDate(comment.time, true)}
                                     </p>
+                                    <div className="flex items-end">
+                                        {currentUser &&
+                                            currentUser._id ===
+                                                comment.userId && (
+                                                <button
+                                                    onClick={() =>
+                                                        handleDeleteComment(
+                                                            comment.time
+                                                        )
+                                                    }
+                                                    className="text-red-500 hover:text-red-700 transition duration-150 ease-in-out"
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                            )}
+                                    </div>
                                 </div>
-                                {currentUser &&
-                                    currentUser._id === comment.userId && (
-                                        <button
-                                            onClick={() =>
-                                                handleDeleteComment(
-                                                    comment.time
-                                                )
-                                            }
-                                            className="absolute top-0 right-0 mt-2 mr-2 text-red-500 hover:text-red-700 transition duration-150 ease-in-out"
-                                        >
-                                            <X size={20} />
-                                        </button>
-                                    )}
                             </div>
-                            <Separator />
-                            <p className="px-4 pt-4">{comment.comment}</p>
                         </div>
-                    ))}
-                </div>
-            </DialogFooter>
+                        <p className="text-sm mt-2">{comment.comment}</p>
+                    </div>
+                ))}
+            </div>
         </DialogContent>
     );
 };
