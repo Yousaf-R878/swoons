@@ -70,8 +70,8 @@ try {
       // })
       const createdDate = await axios.post("http://localhost:3000/dates", {
         title: dateData.title,
-        tagArray: dateData.tagArray,
-        eventArray: dateData.eventArray,
+        tags: dateData.tags,
+        events: dateData.events,
         userId: randomUserId,
       });
 

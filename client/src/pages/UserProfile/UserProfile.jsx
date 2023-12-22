@@ -249,7 +249,7 @@ const UserProfile = () => {
               >
                 Choose file
               </label>
-              <label class="text-sm text-slate-500">{fileName}</label>
+              <label className="text-sm text-slate-500">{fileName}</label>
             </div>
 
           </form>

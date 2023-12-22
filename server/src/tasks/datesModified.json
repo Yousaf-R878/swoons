@@ -1,8 +1,8 @@
 [
     {
         "title": "Nature Getaway",
-        "tagArray": ["parks", "water parks"],
-        "eventArray": [
+        "tags": ["parks", "water parks"],
+        "events": [
             {
                 "name": "Sandals Regency La Toc",
                 "location": "La Toc Road, Castries St. Lucia",
@@ -25,8 +25,8 @@
     },
     {
         "title": "Cultural Exploration",
-        "tagArray": ["amusement parks", "beaches"],
-        "eventArray": [
+        "tags": ["amusement parks", "beaches"],
+        "events": [
             {
                 "name": "Rocky Statue",
                 "location": "2600 Benjamin Franklin Pkwy Center City Phila, Philadelphia, PA 19130-2302",
@@ -55,8 +55,8 @@
     },
     {
         "title": "Theatre Evening",
-        "tagArray": ["sights", "hotels"],
-        "eventArray": [
+        "tags": ["sights", "hotels"],
+        "events": [
             {
                 "name": "Paris Las Vegas",
                 "location": "3655 S Las Vegas Blvd, Paradise, NV 89109-4345",
@@ -73,8 +73,8 @@
     },
     {
         "title": "Cultural Exploration",
-        "tagArray": ["arts", "parks", "tours", "aquariums", "beaches"],
-        "eventArray": [
+        "tags": ["arts", "parks", "tours", "aquariums", "beaches"],
+        "events": [
             {
                 "name": "Los Angeles",
                 "location": "Los Angeles, CA",
@@ -103,8 +103,8 @@
     },
     {
         "title": "Beach Relaxation",
-        "tagArray": ["sights", "concerts"],
-        "eventArray": [
+        "tags": ["sights", "concerts"],
+        "events": [
             {
                 "name": "Bellagio Las Vegas",
                 "location": "3600 Las Vegas Blvd S, Las Vegas, NV 89109-4303",
@@ -121,8 +121,8 @@
     },
     {
         "title": "Cultural Exploration",
-        "tagArray": ["arts", "casinos", "water parks"],
-        "eventArray": [
+        "tags": ["arts", "casinos", "water parks"],
+        "events": [
             {
                 "name": "Los Angeles",
                 "location": "Los Angeles, CA",
@@ -133,8 +133,8 @@
     },
     {
         "title": "Musical Nights",
-        "tagArray": ["shopping", "beaches"],
-        "eventArray": [
+        "tags": ["shopping", "beaches"],
+        "events": [
             {
                 "name": "Las Brisas Huatulco",
                 "location": "Lot 1 Blvd. Tangolunda Bah\u00eda de Tangolunda, Huatulco 70989 Mexico",
@@ -145,8 +145,8 @@
     },
     {
         "title": "Zoo Visit",
-        "tagArray": ["bowling", "events", "water parks", "other", "museums"],
-        "eventArray": [
+        "tags": ["bowling", "events", "water parks", "other", "museums"],
+        "events": [
             {
                 "name": "Los Angeles",
                 "location": "Los Angeles, CA",
@@ -175,8 +175,8 @@
     },
     {
         "title": "Garden Retreat",
-        "tagArray": ["nature", "parks"],
-        "eventArray": [
+        "tags": ["nature", "parks"],
+        "events": [
             {
                 "name": "Melia Las Americas",
                 "location": "Crta. De Las Morlas, Varadero 42200 Cuba",
@@ -187,7 +187,7 @@
     },
     {
         "title": "Coffee Trail",
-        "tagArray": [
+        "tags": [
             "casinos",
             "outdoors",
             "water parks",
@@ -195,7 +195,7 @@
             "amusement parks",
             "zoos"
         ],
-        "eventArray": [
+        "events": [
             {
                 "name": "Times Square",
                 "location": "Broadway, New York City, NY 10036",
@@ -218,8 +218,8 @@
     },
     {
         "title": "Sports Fan Day",
-        "tagArray": ["parks", "casinos", "playgrounds"],
-        "eventArray": [
+        "tags": ["parks", "casinos", "playgrounds"],
+        "events": [
             {
                 "name": "Luma Hotel Time Square",
                 "location": "120 W 41st St, New York City, NY 10036-7315",
@@ -230,8 +230,8 @@
     },
     {
         "title": "Garden Retreat",
-        "tagArray": ["zoos", "museums", "sights"],
-        "eventArray": [
+        "tags": ["zoos", "museums", "sights"],
+        "events": [
             {
                 "name": "Statue of Liberty & Ellis Island Tour: All Options",
                 "location": "New York City, NY",
@@ -242,8 +242,8 @@
     },
     {
         "title": "Shopping Spree",
-        "tagArray": ["gardens", "casinos"],
-        "eventArray": [
+        "tags": ["gardens", "casinos"],
+        "events": [
             {
                 "name": "Times Square",
                 "location": "Broadway, New York City, NY 10036",
@@ -266,8 +266,8 @@
     },
     {
         "title": "Musical Nights",
-        "tagArray": ["parks", "beaches", "food", "nature", "zoos", "outdoors"],
-        "eventArray": [
+        "tags": ["parks", "beaches", "food", "nature", "zoos", "outdoors"],
+        "events": [
             {
                 "name": "Molly Malone Statue",
                 "location": "Suffolk Street, Dublin Ireland",
@@ -290,8 +290,8 @@
     },
     {
         "title": "Historical Journey",
-        "tagArray": ["coffee", "sights", "beaches", "beaches"],
-        "eventArray": [
+        "tags": ["coffee", "sights", "beaches", "beaches"],
+        "events": [
             {
                 "name": "Statue Of Unity",
                 "location": "Statue of Unity Rd Sardar Sarovar Dam, Kevadia 393151 India",
@@ -308,8 +308,8 @@
     },
     {
         "title": "Zoo Visit",
-        "tagArray": ["other", "food"],
-        "eventArray": [
+        "tags": ["other", "food"],
+        "events": [
             {
                 "name": "The Westin New York at Times Square",
                 "location": "270 West 43rd Street At 8th Avenue, New York City, NY 10036-3912",
@@ -326,8 +326,8 @@
     },
     {
         "title": "Amusement Park Thrills",
-        "tagArray": ["parks", "gardens"],
-        "eventArray": [
+        "tags": ["parks", "gardens"],
+        "events": [
             {
                 "name": "Moxy NYC Times Square",
                 "location": "485 7th Avenue, New York City, NY 10018-6804",
@@ -338,7 +338,7 @@
     },
     {
         "title": "Musical Nights",
-        "tagArray": [
+        "tags": [
             "tours",
             "beaches",
             "arenas",
@@ -346,7 +346,7 @@
             "hotels",
             "drinks"
         ],
-        "eventArray": [
+        "events": [
             {
                 "name": "La Casa de La Playa by Hoteles Xcaret",
                 "location": "Carr. Chetumal Juarez Mexico km 282, Lot 023 2, Playa del Carmen 77710 Mexico",
@@ -375,14 +375,14 @@
     },
     {
         "title": "Amusement Park Thrills",
-        "tagArray": [
+        "tags": [
             "amusement parks",
             "music venues",
             "coffee",
             "playgrounds",
             "aquariums"
         ],
-        "eventArray": [
+        "events": [
             {
                 "name": "Paris Las Vegas",
                 "location": "3655 S Las Vegas Blvd, Paradise, NV 89109-4345",
@@ -393,8 +393,8 @@
     },
     {
         "title": "Family Fun",
-        "tagArray": ["beaches", "bowling"],
-        "eventArray": [
+        "tags": ["beaches", "bowling"],
+        "events": [
             {
                 "name": "The Westin New York at Times Square",
                 "location": "270 West 43rd Street At 8th Avenue, New York City, NY 10036-3912",
