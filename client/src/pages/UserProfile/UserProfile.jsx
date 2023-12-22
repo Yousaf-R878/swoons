@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 import AWS from "aws-sdk";
 import { useContext } from "react";
 import { AuthorizeContext } from "../../contexts/auth";
@@ -61,6 +61,8 @@ const UserProfile = () => {
   const { currentUser, updateUser } = useContext(AuthorizeContext);
   const [file, setFile] = useState(null);
   const [fileName, setfileName] = useState("No file chosen");
+  const [pic, setPic] = useState({image: currentUser.picture, x: 0})
+  const [, forceUpdate] = useReducer(x => x + 1, 0);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -105,7 +107,7 @@ const UserProfile = () => {
         //File params
         const params = {
             Bucket: S3_BUCKET,
-            Key: `${currentUser._id}_profile_pic.png`,
+            Key: `${currentUser._id}_${file.name}.png`,
             Body: file,
         };
 
@@ -133,12 +135,10 @@ const UserProfile = () => {
               }
             })
 
-            // let updatedUser = {...currentUser, uploadToggle: !currentUser.uploadToggle}
-            // console.log(updatedUser);
-            // updateUser(updatedUser)
-        
+            
             // File successfully uploaded
-            window.location.reload();
+            let updatedUser = {...currentUser, picture: url}
+            updateUser(updatedUser)
             setFile(null);
             setfileName("No file chosen")
             });
@@ -201,7 +201,9 @@ const UserProfile = () => {
         }
       })
       //console.log("Profile Pic deleted");
-      window.location.reload();
+      let updatedUser = {...currentUser, picture: "https://swoons-photos.s3.amazonaws.com/default_profile.png"}
+      updateUser(updatedUser)
+      
   }
 
   const onSubmit = async (data) => {
