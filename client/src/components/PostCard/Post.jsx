@@ -3,7 +3,8 @@ import "react-slideshow-image/dist/styles.css";
 import { useMemo, useContext, useState } from "react";
 import Carousel from "nuka-carousel";
 import clsx from "clsx";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import LoginDialog from "../Login/LoginDialog/LoginDialog";
+
 import { Button } from "@/components/ui/button";
 import { AuthorizeContext } from "../../contexts/auth";
 import {
@@ -54,8 +55,14 @@ const Post = ({ date }) => {
     currentUser?.likedDates.includes(date._id)
   );
   const [likesCount, setLikesCount] = useState(date.likes);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+
 
   const handleLike = async () => {
+     if (!currentUser) {
+         setShowLoginDialog(true);
+         return; 
+     }
     if (currentUser && date) {
       if (isLiked) {
         try {
@@ -109,17 +116,25 @@ const Post = ({ date }) => {
               <p className="text-sm text-gray-600 mb-4">{date.description}</p>
           </CardContent>
           <CardFooter className="flex space-y-2 md:flex-row md:space-y-0 md:space-x-2">
-              <Button
-                  variant="primary"
-                  className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
-                  onClick={handleLike}
+              <Dialog
+                  isOpen={showLoginDialog}
+                  onOpenChange={setShowLoginDialog}
               >
-                  <Heart
-                      className={`h-4 w-4 mr-1`}
-                      fill={isLiked ? "#FFA39C" : "none"}
-                  />
-                  <span>{likesCount}</span>
-              </Button>
+                  <DialogTrigger asChild>
+                      <Button
+                          variant="primary"
+                          className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
+                          onClick={handleLike}
+                      >
+                          <Heart
+                              className={`h-4 w-4 mr-1`}
+                              fill={isLiked ? "#FFA39C" : "none"}
+                          />
+                          <span>{likesCount}</span>
+                      </Button>
+                  </DialogTrigger>
+                  <LoginDialog closeDialog={() => setShowLoginDialog(false)} />
+              </Dialog>
               <div className="flex flex-grow items-center justify-center rounded-md bg-white text-gray-700 p-2 text-xs">
                   <MessageCircle className="h-4 w-4 mr-1" />{" "}
                   <span>{date.commentsCount}</span>
@@ -147,14 +162,17 @@ const Post = ({ date }) => {
                       handleLike={handleLike}
                       isLiked={isLiked}
                       likesCount={likesCount}
-                      setIsLiked={setIsLiked} // pass this to be able to update from child
-                      setLikesCount={setLikesCount} // pass this to be able to update from child
+                      setIsLiked={setIsLiked} 
+                      setLikesCount={setLikesCount}
+                      showLoginDialog={showLoginDialog}
+                      setShowLoginDialog={setShowLoginDialog}
+  
                   />
               </Dialog>
               {currentUser && currentUser.username === date.creator.username ? (
-                <DeletePost date={date}/>
+                  <DeletePost date={date} />
               ) : (
-                <></>
+                  <></>
               )}
           </CardFooter>
       </Card>

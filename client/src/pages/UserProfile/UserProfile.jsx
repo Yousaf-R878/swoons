@@ -228,126 +228,158 @@ const UserProfile = () => {
   };
 
   return (
-    <>
-      <div className="container mx-auto p-8 flex justify-between">
-        <div className="w-1/2  h-1/2 bg-white shadow rounded p-6 flex flex-col items-center mr-4">
-          <h1 className="text-2xl font-semibold mb-6">Profile Picture</h1>
-          <div className="mb-4">
-            <Avatar className="w-24 h-24">
-              <AvatarImage src={currentUser.picture} alt="Profile" />
-              <AvatarFallback>{currentUser.firstName[0]}</AvatarFallback>
-            </Avatar>
-          </div>
-          <form>
-            <div className="flex flex-row items-center mb-2">
-              <input id="custom-input" accept="image/png, image/jpeg" type="file" onChange={handleFileChange} hidden />
-              <label
-                htmlFor="custom-input"
-                className="block text-sm text-slate-500 mr-4 py-2 px-4
+      <>
+          <div className="container mx-auto p-8 flex justify-between">
+              <div className="w-1/2  h-1/2 bg-white shadow rounded p-6 flex flex-col items-center mr-4">
+                  <h1 className="text-2xl font-semibold mb-6">
+                      Profile Picture
+                  </h1>
+                  <div className="mb-4">
+                      <Avatar className="w-24 h-24">
+                          <AvatarImage
+                              src={currentUser.picture}
+                              alt="Profile"
+                          />
+                          <AvatarFallback>
+                              {currentUser.firstName[0]}
+                          </AvatarFallback>
+                      </Avatar>
+                  </div>
+                  <form>
+                      <div className="flex flex-row items-center mb-2">
+                          <input
+                              id="custom-input"
+                              accept="image/png, image/jpeg"
+                              type="file"
+                              onChange={handleFileChange}
+                              hidden
+                          />
+                          <label
+                              htmlFor="custom-input"
+                              className="block text-sm text-slate-500 mr-4 py-2 px-4
                   rounded-md border-0 text-sm font-semibold bg-pink-50
-                  text-pink-700 hover:bg-pink-100 cursor-pointer"
-              >
-                Choose file
-              </label>
-              <label className="text-sm text-slate-500">{fileName}</label>
-            </div>
+                  text-pink-700 hover:bg-pink-100 cursor-pointer delay-100 duration-300 ease-in-out"
+                          >
+                              Choose file
+                          </label>
+                          <label class="text-sm text-slate-500">
+                              {fileName}
+                          </label>
+                      </div>
+                  </form>
 
-          </form>
-          
-          <Button className="mb-2" onClick={uploadFile} >Change Picture</Button>
-          <Button variant="danger" onClick={resetPic}>Delete Picture</Button>
-          <p className="text-gray-600 text-xs">
-            Your account was created on{" "}
-            {currentUser && timeStampToDate(currentUser.accountCreationDate)}
-          </p>
-        </div>
-        <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
-          <h1 className="text-2xl font-semibold mb-6">Settings</h1>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        name="email"
-                        disabled
-                        {...form.register("email")}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex justify-end mt-4">
-                <Button type="submit">Update Settings</Button>
+                  <Button
+                      variant="outline"
+                      className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-secondary hover:bg-secondary-hover hover:text-white"
+                      onClick={uploadFile}
+                  >
+                      Change Picture
+                  </Button>
+                  <Button variant="danger" onClick={resetPic}>
+                      Delete Picture
+                  </Button>
+                  <p className="text-gray-600 text-xs">
+                      Your account was created on{" "}
+                      {currentUser &&
+                          timeStampToDate(currentUser.accountCreationDate)}
+                  </p>
               </div>
-            </form>
-          </Form>
-        </div>
-      </div>
-    </>
+              <div className="w-1/2 max-w-md bg-white shadow rounded p-6 ml-4">
+                  <h1 className="text-2xl font-semibold mb-6">Settings</h1>
+
+                  <Form {...form}>
+                      <form
+                          onSubmit={form.handleSubmit(onSubmit)}
+                          className="space-y-4"
+                      >
+                          <FormField
+                              control={form.control}
+                              name="email"
+                              render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Email</FormLabel>
+                                      <FormControl>
+                                          <Input
+                                              name="email"
+                                              disabled
+                                              {...form.register("email")}
+                                          />
+                                      </FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                              )}
+                          />
+
+                          <FormField
+                              control={form.control}
+                              name="firstName"
+                              render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>First Name</FormLabel>
+                                      <FormControl>
+                                          <Input {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                              )}
+                          />
+
+                          <FormField
+                              control={form.control}
+                              name="lastName"
+                              render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Last Name</FormLabel>
+                                      <FormControl>
+                                          <Input {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                              )}
+                          />
+
+                          <FormField
+                              control={form.control}
+                              name="username"
+                              render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Username</FormLabel>
+                                      <FormControl>
+                                          <Input {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                              )}
+                          />
+
+                          <FormField
+                              control={form.control}
+                              name="password"
+                              render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Password</FormLabel>
+                                      <FormControl>
+                                          <Input {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                              )}
+                          />
+
+                          <div className="flex justify-end mt-4">
+                              <Button
+                                  variant="outline"
+                                  className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-secondary hover:bg-secondary-hover hover:text-white"
+                                  type="submit"
+                              >
+                                  Update Settings
+                              </Button>
+                          </div>
+                      </form>
+                  </Form>
+              </div>
+          </div>
+      </>
   );
 };
 
