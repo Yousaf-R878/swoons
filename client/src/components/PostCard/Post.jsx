@@ -25,7 +25,7 @@ import { Separator } from "@radix-ui/react-select";
 import EditPost from "../EditPost/EditPost";
 import ViewCardModal from "./ViewCardModal";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import apiClient from "../../services/apiClient";
+import apiClient from "../../services/apiClient"
 
 const timeStampToDate = (timeStamp, displayTime = false) => {
   
@@ -106,6 +106,7 @@ const Post = ({ date }) => {
               <p className="text-sm text-gray-600 mb-4">{date.description}</p>
           </CardContent>
           <CardFooter className="flex space-y-2 md:flex-row md:space-y-0 md:space-x-2">
+
               <Button
                   variant="primary"
                   className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
@@ -128,7 +129,8 @@ const Post = ({ date }) => {
                   <></>
               )}
               <Dialog>
-                  <DialogTrigger asChild>
+                  <DialogTrigger asChild> 
+                  
                       <Button
                           as="a"
                           href="link-to-post"
