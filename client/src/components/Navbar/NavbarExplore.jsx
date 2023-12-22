@@ -71,9 +71,9 @@ const Navbar = () => {
             <div className="flex items-center">
               <div className="flex flex-col text-left">
                 <p className="text-black font-semibold text-md">
-                  {currentUser.firstName} {currentUser.lastName}
+                  {currentUser.firstName.length >= 21 ? currentUser.firstName.substring(0,21) + "..." : currentUser.firstName} {currentUser.lastName.length >= 20 ? currentUser.lastName[0] + "." : currentUser.lastName}
                 </p>
-                <p className="text-gray-400 text-xs -mt-1">@{currentUser.username}</p>
+                <p className="text-gray-400 text-xs -mt-1">@{currentUser.username.length >= 11 ? currentUser.username.substring(0,11) + "..." : currentUser.username}</p>
               </div>
             </div>
           </DropdownMenuTrigger>

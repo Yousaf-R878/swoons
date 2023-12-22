@@ -70,6 +70,8 @@ const UserProfile = () => {
   const { currentUser, updateUser } = useContext(AuthorizeContext);
   const [file, setFile] = useState(null);
   const [fileName, setfileName] = useState("No file chosen");
+  const [pic, setPic] = useState({image: currentUser.picture, x: 0})
+  const [, forceUpdate] = useReducer(x => x + 1, 0);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -111,7 +113,7 @@ const UserProfile = () => {
       //File params
       const params = {
         Bucket: S3_BUCKET,
-        Key: `${currentUser._id}_profile_pic.png`,
+        Key: `${currentUser._id}_${file.name}.png`,
         Body: file,
       };
 
@@ -131,7 +133,8 @@ const UserProfile = () => {
             url: url,
           },
         });
-        window.location.reload();
+      let updatedUser = {...currentUser, picture: url}
+         updateUser(updatedUser)
         setFile(null);
         setfileName("No file chosen");
       } catch (err) {
@@ -186,19 +189,21 @@ const UserProfile = () => {
 
     //   })
 
-    let apiUrl =
-      import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`;
-    let changeUser = await axios({
-      method: "post",
-      url: apiUrl,
-      headers: {},
-      data: {
-        url: "https://swoons-photos.s3.amazonaws.com/default_profile.png",
-      },
-    });
-    //console.log("Profile Pic deleted");
-    window.location.reload();
-  };
+      let apiUrl = import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`
+      let changeUser = await axios({
+        method: 'post',
+        url: apiUrl,
+        headers: {},
+        data: {
+          url: "https://swoons-photos.s3.amazonaws.com/default_profile.png"
+        }
+      })
+      //console.log("Profile Pic deleted");
+      let updatedUser = {...currentUser, picture: "https://swoons-photos.s3.amazonaws.com/default_profile.png"}
+      updateUser(updatedUser)
+      
+  }
+
 
   const onSubmit = async (data) => {
     console.log(data);
