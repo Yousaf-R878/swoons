@@ -16,6 +16,9 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 
 import { AuthorizeContext } from "../../contexts/auth";
+import LoginDialog from "../Login/LoginDialog/LoginDialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+
 
 import API from "../../services/apiClient";
 
@@ -38,6 +41,8 @@ const ViewCardModal = ({
     likesCount,
     setIsLiked,
     setLikesCount,
+    showLoginDialog,
+    setShowLoginDialog,
 }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { currentUser } = useContext(AuthorizeContext);
@@ -92,7 +97,6 @@ const ViewCardModal = ({
     return (
         <DialogContent className="flex gap-8 max-w-[925px] max-h-[700px] overflow-y-auto">
             <div className="flex flex-col w-3/5 space-y-2 overflow-y-auto max-h-[700px]">
-                {/* Title and Meta Data */}
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-semibold">
                         {date.title}
@@ -101,7 +105,8 @@ const ViewCardModal = ({
                         {date.creator.firstName} {date.creator.lastName}
                     </div>
                     <div className="text-md text-gray-300">
-                        @{date.creator.username}
+                        @{date.creator.username} •{" "}
+                        {timeStampToDate(date.timeStamp)}
                     </div>
 
                     <div className="flex flex-wrap gap-2 my-2">
@@ -116,7 +121,6 @@ const ViewCardModal = ({
                     </div>
                 </DialogHeader>
 
-                {/* Event List */}
                 {date.events.map((event, index) => (
                     <div key={index} className="flex gap-4 py-4">
                         <Carousel
@@ -135,25 +139,33 @@ const ViewCardModal = ({
                 ))}
             </div>
 
-            {/* Comments Column */}
             <div className="w-2/5 space-y-4 overflow-y-auto max-h-[700px]">
-                {/* Comments Heading */}
                 <div className="flex items-center gap-2">
                     <div className="flex flex-grow items-center justify-center rounded-md bg-white text-gray-700 p-2 text-xs">
                         <MessageCircle className="h-4 w-4 mr-1" />{" "}
                         <span>{date.commentsCount}</span>
                     </div>
-                    <Button
-                        variant="primary"
-                        className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
-                        onClick={handleLike}
+                    <Dialog
+                        isOpen={showLoginDialog}
+                        onOpenChange={setShowLoginDialog}
                     >
-                        <Heart
-                            className={`h-4 w-4 mr-1`}
-                            fill={isLiked ? "#FFA39C" : "none"}
+                        <DialogTrigger asChild>
+                            <Button
+                                variant="primary"
+                                className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
+                                onClick={handleLike}
+                            >
+                                <Heart
+                                    className={`h-4 w-4 mr-1`}
+                                    fill={isLiked ? "#FFA39C" : "none"}
+                                />
+                                <span>{likesCount}</span>
+                            </Button>
+                        </DialogTrigger>
+                        <LoginDialog
+                            closeDialog={() => setShowLoginDialog(false)}
                         />
-                        <span>{likesCount}</span>
-                    </Button>
+                    </Dialog>
                 </div>
 
                 <Separator />

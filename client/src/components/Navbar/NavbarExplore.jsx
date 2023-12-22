@@ -34,7 +34,7 @@ const Navbar = () => {
         className={`text-lg cursor-pointer flex items-center mx-4 ${
           location.pathname === pathname
             ? "text-secondary border-b-2 border-secondary"
-            : "text-gray-600"
+            : "text-gray-600 hover:text-secondary transition duration-300 ease-in-out hover:border-b-2 hover:border-secondary"
         }`}
       >
         {name}
