@@ -8,7 +8,6 @@ import Footer from "./components/Footer/Footer";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import MyPosts from "./pages/MyPosts/MyPosts";
 import Page from "./pages/Page/Page";
-import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 
 function AppContainer() {
   return <App />;
