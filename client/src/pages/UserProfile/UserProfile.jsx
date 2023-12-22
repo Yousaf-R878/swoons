@@ -240,7 +240,7 @@ const UserProfile = () => {
           </div>
           <form>
             <div className="flex flex-row items-center mb-2">
-              <input id="custom-input" type="file" onChange={handleFileChange} hidden />
+              <input id="custom-input" accept="image/png, image/jpeg" type="file" onChange={handleFileChange} hidden />
               <label
                 htmlFor="custom-input"
                 className="block text-sm text-slate-500 mr-4 py-2 px-4

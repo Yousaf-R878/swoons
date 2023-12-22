@@ -10,7 +10,7 @@ router.route("/me").get(security.checkAuth, async (req, res) => {
   let id = req.user.uid;
   try {
     let user = await userFuncs.get(id);
-    console.log(user);
+    // console.log(user);
     return res.status(200).json(user);
   } catch (e) {
     return res.status(500).json({ error: e });
@@ -71,6 +71,17 @@ router.route("/checkUsernames/:username").get(async (req, res) => {
   try {
     username = helpers.checkUsername(username, "Username");
     let exists = await userFuncs.checkForUsername(username);
+    return res.status(200).json({ exists: exists });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+});
+
+router.route("/checkEmails/:email").get(async (req, res) => {
+  let email = req.params.email;
+  try {
+    email = helpers.checkEmail(email, "Email");
+    let exists = await userFuncs.checkForEmail(email);
     return res.status(200).json({ exists: exists });
   } catch (e) {
     return res.status(400).json({ error: e });

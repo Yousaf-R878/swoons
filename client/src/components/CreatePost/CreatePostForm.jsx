@@ -65,12 +65,6 @@ const CreatePostForm = () => {
     form.setValue("events", newEvents);
   };
 
-  const handleRemoveEvent = (indexToRemove) => {
-    const newEvents = form.getValues("events");
-    newEvents.splice(indexToRemove, 1);
-    form.setValue("events", newEvents);
-  };
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();

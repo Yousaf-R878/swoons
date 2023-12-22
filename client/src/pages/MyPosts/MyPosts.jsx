@@ -5,6 +5,7 @@ import API from "../../services/apiClient";
 import { AuthorizeContext } from "../../contexts/auth";
 import { Link } from "react-router-dom";
 import CreatePost from "@/src/components/CreatePost/CreatePost";
+import { Search, Smile} from 'lucide-react';
 
 const MyPosts = () => {
     const { currentUser } = useContext(AuthorizeContext);
@@ -43,9 +44,15 @@ const MyPosts = () => {
     return (
         <div className="container mx-auto p-4">
             <div className="my-4 mb-8">
-                <h2 className="text-4xl text-center font-bold">
-                    Your lovely creations :{")"}
-                </h2>
+                {(userDates.length === 0) ? 
+                (<div className="flex items-center justify-center text-4xl text-center font-bold">
+                    <h2>You have not created any dates yet :{"("}</h2>
+                </div>
+                ) : (
+                    <div className="flex items-center justify-center text-4xl text-center font-bold">
+                        <h2>Your lovely creations</h2>
+                    </div>
+                )}
                 <div className="flex justify-center">
                     {isLoading ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
@@ -54,9 +61,9 @@ const MyPosts = () => {
                             ))}
                         </div>
                     ) : (userDates.length === 0) ? (
-                        <div className="text-2xl font-semibold mb-2">
-                            You have not created any dates yet :{"("} <br />
-                            Create one now!
+                        <div className="flex flex-col items-center justify-center text-2xl font-semibold mb-2 text-center">
+                            Create one now! <br />
+                            <Search className="mb-2" size={48} />
                             <CreatePost />
                         </div>
                     ) : (

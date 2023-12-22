@@ -23,15 +23,6 @@ const LinkItems = [
   { name: "My Posts", pathname: "/myposts" },
 ];
 
-// const fakeUser = {
-//   id: "1",
-//   firstName: "John",
-//   lastName: "Doe",
-//   email: "johndoe@gmail.com",
-//   password: "password",
-//   profilePic: profilePic,
-// };
-
 const Navbar = () => {
   const { currentUser, logoutUser } = useContext(AuthorizeContext);
 
