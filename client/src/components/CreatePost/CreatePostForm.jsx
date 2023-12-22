@@ -41,7 +41,7 @@ const formSchema = z.object({
     .nonempty({ message: "At least one event is required" }),
 });
 
-const CreatePostForm = () => {
+const CreatePostForm = (handle) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,7 +53,7 @@ const CreatePostForm = () => {
     },
   });
   const { currentUser } = useContext(AuthorizeContext);
-
+  const [notSubmitted, setNotSubmitted] = useState(true);
   const handleAddEvent = () => {
     const newEvents = form.getValues("events");
     newEvents.push({
@@ -93,6 +93,11 @@ const CreatePostForm = () => {
       .createDate(data)
       .then(({ data }) => {
         console.log(data);
+        setNotSubmitted(false);
+        handle.handle();
+        setTimeout(() => {
+          window.location.reload(true);
+      }, 2000);
       })
       .catch((error) => {
         console.log(error);
@@ -100,7 +105,8 @@ const CreatePostForm = () => {
   };
 
   return (
-    <Form {...form}>
+  <>
+    {notSubmitted && (<Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmitData)}
         className="space-y-8"
@@ -175,7 +181,8 @@ const CreatePostForm = () => {
           </Button>
         </div>
       </form>
-    </Form>
+    </Form>)}
+    </>
   );
 };
 

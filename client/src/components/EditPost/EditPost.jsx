@@ -15,8 +15,15 @@ import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import EditPostForm from "./EditPostForm";
 import { PencilLine } from "lucide-react";
+import { useState } from "react";
 
-const EditPost = ({date}) => {
+const EditPost = ({date, handle}) => {
+  const [description, setDescription] = useState("Edit your date!");
+
+  function handleDescription() {
+    setDescription("Date successfully editted!");
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -32,10 +39,10 @@ const EditPost = ({date}) => {
         <DialogHeader>
           <DialogTitle>Edit Date</DialogTitle>
           <DialogDescription>
-            Edit Your Date!
+            {description}
           </DialogDescription>
         </DialogHeader>
-        <EditPostForm date={date}/>
+        <EditPostForm date={date} handle={handleDescription}/>
       </DialogContent>
     </Dialog>
   );
