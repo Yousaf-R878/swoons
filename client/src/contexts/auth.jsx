@@ -36,6 +36,9 @@ const AuthorizeProvider = ({ children }) => {
       if (user) {
         apiClient.setToken(user.accessToken);
         await initialize();
+        if (window.location.pathname === "/") {
+          window.location.pathname = "/explore";
+        }
       } else {
         console.log("User is signed out");
         setCurrentUser(null);
