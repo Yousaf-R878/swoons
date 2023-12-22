@@ -52,7 +52,6 @@ const UserProfile = () => {
   const [file, setFile] = useState(null);
   const [fileName, setfileName] = useState("No file chosen");
 
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
