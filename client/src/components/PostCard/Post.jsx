@@ -26,6 +26,7 @@ import EditPost from "../EditPost/EditPost";
 import ViewCardModal from "./ViewCardModal";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import apiClient from "../../services/apiClient";
+import DeletePost from "../DeletePost/DeletePost";
 
 const timeStampToDate = (timeStamp) => {
   const date = new Date(timeStamp);
@@ -133,6 +134,11 @@ const Post = ({ date }) => {
                       Carousel={CarouselCmp}
                   />
               </Dialog>
+              {currentUser && currentUser.username === date.creator.username ? (
+                <DeletePost date={date}/>
+              ) : (
+                <></>
+              )}
           </CardFooter>
       </Card>
   );

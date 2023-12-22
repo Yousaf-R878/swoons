@@ -217,7 +217,7 @@ router.route("/:id/:locId").delete(async (req, res) => {
     let locId = req.params.locId;
 
     try {
-        id = helpers.checkId(id, "ID");
+        id = helpers.checkus(id, "ID");
     } catch (e) {
         return res.status(400).json({ error: e });
     }
