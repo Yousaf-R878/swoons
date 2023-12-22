@@ -23,7 +23,7 @@ Welcome to Swoons, a platform where each day becomes a curated experience of sea
 
 1. Clone the repository to your local machine.
 2. Navigate to the root directory of the project in your terminal.
-3. You will need to set up environment variables for both the server and client sides of the application. Obtain the `.env` files and place them in the respective directories.
+3. You will need to set up environment variables for both the server and client sides of the application. Obtain the `.env` file and place them in the client directory.
 4. First, set up the server:
     ```sh
     cd server
