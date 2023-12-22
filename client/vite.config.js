@@ -10,4 +10,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./"),
     },
   },
+  build: {
+    commonjsOptions: { include: [] },
+  },
+  optimizeDeps: {
+    disabled: false,
+  },
 });
