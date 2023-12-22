@@ -3,7 +3,6 @@ import Post from "@/src/components/PostCard/Post";
 import PostSkeleton from "@/src/components/PostCard/PostSkeleton";
 import API from "../../services/apiClient";
 import { AuthorizeContext } from "../../contexts/auth";
-import { Link } from "react-router-dom";
 import CreatePost from "@/src/components/CreatePost/CreatePost";
 import { Search, Smile} from 'lucide-react';
 
