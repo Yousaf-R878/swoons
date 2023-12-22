@@ -81,7 +81,7 @@ const Landing = () => {
             </div>
           </DialogTrigger>
           <LoginDialog />
-        </Dialog>
+        </Dialog>}
 
         <div className="flex flex-row bg-secondary mt-4 justify-around" ref={learnMoreRef}>
           <div className="flex flex-col">
