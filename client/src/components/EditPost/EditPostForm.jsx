@@ -4,52 +4,52 @@ import { AuthorizeContext } from "../../contexts/auth";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {Textarea} from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
+    Command,
+    CommandDialog,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+    CommandSeparator,
+    CommandShortcut,
 } from "@/components/ui/command";
 import apiClient from "../../services/apiClient";
 import { X } from "lucide-react";
 
 const eventSchema = z.object({
-  location: z.string().min(1, { message: "Location is required" }),
-  description: z.string().min(1, { message: "Description is required" }),
+    location: z.string().min(1, { message: "Location is required" }),
+    description: z.string().min(1, { message: "Description is required" }),
 });
 
 const formSchema = z.object({
-  title: z
-    .string()
-    .min(1, { message: "Title needs to be at least 1 character long" })
-    .max(50, { message: "Title cannot be more than 50 characters long" }),
-  tags: z
-    .array(z.string())
-    .nonempty({ message: "You must add at least one tag" })
-    .refine((items) => new Set(items).size === items.length, {
-      message: "Cannot have duplicate tags",
-    }),
-  events: z
-    .array(eventSchema)
-    .nonempty({ message: "At least one event is required" }),
+    title: z
+        .string()
+        .min(1, { message: "Title needs to be at least 1 character long" })
+        .max(50, { message: "Title cannot be more than 50 characters long" }),
+    tags: z
+        .array(z.string())
+        .nonempty({ message: "You must add at least one tag" })
+        .refine((items) => new Set(items).size === items.length, {
+            message: "Cannot have duplicate tags",
+        }),
+    events: z
+        .array(eventSchema)
+        .nonempty({ message: "At least one event is required" }),
 });
 
 const EditPostForm = ({date, handle}) => {
@@ -57,97 +57,98 @@ const EditPostForm = ({date, handle}) => {
 
     const tags = date.tags;
     const title = date.title;
-  
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: date.title,
-      tags: date.tags,
-      events: date.events,
-    },
-  });
-  const { initialized, currentUser } = useContext(AuthorizeContext);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [notSubmitted, setNotSubmitted] = useState(true);
 
-  useEffect(() => {
-    while (searchTerm.trim() === "") {
-        setSearchResults([]);
-        return;
-    }
-    const delayDebounceFn = setTimeout(() => {
-      // Send Axios request here
-      apiClient.getEvents(searchTerm).then(({ data }) => {
-        const results = Array.isArray(data) ? data : [];
-        setSearchResults(results);
-      }).catch((error) => {
-        console.log(error);
-        setSearchResults([]);
-      });
-    }, 1000)
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            title: date.title,
+            tags: date.tags,
+            events: date.events,
+        },
+    });
+    const { initialized, currentUser } = useContext(AuthorizeContext);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [notSubmitted, setNotSubmitted] = useState(true);
 
-    return () => clearTimeout(delayDebounceFn)
-  }, [searchTerm]);
+    useEffect(() => {
+        while (searchTerm.trim() === "") {
+            setSearchResults([]);
+            return;
+        }
+        const delayDebounceFn = setTimeout(() => {
+            // Send Axios request here
+            apiClient
+                .getEvents(searchTerm)
+                .then(({ data }) => {
+                    const results = Array.isArray(data) ? data : [];
+                    setSearchResults(results);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setSearchResults([]);
+                });
+        }, 1000);
 
-  const handleAddEvent = () => {
-    const newEvents = form.getValues("events");
-    newEvents.push({ name: "", location: "", description: "", tripAdvisorLocationId: "" });
-    form.setValue("events", newEvents);
-  };
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm]);
 
-  const handleRemoveEvent = (indexToRemove) => {
-    const newEvents = form.getValues("events");
-    newEvents.splice(indexToRemove, 1);
-    form.setValue("events", newEvents);
-  };
+    const handleAddEvent = () => {
+        const newEvents = form.getValues("events");
+        newEvents.push({
+            name: "",
+            location: "",
+            description: "",
+            tripAdvisorLocationId: "",
+        });
+        form.setValue("events", newEvents);
+    };
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      const newTag = event.target.value.trim();
-      if (newTag !== "") {
+    const handleRemoveEvent = (indexToRemove) => {
+        const newEvents = form.getValues("events");
+        newEvents.splice(indexToRemove, 1);
+        form.setValue("events", newEvents);
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            const newTag = event.target.value.trim();
+            if (newTag !== "") {
+                const updatedTags = form.getValues("tags");
+                updatedTags.push(newTag);
+                form.setValue("tags", updatedTags, { shouldValidate: true });
+                form.trigger("tags");
+                event.target.value = "";
+            }
+        }
+    };
+
+    const handleRemoveBadge = (indexToRemove) => {
+        // console.log("remove badge");
         const updatedTags = form.getValues("tags");
-        updatedTags.push(newTag);
+        updatedTags.splice(indexToRemove, 1);
         form.setValue("tags", updatedTags, { shouldValidate: true });
         form.trigger("tags");
-        event.target.value = "";
-      }
-    }
-  };
+    };
 
-  const handleRemoveBadge = (indexToRemove) => {
-    // console.log("remove badge");
-    const updatedTags = form.getValues("tags");
-    updatedTags.splice(indexToRemove, 1);
-    form.setValue("tags", updatedTags, { shouldValidate: true });
-    form.trigger("tags");
-  };
-
-  const handleSubmitData = (data) => {
-    data.events = form.getValues("events")
-    data["userId"] = currentUser._id;
-    // console.log("Submitting")
-    // console.log(data);
-    apiClient.removeDate(currentUser._id, date._id).then(({ data }) => {
-      // console.log("Removed Date:");
-      // console.log(data);
-    }).catch((error) => {
-      console.log(error);
-    });
-    apiClient.createDate(data).then(({ data }) => {
-      //console.log(data);
-      setNotSubmitted(false);
-      handle();
-      setTimeout(() => {
-        window.location.reload(true);
-      }, 2000);
-
-    }).catch((error) => {
-      console.log(error);
-    });
-  };
-
+    const handleSubmitData = (data) => {
+        data.events = form.getValues("events");
+        data["userId"] = currentUser._id;
+        apiClient
+            .patchDate(currentUser._id, date._id, data)
+            .then(({ data }) => {
+                setNotSubmitted(false);
+                handle();
+                setTimeout(() => {
+                  console.log("success")
+                    window.location.reload(true);
+                }, 2000);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
   return (
     <>
       {notSubmitted && (<Form {...form}>
@@ -330,11 +331,9 @@ const EditPostForm = ({date, handle}) => {
                               </FormItem>
                           )}
 
-                      />
-                  </div>
-              ))}
-
-
+                        />
+                    </div>
+                ))}
               <div className="flex justify-center">
                   <Button
                       type="button"

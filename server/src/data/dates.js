@@ -82,7 +82,6 @@ export const getLikedDatesbyUserId = async (userId) => {
 };
 
 export const getCreatedDatesbyUserId = async (userId) => {
-
     const user = await get(userId);
     if (!user) {
         throw "User not found";
@@ -122,6 +121,7 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
         comments: [],
         commentsCount: 0,
         creator: {
+            userId: author._id,
             firstName: author.firstName,
             lastName: author.lastName,
             username: author.username,
@@ -183,6 +183,29 @@ export const deleteDate = async (dateId, userId) => {
     return deletionInfo;
 };
 
+export const editDate = async (userId, dateId, dateData) => {
+    const dateCollection = await dates();
+    const dateToUpdate = await dateCollection.findOne({
+        _id: new ObjectId(dateId),
+    });
+    if (!dateToUpdate) {
+        throw new Error("Date not found");
+    }
+    if (dateToUpdate.creator.userId !== userId) {
+        throw new Error("User is not authorized to edit this date");
+    }
+
+    const updateResult = await dateCollection.updateOne(
+        { _id: new ObjectId(dateId) },
+        { $set: dateData }
+    );
+
+    if (!updateResult.matchedCount || !updateResult.modifiedCount) {
+        throw new Error("Failed to update the date");
+    }
+
+    return await dateCollection.findOne({ _id: new ObjectId(dateId) });
+};
 
 export const removeEventFromDate = async (dateId, eventIndex) => {
     dateId = helpers.checkId(dateId, "Date ID");
