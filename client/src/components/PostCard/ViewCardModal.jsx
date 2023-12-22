@@ -42,12 +42,14 @@ const ViewCardModal = ({
     setIsLiked,
     setLikesCount,
     showLoginDialog,
-    setShowLoginDialog
+    setShowLoginDialog,
 }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { currentUser } = useContext(AuthorizeContext);
     const [notSubmitted, setNotSubmitted] = useState(true);
-    const [commentDialogue, setCommentDialogue] = useState("Comment successfully posted!");
+    const [commentDialogue, setCommentDialogue] = useState(
+        "Comment successfully posted!"
+    );
 
     const {
         control,
@@ -278,21 +280,16 @@ const ViewCardModal = ({
                             </div>
                         ))}
                     </div>
+                </DialogContent>
+            )}
 
-                ))}
-            </div>
-        </DialogContent>
-    )}
-    {!notSubmitted && (
-        <DialogContent>
-            <DialogTitle>Posting Comment</DialogTitle>
-            <DialogDescription>
-                {commentDialogue}
-            </DialogDescription>
-        </DialogContent>
-    )}
-    </>
-
+            {!notSubmitted && (
+                <DialogContent>
+                    <DialogTitle>Posting Comment</DialogTitle>
+                    <DialogDescription>{commentDialogue}</DialogDescription>
+                </DialogContent>
+            )}
+        </>
     );
 };
 
