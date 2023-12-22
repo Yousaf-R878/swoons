@@ -148,8 +148,6 @@ const Post = ({ date }) => {
               <Dialog>
                   <DialogTrigger asChild>
                       <Button
-                          as="a"
-                          href="link-to-post"
                           className="flex flex-grow items-center justify-center rounded-md bg-secondary transition-colors duration-300 hover:bg-secondary-hover text-white p-2 text-xs"
                       >
                           <Forward className="h-4 w-4" /> <span>View Post</span>
@@ -255,6 +253,7 @@ const CarouselCmp = ({
           <img
             key={index}
             src={image}
+            alt="image"
             className={classStuff}
             style={{ width: imgWidth, height: imgHeight }}
           />
