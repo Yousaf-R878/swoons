@@ -9,7 +9,9 @@ const Page = ({ children }) => {
   return (
     <>
       {currentUser ? <NavbarExplore /> : <Navbar />}
-      {children}
+      <div className="flex flex-col min-h-screen">
+        {children}
+      </div>
       <Footer />
     </>
   );

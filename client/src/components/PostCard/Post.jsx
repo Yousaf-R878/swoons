@@ -26,13 +26,24 @@ import EditPost from "../EditPost/EditPost";
 import ViewCardModal from "./ViewCardModal";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import apiClient from "../../services/apiClient";
+import DeletePost from "../DeletePost/DeletePost";
 
-const timeStampToDate = (timeStamp) => {
+const timeStampToDate = (timeStamp, displayTime = false) => {
+  
   const date = new Date(timeStamp);
   const month = date.toLocaleString("default", { month: "long" });
   const day = date.getDate();
   const year = date.getFullYear();
+
+  if (displayTime) {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    return `${month} ${day}, ${year} at ${hours}:${minutes}`;
+  } 
+
   return `${month} ${day}, ${year}`;
+
 };
 
 const Post = ({ date }) => {
@@ -73,65 +84,75 @@ const Post = ({ date }) => {
 
   const images = date.events.map((event) => event.tripAdvisorLocationImages[0]);
   return (
-    <Card className="post-card bg-white shadow-md rounded-lg overflow-hidden max-w-md mx-auto flex flex-col">
-      <CarouselCmp images={images} />
-      <CardContent className="p-4 flex-grow">
-        <div className="flex flex-wrap gap-2 mb-4">
-          {date.tags.map((tag, index) => (
-            <Badge
-              key={index}
-              className="bg-blue-100 hover:bg-blue-200 transition-colors duration-300 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full"
-            >
-              {tag}
-            </Badge>
-          ))}
-        </div>
-        <h1 className="text-md font-semibold">{date.title}</h1>
-        <CardDescription className="text-sm">
-          @{date.creator.username}
-        </CardDescription>
-        <p className="text-sm text-gray-500">
-          {timeStampToDate(date.timeStamp)}
-        </p>
-        <p className="text-sm text-gray-600 mb-4">{date.description}</p>
-      </CardContent>
-      <CardFooter className="flex space-y-2 md:flex-row md:space-y-0 md:space-x-2">
-        <Button
-          variant="primary"
-          className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
-          onClick={handleLike}
-        >
-          <Heart className={`h-4 w-4 `} fill={isLiked ? "#FFA39C" : "none"} />
-          <span>{likesCount}</span>
-        </Button>
-        <div className="flex flex-grow items-center justify-center rounded-md bg-white text-gray-700 p-2 text-xs">
-          <MessageCircle className="h-4 w-4" />{" "}
-          <span>{date.commentsCount}</span>
-        </div>
+      <Card className="post-card bg-white shadow-md rounded-lg overflow-hidden max-w-md mx-auto flex flex-col">
+          <CarouselCmp images={images} />
+          <CardContent className="p-4 flex-grow">
+              <div className="flex flex-wrap gap-2 mb-4">
+                  {date.tags.map((tag, index) => (
+                      <Badge
+                          key={index}
+                          className="bg-blue-100 hover:bg-blue-200 transition-colors duration-300 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                      >
+                          {tag}
+                      </Badge>
+                  ))}
+              </div>
+              <h1 className="text-md font-semibold">{date.title}</h1>
+              <CardDescription className="text-sm">
+                  @{date.creator.username}
+              </CardDescription>
+              <p className="text-sm text-gray-500">
+                  {timeStampToDate(date.timeStamp)}
+              </p>
+              <p className="text-sm text-gray-600 mb-4">{date.description}</p>
+          </CardContent>
+          <CardFooter className="flex space-y-2 md:flex-row md:space-y-0 md:space-x-2">
 
-        {currentUser && currentUser.username === date.creator.username ? (
-          <EditPost date={date} />
-        ) : (
-          <></>
-        )}
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              as="a"
-              href="link-to-post"
-              className="flex flex-grow items-center justify-center rounded-md bg-secondary transition-colors duration-300 hover:bg-secondary-hover text-white p-2 text-xs"
-            >
-              <Forward className="h-4 w-4" /> <span>View Post</span>
-            </Button>
-          </DialogTrigger>
-          <ViewCardModal
-            date={date}
-            timeStampToDate={timeStampToDate}
-            Carousel={CarouselCmp}
-          />
-        </Dialog>
-      </CardFooter>
-    </Card>
+              <Button
+                  variant="primary"
+                  className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
+                  onClick={handleLike}
+              >
+                  <Heart
+                      className={`h-4 w-4 mr-1`}
+                      fill={isLiked ? "#FFA39C" : "none"}
+                  />
+                  <span>{likesCount}</span>
+              </Button>
+              <div className="flex flex-grow items-center justify-center rounded-md bg-white text-gray-700 p-2 text-xs">
+                  <MessageCircle className="h-4 w-4 mr-1" />{" "}
+                  <span>{date.commentsCount}</span>
+              </div>
+
+              {currentUser && currentUser.username === date.creator.username ? (
+                  <EditPost date={date} />
+              ) : (
+                  <></>
+              )}
+              <Dialog>
+                  <DialogTrigger asChild> 
+                  
+                      <Button
+                          as="a"
+                          href="link-to-post"
+                          className="flex flex-grow items-center justify-center rounded-md bg-secondary transition-colors duration-300 hover:bg-secondary-hover text-white p-2 text-xs"
+                      >
+                          <Forward className="h-4 w-4" /> <span>View Post</span>
+                      </Button>
+                  </DialogTrigger>
+                  <ViewCardModal
+                      date={date}
+                      timeStampToDate={timeStampToDate}
+                      Carousel={CarouselCmp}
+                  />
+              </Dialog>
+              {currentUser && currentUser.username === date.creator.username ? (
+                <DeletePost date={date}/>
+              ) : (
+                <></>
+              )}
+          </CardFooter>
+      </Card>
   );
 };
 

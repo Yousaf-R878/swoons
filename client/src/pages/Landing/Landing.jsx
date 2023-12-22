@@ -10,6 +10,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import "./Landing.css";
 import { AuthorizeContext } from "@/src/contexts/auth";
 import LoadingProgress from "../../components/LoadingProgress/LoadingProgress";
+import { Link } from "react-router-dom";
 
 import API from "../../services/apiClient";
 
@@ -55,7 +56,16 @@ const Landing = () => {
             )}
           </div>
         </div>
-        <Dialog>
+        {currentUser && 
+          <div className="flex justify-center">
+            <Link to={"/explore"}>
+              <Button className="w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-primary-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
+                See More
+              </Button>
+            </Link>
+          </div>
+        }
+        {!currentUser && <Dialog>
           <DialogTrigger asChild>
             <div className="flex justify-center">
               <Button className="w-40 h-15 transition delay-100 duration-300 ease-in-out hover:bg-primary-hover text-xl min-w-[100px] max-w-xs mb-4 sm:mb-0">
@@ -64,7 +74,7 @@ const Landing = () => {
             </div>
           </DialogTrigger>
           <LoginDialog />
-        </Dialog>
+        </Dialog>}
       </div>
     </>
   );

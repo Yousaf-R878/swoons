@@ -12,6 +12,7 @@ import apiClient from "@/src/services/apiClient";
 const LoginDialog = () => {
   async function handleGoogle() {
     const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
     const auth = getAuth();
     const result = await signInWithPopup(auth, provider);
     const userExists = await apiClient.checkEmail(result.user.email);

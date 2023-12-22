@@ -156,22 +156,24 @@ const Explore = () => {
                 <PostSkeleton key={index} />
               ))}
             </div>
-          ) : (
+          ) : (dates.length === 0) ? (
+            <h2>No Posts Found</h2>
+          ): (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20">
               {dates.map((date) => (
                 <Post key={date._id} date={date} />
               ))}
-            </div>
-          )}
+            </div>)
+          }
         </div>
-        <div className="mt-4 flex items-center justify-center space-x-1">
-          <button
+        {dates.length !== 0 &&<div className="mt-4 flex items-center justify-center space-x-1">
+          {currentPage !== 1 &&<button
             className="flex items-center px-4 py-2 text-gray-500 bg-white rounded-md hover:bg-gray-100"
             disabled={currentPage === 1}
             onClick={goToPreviousPage}
           >
             Previous
-          </button>
+          </button>}
           {[...Array(totalPages).keys()].map((number) => (
             <button
               key={number}
@@ -183,14 +185,14 @@ const Explore = () => {
               {number + 1}
             </button>
           ))}
-          <button
+          {currentPage !== totalPages && <button
             className="flex items-center px-4 py-2 text-gray-500 bg-white rounded-md hover:bg-gray-100"
             disabled={currentPage === totalPages}
             onClick={goToNextPage}
           >
             Next
-          </button>
-        </div>
+          </button>}
+        </div>}
       </div>
     </>
   );

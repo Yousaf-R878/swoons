@@ -6,6 +6,7 @@ import UserProfile from "./pages/UserProfile/UserProfile";
 import { AuthorizeProvider } from "./contexts/auth";
 import Footer from "./components/Footer/Footer";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
+import MyPosts from "./pages/MyPosts/MyPosts";
 import Page from "./pages/Page/Page";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 
@@ -38,14 +39,6 @@ function App() {
               }
             />
             <Route
-              path="/forgot-password"
-              element={
-                <Page>
-                  <ForgotPassword />
-                </Page>
-              }
-            />
-            <Route
               path="/profile"
               element={
                 <AuthRoute>
@@ -63,6 +56,22 @@ function App() {
                     <Liked />
                   </Page>
                 </AuthRoute>
+              }
+            />
+            <Route
+              path="/myposts"
+              element={
+                <Page>
+                  <MyPosts />
+                </Page>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <Page>
+                  <h1>404</h1>
+                </Page>
               }
             />
           </Routes>

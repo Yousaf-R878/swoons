@@ -10,4 +10,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./"),
     },
   },
+  define: {
+    global: {},
+  },
+  server: {
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+    },
+  },
 });
