@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import AWS from "aws-sdk";
 import { useContext } from "react";
 import { AuthorizeContext } from "../../contexts/auth";
-
 import NavbarExplore from "@/src/components/Navbar/NavbarExplore";
-
+import { S3, config } from "aws-sdk";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,26 +25,38 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 
 const formSchema = z.object({
-  firstName: z.string().min(2, { message: "First name must be at least 2 characters long" }).max(50, { message: "First name must be less than 50 characters long" }).regex(/^[a-zA-Z'-]+$/, { message: "Invalid first name format" }),
-  lastName: z.string().min(2, { message: "Last name must be at least 2 characters long" }).max(50, { message: "Last name must be less than 50 characters long" }).regex(/^[a-zA-Z'-]+$/, { message: "Invalid last name format" }),
-  username: z.string().min(3, { message: "Username must be at least 2 characters long" }).max(20, { message: "Username must be less than 20 characters long" }).regex(/^[a-z0-9]+$/i, { message: "Invalid username format" }),
+  firstName: z
+    .string()
+    .min(2, { message: "First name must be at least 2 characters long" })
+    .max(50, { message: "First name must be less than 50 characters long" })
+    .regex(/^[a-zA-Z'-]+$/, { message: "Invalid first name format" }),
+  lastName: z
+    .string()
+    .min(2, { message: "Last name must be at least 2 characters long" })
+    .max(50, { message: "Last name must be less than 50 characters long" })
+    .regex(/^[a-zA-Z'-]+$/, { message: "Invalid last name format" }),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 2 characters long" })
+    .max(20, { message: "Username must be less than 20 characters long" })
+    .regex(/^[a-z0-9]+$/i, { message: "Invalid username format" }),
   password: z
-  .string()
-  .min(8, { message: "Password must be at least 8 characters long" })
-  .regex(/(?=.*[a-z])/, {
-    message: "Password must contain at least one lowercase letter",
-  })
-  .regex(/(?=.*[A-Z])/, {
-    message: "Password must contain at least one uppercase letter",
-  })
-  .regex(/(?=.*[0-9])/, {
-    message: "Password must contain at least one number",
-  })
-  .regex(/(?=.*[!@#$%^&*])/, {
-    message: "Password must contain at least one symbol (!@#$%^&*)",
-  })
-  .optional()
-  .or(z.literal(''))
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long" })
+    .regex(/(?=.*[a-z])/, {
+      message: "Password must contain at least one lowercase letter",
+    })
+    .regex(/(?=.*[A-Z])/, {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .regex(/(?=.*[0-9])/, {
+      message: "Password must contain at least one number",
+    })
+    .regex(/(?=.*[!@#$%^&*])/, {
+      message: "Password must contain at least one symbol (!@#$%^&*)",
+    })
+    .optional()
+    .or(z.literal("")),
 });
 
 const timeStampToDate = (timeStamp) => {
@@ -76,74 +86,75 @@ const UserProfile = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setfileName(file.name)
+    setfileName(file.name);
     setFile(file);
-}
+  };
 
   const uploadFile = async () => {
     if (!file) {
-        return;
+      return;
     } else {
-        //S3 Bucket Name
-        const S3_BUCKET = "swoons-photos";
+      //S3 Bucket Name
+      const S3_BUCKET = "swoons-photos";
 
-        //Bucket Region
-        const REGION = "us-east-1";
+      //Bucket Region
+      const REGION = "us-east-1";
 
-        //Authenticate with AWS
-        AWS.config.update({
-            accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY,
-            secretAccessKey: import.meta.env.VITE_AWS_SECRET_KEY,
+      //Authenticate with AWS
+      config.update({
+        accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY,
+        secretAccessKey: import.meta.env.VITE_AWS_SECRET_KEY,
+      });
+
+      //Initialize S3 Bucket Object
+      const s3 = new S3({
+        params: { Bucket: S3_BUCKET },
+        region: REGION,
+      });
+
+      //File params
+      const params = {
+        Bucket: S3_BUCKET,
+        Key: `${currentUser._id}_profile_pic.png`,
+        Body: file,
+      };
+
+      let upload = s3
+        .putObject(params)
+        .on("httpUploadProgress", (evt) => {
+          // File uploading progress
+          console.log(
+            "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
+          );
+        })
+        .promise();
+
+      await upload.then(async (err, data) => {
+        console.log(err);
+        console.log(data);
+        let url = `https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`;
+        let apiUrl =
+          import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`;
+        let changeUser = await axios({
+          method: "post",
+          url: apiUrl,
+          headers: {},
+          data: {
+            url: url,
+          },
         });
 
-        //Initialize S3 Bucket Object
-        const s3 = new AWS.S3({
-            params: { Bucket: S3_BUCKET },
-            region: REGION,
-        });
+        // let updatedUser = {...currentUser, uploadToggle: !currentUser.uploadToggle}
+        // console.log(updatedUser);
+        // updateUser(updatedUser)
 
-        //File params
-        const params = {
-            Bucket: S3_BUCKET,
-            Key: `${currentUser._id}_profile_pic.png`,
-            Body: file,
-        };
-
-        let upload = s3
-            .putObject(params)
-            .on("httpUploadProgress", (evt) => {
-                // File uploading progress
-                console.log(
-                "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
-                );
-            })
-            .promise();
-
-        await upload.then(async (err, data) => {
-            console.log(err);
-            console.log(data);
-            let url = `https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`;
-            let apiUrl = import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`
-            let changeUser = await axios({
-              method: 'post',
-              url: apiUrl,
-              headers: {},
-              data: {
-                url: url
-              }
-            })
-
-            // let updatedUser = {...currentUser, uploadToggle: !currentUser.uploadToggle}
-            // console.log(updatedUser);
-            // updateUser(updatedUser)
-        
-            // File successfully uploaded
-            window.location.reload();
-            setFile(null);
-            setfileName("No file chosen")
-            });
+        // File successfully uploaded
+        window.location.reload();
+        setFile(null);
+        setfileName("No file chosen");
+      });
     }
-}
+  };
 
   const resetPic = async () => {
     //  //S3 Bucket Name
@@ -191,39 +202,46 @@ const UserProfile = () => {
 
     //   })
 
-      let apiUrl = import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`
-      let changeUser = await axios({
-        method: 'post',
-        url: apiUrl,
-        headers: {},
-        data: {
-          url: "https://swoons-photos.s3.amazonaws.com/default_profile.png"
-        }
-      })
-      //console.log("Profile Pic deleted");
-      window.location.reload();
-  }
+    let apiUrl =
+      import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`;
+    let changeUser = await axios({
+      method: "post",
+      url: apiUrl,
+      headers: {},
+      data: {
+        url: "https://swoons-photos.s3.amazonaws.com/default_profile.png",
+      },
+    });
+    //console.log("Profile Pic deleted");
+    window.location.reload();
+  };
 
   const onSubmit = async (data) => {
     console.log(data);
     let firstName = data.firstName;
     let lastName = data.lastName;
     let username = data.username;
-    let password = '';
+    let password = "";
 
-    let apiUrl = import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`
+    let apiUrl =
+      import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`;
     let changeUser = await axios({
-      method: 'patch',
+      method: "patch",
       url: apiUrl,
       headers: {},
       data: {
         firstName: firstName,
         lastName: lastName,
-        username: username
-      }
-    })
+        username: username,
+      },
+    });
 
-    let updatedUser = {...currentUser, firstName: firstName, lastName: lastName, username: username}
+    let updatedUser = {
+      ...currentUser,
+      firstName: firstName,
+      lastName: lastName,
+      username: username,
+    };
     updateUser(updatedUser);
   };
 
@@ -240,7 +258,13 @@ const UserProfile = () => {
           </div>
           <form>
             <div className="flex flex-row items-center mb-2">
-              <input id="custom-input" accept="image/png, image/jpeg" type="file" onChange={handleFileChange} hidden />
+              <input
+                id="custom-input"
+                accept="image/png, image/jpeg"
+                type="file"
+                onChange={handleFileChange}
+                hidden
+              />
               <label
                 htmlFor="custom-input"
                 className="block text-sm text-slate-500 mr-4 py-2 px-4
@@ -251,11 +275,14 @@ const UserProfile = () => {
               </label>
               <label class="text-sm text-slate-500">{fileName}</label>
             </div>
-
           </form>
-          
-          <Button className="mb-2" onClick={uploadFile} >Change Picture</Button>
-          <Button variant="danger" onClick={resetPic}>Delete Picture</Button>
+
+          <Button className="mb-2" onClick={uploadFile}>
+            Change Picture
+          </Button>
+          <Button variant="danger" onClick={resetPic}>
+            Delete Picture
+          </Button>
           <p className="text-gray-600 text-xs">
             Your account was created on{" "}
             {currentUser && timeStampToDate(currentUser.accountCreationDate)}
