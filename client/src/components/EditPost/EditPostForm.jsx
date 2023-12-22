@@ -14,7 +14,9 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import {
   Command,
   CommandDialog,
@@ -51,7 +53,7 @@ const formSchema = z.object({
 });
 
 const EditPostForm = ({date}) => {
-    console.log(date)
+    // console.log(date)
     const tags = date.tags;
     const title = date.title;
   
@@ -68,9 +70,9 @@ const EditPostForm = ({date}) => {
   const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
-    if (searchTerm === "") {
-      setSearchResults([]);
-      return;
+    while (searchTerm.trim() === "") {
+        setSearchResults([]);
+        return;
     }
     const delayDebounceFn = setTimeout(() => {
       // Send Axios request here
@@ -113,7 +115,7 @@ const EditPostForm = ({date}) => {
   };
 
   const handleRemoveBadge = (indexToRemove) => {
-    console.log("remove badge");
+    // console.log("remove badge");
     const updatedTags = form.getValues("tags");
     updatedTags.splice(indexToRemove, 1);
     form.setValue("tags", updatedTags, { shouldValidate: true });
@@ -123,181 +125,224 @@ const EditPostForm = ({date}) => {
   const handleSubmitData = (data) => {
     data.events = form.getValues("events")
     data["userId"] = currentUser._id;
-    console.log("Submitting")
-    console.log(data);
+    // console.log("Submitting")
+    // console.log(data);
     apiClient.removeDate(currentUser._id, date._id).then(({ data }) => {
-      console.log("Removed Date:");
-      console.log(data);
+      // console.log("Removed Date:");
+      // console.log(data);
     }).catch((error) => {
       console.log(error);
     });
     apiClient.createDate(data).then(({ data }) => {
-      console.log(data);
+      // console.log(data);
     }).catch((error) => {
       console.log(error);
     });
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmitData)}
-        className="space-y-8"
-      >
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="tags"
-          render={({ field }) => {
-            console.log(field);
-            console.log(tags)
-            return (
-              <FormItem>
-                <FormLabel>Tags</FormLabel>
-                <FormDescription>
-                  Tags can be maximum of 13 characters
-                </FormDescription>
-                <FormControl>
-                  <Input placeholder="Enter Tags" onKeyDown={handleKeyDown} />
-                </FormControl>
-                <div className="flex flex-wrap gap-2">
-                  {field.value.map((tag, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center bg-palecyan text-sm py-1 px-2.5 rounded-full mr-1 text-gray-500"
-                    >
-                      {tag}
-                      <button
-                        onMouseUp={() => handleRemoveBadge(index)}
-                        className="ml-1"
-                      >
-                        <X size={17} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
-        <h2 className="text-2xl font-bold">Events</h2>
-        {form.watch("events").map((event, index) => (
-          <div key={index} className="border p-4 rounded">
-            {form.watch("events").length > 1 && (
-              <div className="w-full flex justify-end">
-                <button onClick={() => handleRemoveEvent(index)}>
-                  <X size={20} />
-                </button>
-              </div>
-            )}
-            <FormField
-              control={form.control}
-              name={`events.${index}.location`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location</FormLabel>
-                  <FormControl>
-                    <Command>
-                      { form.getValues(`events.${index}.name`) === "" ?
-                      <CommandInput placeholder="Look up an event..." 
-                      onKeyUp={(e)=> {
-                        setSearchTerm(e.target.value);
-                      }}
+      <Form {...form}>
+          <form
+              onSubmit={form.handleSubmit(handleSubmitData)}
+              className="space-y-8"
+          >
+              <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Title</FormLabel>
+                          <FormControl>
+                              <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                      </FormItem>
+                  )}
+              />
+              <FormField
+                  control={form.control}
+                  name="tags"
+                  render={({ field }) => {
+                      // console.log(field);
+                      // console.log(tags)
+                      return (
+                          <FormItem>
+                              <FormLabel>Tags</FormLabel>
+                              <FormDescription>
+                                  Tags can be maximum of 13 characters
+                              </FormDescription>
+                              <FormControl>
+                                  <Input
+                                      placeholder="Enter Tags"
+                                      onKeyDown={handleKeyDown}
+                                  />
+                              </FormControl>
+                              <div className="flex flex-wrap gap-2">
+                                  {field.value.map((tag, index) => (
+                                      <Badge
+                                          key={index}
+                                          className="bg-blue-100 hover:bg-blue-200 transition-colors duration-300 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full"
+                                      >
+                                          {tag}
+                                          <button
+                                              onMouseUp={() =>
+                                                  handleRemoveBadge(index)
+                                              }
+                                              className="ml-1"
+                                          >
+                                              <X size={17} />
+                                          </button>
+                                      </Badge>
+                                  ))}
+                              </div>
+                              <FormMessage />
+                          </FormItem>
+                      );
+                  }}
+              />
+              <h2 className="text-2xl font-bold">Events</h2>
+              {form.watch("events").map((event, index) => (
+                  <div key={index} className="border p-4 rounded">
+                      {form.watch("events").length > 1 && (
+                          <div className="w-full flex justify-end">
+                              <button onClick={() => handleRemoveEvent(index)}>
+                                  <X size={20} />
+                              </button>
+                          </div>
+                      )}
+                      <FormField
+                          control={form.control}
+                          name={`events.${index}.location`}
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Location</FormLabel>
+                                  <FormControl>
+                                      <Command>
+                                          {form.getValues(
+                                              `events.${index}.name`
+                                          ) === "" ? (
+                                              <CommandInput
+                                                  placeholder="Look up a location..."
+                                                  onKeyUp={(e) => {
+                                                      setSearchTerm(
+                                                          e.target.value
+                                                      );
+                                                  }}
+                                              />
+                                          ) : (
+                                              <div className="flex flex-row w-full justify-between">
+                                                  <CommandInput
+                                                      placeholder="Look up a location..."
+                                                      value={form.getValues(
+                                                          `events.${index}.name`
+                                                      )}
+                                                      onKeyUp={(e) => {
+                                                          setSearchTerm(
+                                                              e.target.value
+                                                          );
+                                                      }}
+                                                      disabled={true}
+                                                  />
+                                                  <button
+                                                      onMouseUp={() => {
+                                                          form.setValue(
+                                                              `events.${index}.name`,
+                                                              ""
+                                                          );
+                                                          form.setValue(
+                                                              `events.${index}.location`,
+                                                              ""
+                                                          );
+                                                          form.setValue(
+                                                              `events.${index}.tripAdvisorLocationId`,
+                                                              ""
+                                                          );
+                                                      }}
+                                                      className="ml-1"
+                                                  >
+                                                      <X size={17} />
+                                                  </button>
+                                              </div>
+                                          )}
+                                          <CommandList>
+                                              <CommandEmpty>
+                                                  No results found.
+                                              </CommandEmpty>
+                                              <CommandGroup heading="Locations">
+                                                  {searchResults.map(
+                                                      (result) => (
+                                                          <CommandItem
+                                                              key={
+                                                                  result.tripAdvisorLocationId
+                                                              }
+                                                              onMouseUp={() => {
+                                                                  form.setValue(
+                                                                      `events.${index}.name`,
+                                                                      result.name
+                                                                  );
+                                                                  form.setValue(
+                                                                      `events.${index}.location`,
+                                                                      result.name
+                                                                  );
+                                                                  form.setValue(
+                                                                      `events.${index}.tripAdvisorLocationId`,
+                                                                      result.tripAdvisorLocationId
+                                                                  );
+                                                                  setSearchTerm(
+                                                                      ""
+                                                                  );
+                                                              }}
+                                                          >
+                                                              {result.name}
+                                                          </CommandItem>
+                                                      )
+                                                  )}
+                                              </CommandGroup>
+                                          </CommandList>
+                                      </Command>
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
                       />
-                      :
-                      <div className="flex flex-row w-full justify-between">
-                        <CommandInput placeholder="Look up an event..."
-                        value={form.getValues(`events.${index}.name`)}
-                        onKeyUp={(e)=> {
-                          setSearchTerm(e.target.value);
-                        }}
-                        disabled={true}
-                        />
-                        <button
-                        onMouseUp={() => {
-                          form.setValue(`events.${index}.name`, "");
-                          form.setValue(`events.${index}.location`, "")
-                          form.setValue(`events.${index}.tripAdvisorLocationId`, "")
-                        }}
-                        className="ml-1"
-                        >
-                        <X size={17} />
-                        </button>
-                      </div>
-                      }
-                      <CommandList>
-                        <CommandEmpty>No results found.</CommandEmpty>
-                        <CommandGroup heading="Locations">
-                          { searchResults.map((result) => (
-                            <CommandItem
-                              key={result.tripAdvisorLocationId}
-                              onMouseUp={() => {
-                                form.setValue(`events.${index}.name`, result.name);
-                                form.setValue(`events.${index}.location`, result.name);
-                                form.setValue(`events.${index}.tripAdvisorLocationId`, result.tripAdvisorLocationId);
-                                setSearchTerm("");
-                              }}
-                            >
-                              {result.name}
-                            </CommandItem>
-                          ))
-                        }
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name={`events.${index}.description`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Description" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        ))}
+                      <FormField
+                          control={form.control}
+                          name={`events.${index}.description`}
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Description</FormLabel>
+                                  <FormControl>
+                                      <Textarea
+                                          placeholder="Description"
+                                          {...field}
+                                      />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                  </div>
+              ))}
 
-        <div className="flex justify-center">
-          <Button
-            type="button"
-            onClick={handleAddEvent}
-            className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-secondary hover:bg-secondary-hover hover:text-white"
-          >
-            Add Another Event
-          </Button>
-        </div>
-        <div className="flex justify-center">
-          <Button
-            type="submit"
-            className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover w-full text-xl my-2"
-          >
-            Finish
-          </Button>
-        </div>
-      </form>
-    </Form>
+              <div className="flex justify-center">
+                  <Button
+                      type="button"
+                      onClick={handleAddEvent}
+                      className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-muted hover:bg-palecyan hover:text-white"
+                  >
+                      Add Another Event
+                  </Button>
+              </div>
+              <div className="flex justify-center">
+                  <Button
+                      type="submit"
+                      className="transition delay-100 duration-300 ease-in-out bg-secondary border-2 hover:bg-secondary-hover w-full text-xl my-2"
+                  >
+                      Finish
+                  </Button>
+              </div>
+          </form>
+      </Form>
   );
 };
 
