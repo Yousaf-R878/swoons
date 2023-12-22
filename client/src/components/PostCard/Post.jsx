@@ -25,7 +25,8 @@ import { Separator } from "@radix-ui/react-select";
 import EditPost from "../EditPost/EditPost";
 import ViewCardModal from "./ViewCardModal";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import apiClient from "../../services/apiClient"
+import apiClient from "../../services/apiClient";
+import DeletePost from "../DeletePost/DeletePost";
 
 const timeStampToDate = (timeStamp, displayTime = false) => {
   
@@ -145,6 +146,11 @@ const Post = ({ date }) => {
                       Carousel={CarouselCmp}
                   />
               </Dialog>
+              {currentUser && currentUser.username === date.creator.username ? (
+                <DeletePost date={date}/>
+              ) : (
+                <></>
+              )}
           </CardFooter>
       </Card>
   );
