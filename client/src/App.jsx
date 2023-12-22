@@ -8,6 +8,7 @@ import Footer from "./components/Footer/Footer";
 import AuthRoute from "./components/AuthRoute/AuthRoute";
 import MyPosts from "./pages/MyPosts/MyPosts";
 import Page from "./pages/Page/Page";
+import NonAuthRoute from "./components/AuthRoute/NonAuthRoute";
 
 function AppContainer() {
     return <App />;
@@ -22,9 +23,11 @@ function App() {
                         <Route
                             path="/"
                             element={
-                                <Page>
-                                    <Landing />
-                                </Page>
+                                <NonAuthRoute>
+                                    <Page>
+                                        <Landing />
+                                    </Page>
+                                </NonAuthRoute>
                             }
                         />
                         <Route
@@ -60,9 +63,11 @@ function App() {
                         <Route
                             path="/myposts"
                             element={
-                                <Page>
-                                    <MyPosts />
-                                </Page>
+                                <AuthRoute>
+                                  <Page>
+                                      <MyPosts />
+                                  </Page>
+                                </AuthRoute>
                             }
                         />
                         <Route

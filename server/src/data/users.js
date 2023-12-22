@@ -134,9 +134,21 @@ export let checkForUsername = async (username) => {
   username = helpers.checkUsername(username, "Username");
   let usersCollection = await users();
   const usernameExists = await usersCollection.findOne({
-    username: username,
+    username: {"$regex": username, "$options": "i"}
   });
   if (usernameExists) {
+    return true;
+  }
+  return false;
+};
+
+export let checkForEmail = async (email) => {
+  email = helpers.checkEmail(email, "Email");
+  let usersCollection = await users();
+  const emailExists = await usersCollection.findOne({
+    email: {"$regex": email, "$options": "i"},
+  });
+  if (emailExists) {
     return true;
   }
   return false;

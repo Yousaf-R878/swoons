@@ -159,9 +159,10 @@ export const createDate = async (title, tagArray, eventArray, userId) => {
 
 export const deleteDate = async (dateId, userId) => {
     dateId = helpers.checkId(dateId, "Date ID");
+    userId = helpers.checkUserId(userId, "User ID");
     const dateCollection = await dates();
-    //TODO DELETE ID FROM THE USER
     const userCollection = await users();
+
     const updateInfo = await userCollection.updateOne(
         { _id: userId },
         { $pull: { dates: dateId } },
@@ -182,7 +183,6 @@ export const deleteDate = async (dateId, userId) => {
     return deletionInfo;
 };
 
-//TODO: CHANGE TO IMAGEURL ARRAY AND THEN UPDATE FRONTEND TO HAVE MULTIPLE IMAGES PER LOCATION
 
 export const removeEventFromDate = async (dateId, eventIndex) => {
     dateId = helpers.checkId(dateId, "Date ID");

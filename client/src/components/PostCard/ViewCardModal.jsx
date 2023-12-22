@@ -1,105 +1,251 @@
+import { useEffect, useState, useContext } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
 import {
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Heart } from "lucide-react";
-import { MessagesSquare } from "lucide-react";
+import { Heart, MessageCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { useEffect } from "react";
 
-const ViewCardModal = ({ date, timeStampToDate, Carousel }) => {
-  return (
-    <DialogContent className="sm:max-w-[925px] sm:max-h-[700px] overflow-y-auto">
-      <DialogHeader>
-        <DialogTitle className="text-2xl text-center">{date.title}</DialogTitle>
-        <div className="flex flex-col justify-center items-center">
-          <p className="text-xl mr-2 text-gray-300">
-            By: {date.creator.username}
-          </p>
-          <div className="flex flex-row">
-            {date.tags.map((badge, index) => (
-              <Badge
-                key={index}
-                className="bg-palecyan my-2 mx-1 h-5 text-xs text-gray-500"
-              >
-                {badge}
-              </Badge>
-            ))}
-          </div>
-          <div className="flex flex-row">
-            <Heart size={30} color="#FFA39C" className="mr-2" />
-            <span>{date.likes}</span>
-            {/* Maybe make comments blue? */}
-            <MessagesSquare size={30} color="gray" className="ml-2 mr-2" />
-            <span>{date.commentsCount}</span>
-          </div>
-        </div>
-        <Separator />
-      </DialogHeader>
-      <div className="flex items-center my-4 flex-col">
-        {date.events.map((event, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center w-full py-10"
-          >
-            <Carousel
-              images={event.tripAdvisorLocationImages}
-              classStuff="w-56 h-56 mr-4  rounded-sm"
-              imgWidth="14rem"
-              imgHeight="14rem"
-            />
-            <div className="flex w-full flex-col px-10">
-              <div className="flex flex-col justify-center items-start text-xl font-bold">
-                <h2>{event.name}</h2>
-                <Separator />
-              </div>
-              <p className="pt-4">{event.description}</p>
+import { AuthorizeContext } from "../../contexts/auth";
+import LoginDialog from "../Login/LoginDialog/LoginDialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+
+
+import API from "../../services/apiClient";
+
+const commentSchema = z.object({
+    comment: z
+        .string()
+        .min(1, { message: "Comment must not be empty" })
+        .max(140, {
+            message: "Comment must be no more than 140 characters",
+        })
+        .trim(),
+});
+
+const ViewCardModal = ({
+    date,
+    timeStampToDate,
+    Carousel,
+    handleLike,
+    isLiked,
+    likesCount,
+    setIsLiked,
+    setLikesCount,
+    showLoginDialog,
+    setShowLoginDialog,
+}) => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { currentUser } = useContext(AuthorizeContext);
+
+    const {
+        control,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(commentSchema),
+    });
+
+    useEffect(() => {
+        if (!currentUser) {
+            // console.log("No user is signed in.");
+        }
+    }, [currentUser]);
+
+    const handlePostComment = async (data) => {
+        if (!currentUser) {
+            return;
+        }
+        setIsSubmitting(true);
+        // console.log("Submitting comment:", data.comment);
+        // console.log("Date ID:", date?._id);
+        // console.log("User ID:", currentUser?._id);
+
+        try {
+            await API.postComment(currentUser._id, date._id, data.comment);
+            reset();
+            window.location.reload();
+        } catch (error) {
+            console.error("Failed to post comment", error);
+        }
+        setIsSubmitting(false);
+    };
+
+    const handleDeleteComment = async (timeStamp) => {
+        if (!currentUser) {
+            return;
+        }
+
+        try {
+            await API.deleteComment(currentUser._id, date._id, timeStamp);
+            window.location.reload(); // or use another method to refresh comments
+        } catch (error) {
+            console.error("Failed to delete comment", error);
+        }
+    };
+
+    return (
+        <DialogContent className="flex gap-8 max-w-[925px] max-h-[700px] overflow-y-auto">
+            <div className="flex flex-col w-3/5 space-y-2 overflow-y-auto max-h-[700px]">
+                <DialogHeader>
+                    <DialogTitle className="text-2xl font-semibold">
+                        {date.title}
+                    </DialogTitle>
+                    <div className="text-md text-gray-600">
+                        {date.creator.firstName} {date.creator.lastName}
+                    </div>
+                    <div className="text-md text-gray-300">
+                        @{date.creator.username} •{" "}
+                        {timeStampToDate(date.timeStamp)}
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 my-2">
+                        {date.tags.map((tag, index) => (
+                            <Badge
+                                key={index}
+                                className="bg-blue-100 hover:bg-blue-200 transition-colors duration-300 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                            >
+                                {tag}
+                            </Badge>
+                        ))}
+                    </div>
+                </DialogHeader>
+
+                {date.events.map((event, index) => (
+                    <div key={index} className="flex gap-4 py-4">
+                        <Carousel
+                            images={event.tripAdvisorLocationImages}
+                            classStuff="w-28 h-28 rounded-sm"
+                            imgWidth="112px"
+                            imgHeight="112px"
+                        />
+                        <div className="flex flex-col">
+                            <h2 className="text-xl font-semibold ">
+                                {event.name}
+                            </h2>
+                            <p className="text-gray-600">{event.description}</p>
+                        </div>
+                    </div>
+                ))}
             </div>
-          </div>
-        ))}
-      </div>
-      <Separator />
-      <DialogFooter>
-        <div className="flex flex-col w-full">
-          <div className="flex justify-center items-center w-full">
-            <Input
-              id="newComment"
-              placeholder="Leave a comment..."
-              className="w-full active:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-0"
-            />
-            <Button className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover text-xl my-2 ml-4">
-              Comment
-            </Button>
-          </div>
-          {date.comments.map((comment, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center w-full py-5 my-3 rounded-sm border-2"
-            >
-              <div className="flex w-full flex-col px-2">
-                <div className="flex flex-col justify-center items-start">
-                  <h3 className="text-xl font-bold">{comment.username}</h3>
-                  <div className="flex flex-row justify-between items-center w-full">
-                    <p className="mr-2 text-gray-300">{comment.username}</p>
-                    <p className="text-gray-300">
-                      {timeStampToDate(comment.time)}
-                    </p>
-                  </div>
+
+            <div className="w-2/5 space-y-4 overflow-y-auto max-h-[700px]">
+                <div className="flex items-center gap-2">
+                    <div className="flex flex-grow items-center justify-center rounded-md bg-white text-gray-700 p-2 text-xs">
+                        <MessageCircle className="h-4 w-4 mr-1" />{" "}
+                        <span>{date.commentsCount}</span>
+                    </div>
+                    <Dialog
+                        isOpen={showLoginDialog}
+                        onOpenChange={setShowLoginDialog}
+                    >
+                        <DialogTrigger asChild>
+                            <Button
+                                variant="primary"
+                                className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
+                                onClick={handleLike}
+                            >
+                                <Heart
+                                    className={`h-4 w-4 mr-1`}
+                                    fill={isLiked ? "#FFA39C" : "none"}
+                                />
+                                <span>{likesCount}</span>
+                            </Button>
+                        </DialogTrigger>
+                        <LoginDialog
+                            closeDialog={() => setShowLoginDialog(false)}
+                        />
+                    </Dialog>
                 </div>
+
                 <Separator />
-                <p className="pt-4">{comment.comment}</p>
-              </div>
+
+                {/* New Comment Form */}
+                {currentUser && (
+                    <form
+                        onSubmit={handleSubmit(handlePostComment)}
+                        className="flex gap-2"
+                    >
+                        <Controller
+                            name="comment"
+                            control={control}
+                            defaultValue=""
+                            render={({ field }) => (
+                                <Input
+                                    {...field}
+                                    id="newComment"
+                                    placeholder="Leave a comment..."
+                                    className={`w-full active:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-0 ${
+                                        errors.comment ? "border-red-500" : ""
+                                    }`}
+                                    disabled={isSubmitting}
+                                />
+                            )}
+                        />
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            variant="outline"
+                            className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-secondary hover:bg-secondary-hover hover:text-white"
+                        >
+                            Comment
+                        </Button>
+                    </form>
+                )}
+
+                {/* Comments List */}
+                {date.comments.map((comment, index) => (
+                    <div
+                        key={index}
+                        className="relative border-2 my-3 rounded-sm p-4"
+                    >
+                        <div className="flex justify-between items-center  w-full">
+                            <div>
+                                <h3 className="text-lg font-semibold">
+                                    {comment.firstName} {comment.lastName}
+                                </h3>
+                                <div className="flex items-center">
+                                    <p className="text-xs text-gray-500 mr-2">
+                                        @{comment.username}
+                                    </p>
+                                    <p className="text-xs text-gray-400">
+                                        {timeStampToDate(comment.time, true)}
+                                    </p>
+                                    <div className="flex items-end">
+                                        {currentUser &&
+                                            currentUser._id ===
+                                                comment.userId && (
+                                                <button
+                                                    onClick={() =>
+                                                        handleDeleteComment(
+                                                            comment.time
+                                                        )
+                                                    }
+                                                    className="text-red-500 hover:text-red-700 transition duration-150 ease-in-out"
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                            )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p className="text-sm mt-2">{comment.comment}</p>
+                    </div>
+                ))}
             </div>
-          ))}
-        </div>
-      </DialogFooter>
-    </DialogContent>
-  );
+        </DialogContent>
+    );
 };
 
 export default ViewCardModal;

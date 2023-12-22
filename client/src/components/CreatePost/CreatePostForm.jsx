@@ -41,7 +41,7 @@ const formSchema = z.object({
     .nonempty({ message: "At least one event is required" }),
 });
 
-const CreatePostForm = () => {
+const CreatePostForm = (handle) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,7 +53,7 @@ const CreatePostForm = () => {
     },
   });
   const { currentUser } = useContext(AuthorizeContext);
-
+  const [notSubmitted, setNotSubmitted] = useState(true);
   const handleAddEvent = () => {
     const newEvents = form.getValues("events");
     newEvents.push({
@@ -65,16 +65,13 @@ const CreatePostForm = () => {
     form.setValue("events", newEvents);
   };
 
-  const handleRemoveEvent = (indexToRemove) => {
-    const newEvents = form.getValues("events");
-    newEvents.splice(indexToRemove, 1);
-    form.setValue("events", newEvents);
-  };
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      const newTag = event.target.value.trim();
+      const newTag = event.target.value
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-");;
       if (newTag !== "") {
         const updatedTags = form.getValues("tags");
         updatedTags.push(newTag);
@@ -99,6 +96,11 @@ const CreatePostForm = () => {
       .createDate(data)
       .then(({ data }) => {
         console.log(data);
+        setNotSubmitted(false);
+        handle.handle();
+        setTimeout(() => {
+          window.location.reload(true);
+      }, 2000);
       })
       .catch((error) => {
         console.log(error);
@@ -106,83 +108,96 @@ const CreatePostForm = () => {
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmitData)}
-        className="space-y-8"
-      >
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Date Title" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="tags"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel>Tags</FormLabel>
-                <FormDescription>
-                  Tags can be maximum of 13 characters
-                </FormDescription>
-                <FormControl>
-                  <Input placeholder="Enter Tags" onKeyDown={handleKeyDown} />
-                </FormControl>
-                <div className="flex flex-wrap gap-2">
-                  {field.value.map((tag, index) => (
-                    <Badge
+  notSubmitted && (<Form {...form}>
+          <form
+              onSubmit={form.handleSubmit(handleSubmitData)}
+              className="space-y-8"
+          >
+              <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Title</FormLabel>
+                          <FormControl>
+                              <Input placeholder="Date Title" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                      </FormItem>
+                  )}
+              />
+              <FormField
+                  control={form.control}
+                  name="tags"
+                  render={({ field }) => {
+                      return (
+                          <FormItem>
+                              <FormLabel>Tags</FormLabel>
+                              <FormDescription>
+                                  Tags can be maximum of 13 characters
+                              </FormDescription>
+                              <FormControl>
+                                  <Input
+                                      placeholder="Enter Tags"
+                                      onKeyDown={handleKeyDown}
+                                  />
+                              </FormControl>
+                              <div className="flex flex-wrap gap-2">
+                                  {field.value.map((tag, index) => (
+                                      <Badge
+                                          key={index}
+                                          className="bg-blue-100 hover:bg-blue-200 transition-colors duration-300 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full"
+                                      >
+                                          {tag}
+                                          <button
+                                              onMouseUp={() =>
+                                                  handleRemoveBadge(index)
+                                              }
+                                              className="ml-1"
+                                          >
+                                              <X size={17} />
+                                          </button>
+                                      </Badge>
+                                  ))}
+                              </div>
+                              <FormMessage />
+                          </FormItem>
+                      );
+                  }}
+              />
+              <h2 className="text-2xl font-bold">Events</h2>
+              {form.watch("events").map((event, index) => (
+                  <EventField
                       key={index}
-                      className="bg-blue-100 hover:bg-blue-200 transition-colors duration-300 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full"
-                    >
-                      {tag}
-                      <button
-                        onMouseUp={() => handleRemoveBadge(index)}
-                        className="ml-1"
-                      >
-                        <X size={17} />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
-        <h2 className="text-2xl font-bold">Events</h2>
-        {form.watch("events").map((event, index) => (
-          <EventField key={index} index={index} event={event} form={form} />
-        ))}
+                      index={index}
+                      event={event}
+                      form={form}
+                  />
+              ))}
 
-        <div className="flex justify-center">
-          <Button
-            type="button"
-            onClick={handleAddEvent}
-            className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-secondary hover:bg-secondary-hover hover:text-white"
-          >
-            Add Another Event
-          </Button>
-        </div>
-        <div className="flex justify-center">
-          <Button
-            type="submit"
-            className="transition delay-100 duration-300 ease-in-out hover:bg-primary-hover w-full text-xl my-2"
-          >
-            Create
-          </Button>
-        </div>
-      </form>
-    </Form>
+
+              <div className="flex justify-center">
+                  <Button
+                      type="button"
+                      onClick={handleAddEvent}
+                      className="transition delay-100 duration-300 ease-in-out text-white border-2 text-base py-2 px-4 bg-muted hover:bg-palecyan hover:text-white"
+                  >
+                      Add Another Event
+                  </Button>
+              </div>
+              <div className="flex justify-center">
+                  <Button
+                      type="submit"
+                      className="transition delay-100 duration-300 ease-in-out bg-secondary border-2 hover:bg-secondary-hover w-full text-xl my-2"
+                  >
+                      Create
+                  </Button>
+              </div>
+          </form>
+      </Form>
+
+  )
   );
-};
+}
 
 export default CreatePostForm;

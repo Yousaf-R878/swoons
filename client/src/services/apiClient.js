@@ -6,6 +6,7 @@ class ApiClient {
         this.token = null;
         this.tokenName = "token";
     }
+  
     setToken(token) {
         this.token = token;
         localStorage.setItem(this.tokenName, token);
@@ -32,8 +33,9 @@ class ApiClient {
     async getUserFromToken() {
         return await this.request({ endpoint: `users/me`, method: `GET` });
     }
+
     async registerUser(credentials) {
-        console.log(credentials);
+        // console.log(credentials);
         return await this.request({
             endpoint: "users/signup",
             method: "POST",
@@ -47,6 +49,13 @@ class ApiClient {
             method: `GET`,
         });
     }
+      
+    async checkEmail(email) {
+    return await this.request({
+      endpoint: `users/checkEmails/${email}`,
+      method: `GET`,
+    });
+  }
 
     async getDates(tags = [], sorting = "disabled", page = 1, limit = 12) {
         const queryString = new URLSearchParams();
@@ -117,6 +126,21 @@ class ApiClient {
     async unlikeDate(userId, dateId) {
         return await this.request({
             endpoint: `users/user/${userId}/like/${dateId}`,
+            method: `DELETE`,
+        });
+    }
+
+    async postComment(userId, dateId, comment) {
+        return await this.request({
+            endpoint: `comments/${userId}/${dateId}`,
+            method: `POST`,
+            data: { comment },
+        });
+    }
+
+    async deleteComment(userId, dateId, timeStamp) {
+        return await this.request({
+            endpoint: `comments/${userId}/${dateId}/${timeStamp}`,
             method: `DELETE`,
         });
     }

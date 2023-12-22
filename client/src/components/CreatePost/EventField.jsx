@@ -37,7 +37,7 @@ const EventField = ({ index, event, form }) => {
   };
 
   useEffect(() => {
-    if (searchTerm === "") {
+    while (searchTerm.trim() === "") {
       setSearchResults([]);
       return;
     }
@@ -80,7 +80,7 @@ const EventField = ({ index, event, form }) => {
                 {/* this goofy ahh workaround is required because commandinput cant have a {...field}... lovely */}
                 {form.getValues(`events.${index}.name`) === "" ? (
                   <CommandInput
-                    placeholder="Look up an event..."
+                    placeholder="Look up a location..."
                     onKeyUp={(e) => {
                       setSearchTerm(e.target.value);
                     }}
@@ -88,7 +88,7 @@ const EventField = ({ index, event, form }) => {
                 ) : (
                   <div className="flex flex-row w-full justify-between">
                     <CommandInput
-                      placeholder="Look up an event..."
+                      placeholder="Look up a location..."
                       value={form.getValues(`events.${index}.name`)}
                       onKeyUp={(e) => {
                         setSearchTerm(e.target.value);

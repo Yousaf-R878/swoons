@@ -1,6 +1,7 @@
 import React from "react";
 import THero from "../../assets/THero.png";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Hero = ({scrollToLearnMore}) => {
   return (

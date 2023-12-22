@@ -23,15 +23,6 @@ const LinkItems = [
   { name: "My Posts", pathname: "/myposts" },
 ];
 
-// const fakeUser = {
-//   id: "1",
-//   firstName: "John",
-//   lastName: "Doe",
-//   email: "johndoe@gmail.com",
-//   password: "password",
-//   profilePic: profilePic,
-// };
-
 const Navbar = () => {
   const { currentUser, logoutUser } = useContext(AuthorizeContext);
 
@@ -43,7 +34,7 @@ const Navbar = () => {
         className={`text-lg cursor-pointer flex items-center mx-4 ${
           location.pathname === pathname
             ? "text-secondary border-b-2 border-secondary"
-            : "text-gray-600"
+            : "text-gray-600 hover:text-secondary transition duration-300 ease-in-out hover:border-b-2 hover:border-secondary"
         }`}
       >
         {name}
@@ -80,9 +71,9 @@ const Navbar = () => {
             <div className="flex items-center">
               <div className="flex flex-col text-left">
                 <p className="text-black font-semibold text-md">
-                  {currentUser.firstName} {currentUser.lastName}
+                  {currentUser.firstName.length >= 21 ? currentUser.firstName.substring(0,21) + "..." : currentUser.firstName} {currentUser.lastName.length >= 20 ? currentUser.lastName[0] + "." : currentUser.lastName}
                 </p>
-                <p className="text-gray-400 text-xs -mt-1">@{currentUser.username}</p>
+                <p className="text-gray-400 text-xs -mt-1">@{currentUser.username.length >= 11 ? currentUser.username.substring(0,11) + "..." : currentUser.username}</p>
               </div>
             </div>
           </DropdownMenuTrigger>
