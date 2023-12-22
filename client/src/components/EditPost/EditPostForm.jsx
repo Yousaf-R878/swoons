@@ -52,7 +52,7 @@ const formSchema = z.object({
     .nonempty({ message: "At least one event is required" }),
 });
 
-const EditPostForm = ({date}) => {
+const EditPostForm = ({date, handle}) => {
     // console.log(date)
 
     const tags = date.tags;
@@ -149,7 +149,8 @@ const EditPostForm = ({date}) => {
   };
 
   return (
-      <Form {...form}>
+    <>
+      {notSubmitted && (<Form {...form}>
           <form
               onSubmit={form.handleSubmit(handleSubmitData)}
               className="space-y-8"
@@ -353,6 +354,8 @@ const EditPostForm = ({date}) => {
               </div>
           </form>
       </Form>
+    )}
+    </>
   );
 };
 
