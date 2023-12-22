@@ -14,8 +14,15 @@ import { PlusSquare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import CreatePostForm from "./CreatePostForm";
+import { useState } from "react";
 
 const CreatePost = () => {
+  const [description, setDescription] = useState("Create a date to share with your friends!");
+
+  function handleDescription() {
+    setDescription("Date successfully created!");
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -31,10 +38,10 @@ const CreatePost = () => {
         <DialogHeader>
           <DialogTitle>Create Date</DialogTitle>
           <DialogDescription>
-            Create a date to share with your friends!
+            {description}
           </DialogDescription>
         </DialogHeader>
-        <CreatePostForm />
+        <CreatePostForm handle={handleDescription}/>
       </DialogContent>
     </Dialog>
   );

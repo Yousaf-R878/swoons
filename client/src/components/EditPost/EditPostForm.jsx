@@ -50,7 +50,7 @@ const formSchema = z.object({
     .nonempty({ message: "At least one event is required" }),
 });
 
-const EditPostForm = ({date}) => {
+const EditPostForm = ({date, handle}) => {
     console.log(date)
     const tags = date.tags;
     const title = date.title;
@@ -66,6 +66,7 @@ const EditPostForm = ({date}) => {
   const { initialized, currentUser } = useContext(AuthorizeContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [notSubmitted, setNotSubmitted] = useState(true);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -133,13 +134,19 @@ const EditPostForm = ({date}) => {
     });
     apiClient.createDate(data).then(({ data }) => {
       console.log(data);
+      setNotSubmitted(false);
+      handle();
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 2000);
     }).catch((error) => {
       console.log(error);
     });
   };
 
   return (
-    <Form {...form}>
+  <> 
+    {notSubmitted && (<Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmitData)}
         className="space-y-8"
@@ -298,6 +305,8 @@ const EditPostForm = ({date}) => {
         </div>
       </form>
     </Form>
+    )}
+    </>
   );
 };
 

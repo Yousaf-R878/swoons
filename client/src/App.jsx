@@ -63,9 +63,11 @@ function App() {
                         <Route
                             path="/myposts"
                             element={
-                                <Page>
-                                    <MyPosts />
-                                </Page>
+                                <AuthRoute>
+                                  <Page>
+                                      <MyPosts />
+                                  </Page>
+                                </AuthRoute>
                             }
                         />
                         <Route
