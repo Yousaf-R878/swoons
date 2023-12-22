@@ -108,6 +108,11 @@ const SignupForm = () => {
         password,
         confirmPassword,
       } = form.getValues();
+      const emailExists = await apiClient.checkEmail(email);
+      if (emailExists.data.exists) {
+        setError("Email already exists!");
+        return;
+      }
       const usernameExists = await apiClient.checkUsername(username);
       if (usernameExists.data.exists) {
         setError("Username already exists!");
