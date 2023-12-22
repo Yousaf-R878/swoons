@@ -143,6 +143,7 @@ const Post = ({ date }) => {
                     <span>{date.commentsCount}</span>
                 </div>
 
+
                 {currentUser &&
                 currentUser.username === date.creator.username ? (
                     <EditPost date={date} />
@@ -269,4 +270,5 @@ const CarouselCmp = ({
             </Carousel>
         </div>
     );
+
 };
