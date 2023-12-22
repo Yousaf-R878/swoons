@@ -21,7 +21,7 @@ const EditPost = ({date, handle}) => {
   const [description, setDescription] = useState("Edit your date!");
 
   function handleDescription() {
-    setDescription("Date successfully editted!");
+    setDescription("Date successfully edited!");
   }
 
   return (
