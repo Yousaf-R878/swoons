@@ -125,8 +125,8 @@ try {
 
       for (const randomDateId of randomDates) {
         await commentFuncs.postComment(
-          randomDateId,
           userId,
+          randomDateId,
           "This is a comment!"
         );
         // console.log(
