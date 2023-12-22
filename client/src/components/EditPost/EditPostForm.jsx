@@ -113,7 +113,10 @@ const EditPostForm = ({date, handle}) => {
     const handleKeyDown = (event) => {
         if (event.key === "Enter") {
             event.preventDefault();
-            const newTag = event.target.value.trim();
+            const newTag = event.target.value
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, "-");
             if (newTag !== "") {
                 const updatedTags = form.getValues("tags");
                 updatedTags.push(newTag);

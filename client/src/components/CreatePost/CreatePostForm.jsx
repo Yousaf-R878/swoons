@@ -71,7 +71,7 @@ const CreatePostForm = (handle) => {
       const newTag = event.target.value
           .trim()
           .toLowerCase()
-          .replace(/\s+/g, "-");;
+          .replace(/\s+/g, "-");
       if (newTag !== "") {
         const updatedTags = form.getValues("tags");
         updatedTags.push(newTag);
