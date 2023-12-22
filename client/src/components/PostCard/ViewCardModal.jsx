@@ -19,7 +19,6 @@ import { AuthorizeContext } from "../../contexts/auth";
 import LoginDialog from "../Login/LoginDialog/LoginDialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
-
 import API from "../../services/apiClient";
 
 const commentSchema = z.object({
@@ -64,6 +63,7 @@ const ViewCardModal = ({
 
     const handlePostComment = async (data) => {
         if (!currentUser) {
+            setShowLoginDialog(true);
             return;
         }
         setIsSubmitting(true);
@@ -146,22 +146,21 @@ const ViewCardModal = ({
                         <span>{date.commentsCount}</span>
                     </div>
                     <Dialog
-                        isOpen={showLoginDialog}
-                        onOpenChange={setShowLoginDialog}
+                        onClose={() => setShowLoginDialog(false)}
+                        open={showLoginDialog}
                     >
-                        <DialogTrigger asChild>
-                            <Button
-                                variant="primary"
-                                className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
-                                onClick={handleLike}
-                            >
-                                <Heart
-                                    className={`h-4 w-4 mr-1`}
-                                    fill={isLiked ? "#FFA39C" : "none"}
-                                />
-                                <span>{likesCount}</span>
-                            </Button>
-                        </DialogTrigger>
+                        <Button
+                            variant="primary"
+                            className="flex flex-grow items-center justify-center rounded-md bg-white transition-colors duration-300 hover:bg-slate-200 text-primary p-2 text-xs"
+                            onClick={handleLike}
+                        >
+                            <Heart
+                                className={`h-4 w-4 mr-1`}
+                                fill={isLiked ? "#FFA39C" : "none"}
+                            />
+                            <span>{likesCount}</span>
+                        </Button>
+
                         <LoginDialog
                             closeDialog={() => setShowLoginDialog(false)}
                         />
