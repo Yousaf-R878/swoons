@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useContext } from "react";
 import { AuthorizeContext } from "../../contexts/auth";
-import NavbarExplore from "@/src/components/Navbar/NavbarExplore";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { S3 } from "aws-sdk/clients/s3";
 import { config } from "aws-sdk/lib/config";
 import { Input } from "@/components/ui/input";
@@ -16,8 +16,6 @@ import {
   FormField,
   FormItem,
 } from "@/components/ui/form";
-
-import profilePic from "../../assets/profile.png";
 
 import * as z from "zod";
 
@@ -102,15 +100,12 @@ const UserProfile = () => {
       const REGION = "us-east-1";
 
       //Authenticate with AWS
-      config.update({
-        accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY,
-        secretAccessKey: import.meta.env.VITE_AWS_SECRET_KEY,
-      });
-
-      //Initialize S3 Bucket Object
-      const s3 = new S3({
-        params: { Bucket: S3_BUCKET },
+      const s3Client = new S3Client({
         region: REGION,
+        credentials: {
+          accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY,
+          secretAccessKey: import.meta.env.VITE_AWS_SECRET_KEY,
+        },
       });
 
       //File params
@@ -120,19 +115,11 @@ const UserProfile = () => {
         Body: file,
       };
 
-      let upload = s3
-        .putObject(params)
-        .on("httpUploadProgress", (evt) => {
-          // File uploading progress
-          console.log(
-            "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
-          );
-        })
-        .promise();
+      try {
+        const data = await s3Client.send(new PutObjectCommand(params));
+        console.log("File uploaded successfully", data);
+        // Additional code for handling the successful upload
 
-      await upload.then(async (err, data) => {
-        console.log(err);
-        console.log(data);
         let url = `https://${S3_BUCKET}.s3.amazonaws.com/${params.Key}`;
         let apiUrl =
           import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`;
@@ -144,16 +131,12 @@ const UserProfile = () => {
             url: url,
           },
         });
-
-        // let updatedUser = {...currentUser, uploadToggle: !currentUser.uploadToggle}
-        // console.log(updatedUser);
-        // updateUser(updatedUser)
-
-        // File successfully uploaded
         window.location.reload();
         setFile(null);
         setfileName("No file chosen");
-      });
+      } catch (err) {
+        console.error("Error uploading the file", err);
+      }
     }
   };
 
@@ -274,7 +257,7 @@ const UserProfile = () => {
               >
                 Choose file
               </label>
-              <label class="text-sm text-slate-500">{fileName}</label>
+              <label className="text-sm text-slate-500">{fileName}</label>
             </div>
           </form>
 
