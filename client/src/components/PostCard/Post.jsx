@@ -118,9 +118,8 @@ const Post = ({ date }) => {
             </CardContent>
             <CardFooter className="flex space-y-2 md:flex-row md:space-y-0 md:space-x-2">
                 <Dialog
-                    onClose={() => setShowLoginDialog(false)}
                     open={showLoginDialog}
-                    
+                    onOpenChange={setShowLoginDialog} // This will handle both opening and closing the dialog
                 >
                     <Button
                         variant="primary"
@@ -142,7 +141,6 @@ const Post = ({ date }) => {
                     <MessageCircle className="h-4 w-4 mr-1" />{" "}
                     <span>{date.commentsCount}</span>
                 </div>
-
 
                 {currentUser &&
                 currentUser.username === date.creator.username ? (
