@@ -48,7 +48,7 @@ router.get("/liked", async (req, res) => {
         const userId = req.query.user;
         // console.log("Fetching dates for user:", userId);
         const dates = await dateFuncts.getLikedDatesbyUserId(userId);
-        
+
         return res.status(200).json(dates);
     } catch (e) {
         // console.error("Server error while fetching dates:", e);
@@ -85,6 +85,36 @@ router.route("/:id").get(async (req, res) => {
     }
 });
 
+async function populateEventWithTripAdvisorData(event) {
+    try {
+        let locPhotos = await axios.get(
+            `https://api.content.tripadvisor.com/api/v1/location/${event.tripAdvisorLocationId}/photos?language=en&key=${apiKey}`
+        );
+        locPhotos.data.data = locPhotos.data.data.splice(0, 3);
+        event.tripAdvisorLocationImages = locPhotos.data.data.map(
+            (photo) => photo.images.medium.url
+        );
+
+        let locInfo = await axios.get(
+            `https://api.content.tripadvisor.com/api/v1/location/${event.tripAdvisorLocationId}/details?key=${apiKey}`
+        );
+        event.tripAdvisorLocationUrl = locInfo.data.web_url;
+        event.tripAdvisorLocationRating = locInfo.data.rating;
+        event.tripAdvisorLocationRatingImage = locInfo.data.rating_image_url;
+    } catch (error) {
+        console.error(error);
+        event.tripAdvisorLocationImages = [];
+        event.tripAdvisorLocationUrl = "";
+        event.tripAdvisorLocationRating = "";
+        event.tripAdvisorLocationRatingImage = "";
+    }
+    return event;
+}
+
+function isNewOrUpdatedEvent(event) {
+    return event && !event._id;
+}
+
 //ROUTE TO CREATE A NEW DATE
 router.route("/").post(async (req, res) => {
     let title = req.body.title;
@@ -100,73 +130,65 @@ router.route("/").post(async (req, res) => {
         return res.status(400).json({ error: e });
     }
 
-    try {
-        for (let i = 0; i < eventArray.length; i++) {
-            try {
-                let locPhotos = await axios.get(
-                    `https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/photos?language=en&key=${apiKey}`
-                );
-                locPhotos.data.data = locPhotos.data.data.splice(0, 3);
-                eventArray[i]["tripAdvisorLocationImages"] = [];
-                for (let photo of locPhotos.data.data) {
-                    eventArray[i]["tripAdvisorLocationImages"].push(
-                        photo.images.medium.url
-                    );
-                    //locPhotos.data.data[0].images.medium.url;
-                }
-                //TODO: ADD SOME LOGIC IF NO PHOTOS
-            } catch (e) {
-                // return res.status(404).json({ error: e });
-                eventArray[i]["tripAdvisorLocationImages"] = [];
-            }
-            try {
-                let locInfo = await axios.get(
-                    `https://api.content.tripadvisor.com/api/v1/location/${eventArray[i].tripAdvisorLocationId}/details?key=${apiKey}`
-                );
-                // console.log(locInfo.data);
-                eventArray[i]["tripAdvisorLocationUrl"] = locInfo.data.web_url;
-                eventArray[i]["tripAdvisorLocationRating"] =
-                    locInfo.data.rating;
-                eventArray[i]["tripAdvisorLocationRatingImage"] =
-                    locInfo.data.rating_image_url;
-            } catch (e) {
-                // return res.status(404).json({ error: e });
-                eventArray[i]["tripAdvisorLocationUrl"] = "";
-                eventArray[i]["tripAdvisorLocationRating"] = "";
-                eventArray[i]["tripAdvisorLocationRatingImage"] = "";
-            }
-        }
-        //drjkkbn
-        const newDate = await dateFuncts.createDate(
-            title,
-            tagArray,
-            eventArray,
-            userId
-        );
-        return res.status(200).json(newDate);
-    } catch (e) {
-        // console.log(e);
-        return res.status(500).json({ error: e });
-    }
+   try {
+       for (let i = 0; i < eventArray.length; i++) {
+           eventArray[i] = await populateEventWithTripAdvisorData(
+               eventArray[i]
+           );
+       }
+
+       const newDate = await dateFuncts.createDate(
+           title,
+           tagArray,
+           eventArray,
+           userId
+       );
+       return res.status(200).json(newDate);
+   } catch (e) {
+       return res.status(500).json({ error: e });
+   }
 });
 
 //ROUTE FOR DELETING DATE BY ID
 router.route("/:userId/:dateId").delete(async (req, res) => {
-  let userId = req.params.userId;
-  let dateId = req.params.dateId;
-  try {
-    dateId = helpers.checkId(dateId, "Date ID");
-    userId = helpers.checkUserId(userId, "User ID");
-  } catch (e) {
-    return res.status(400).json({ error: e });
-  }
+    let userId = req.params.userId;
+    let dateId = req.params.dateId;
+    try {
+        dateId = helpers.checkId(dateId, "Date ID");
+        userId = helpers.checkUserId(userId, "User ID");
+    } catch (e) {
+        return res.status(400).json({ error: e });
+    }
 
-  try {
-    let deletedDate = await dateFuncts.deleteDate(dateId, userId);
-    return res.status(200).json(deletedDate);
-  } catch (e) {
-    return res.status(404).json({ error: e });
-  }
+    try {
+        let deletedDate = await dateFuncts.deleteDate(dateId, userId);
+        return res.status(200).json(deletedDate);
+    } catch (e) {
+        return res.status(404).json({ error: e });
+    }
+});
+
+// Your PATCH route in the router file
+router.patch("/:userId/:dateId", async (req, res) => {
+    try {
+        const dateId = req.params.dateId;
+        const userId = req.params.userId;
+        let { title, tags, events } = req.body;
+
+        const currentDate = await dateFuncts.getDate(dateId);
+
+        for (let i = 0; i < events.length; i++) {
+            if (isNewOrUpdatedEvent(events[i])) {
+                events[i] = await populateEventWithTripAdvisorData(events[i]);
+            }
+        }
+
+        const updatedDate = await dateFuncts.editDate(userId, dateId, { title, tags, events });
+        res.status(200).json(updatedDate);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 //ROUTE FOR SEARCHING FOR LOCATIONS

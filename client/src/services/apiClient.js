@@ -6,7 +6,7 @@ class ApiClient {
         this.token = null;
         this.tokenName = "token";
     }
-  
+
     setToken(token) {
         this.token = token;
         localStorage.setItem(this.tokenName, token);
@@ -49,13 +49,13 @@ class ApiClient {
             method: `GET`,
         });
     }
-      
+
     async checkEmail(email) {
-    return await this.request({
-      endpoint: `users/checkEmails/${email}`,
-      method: `GET`,
-    });
-  }
+        return await this.request({
+            endpoint: `users/checkEmails/${email}`,
+            method: `GET`,
+        });
+    }
 
     async getDates(tags = [], sorting = "disabled", page = 1, limit = 12) {
         const queryString = new URLSearchParams();
@@ -113,6 +113,15 @@ class ApiClient {
         return await this.request({
             endpoint: `dates/${userId}/${dateId}`,
             method: `DELETE`,
+        });
+    }
+
+    async patchDate(userId, dateId, dateData) {
+        // console.log(dateData)
+        return await this.request({
+            endpoint: `dates/${userId}/${dateId}`,
+            method: `PATCH`,
+            data: dateData,
         });
     }
 

@@ -95,7 +95,7 @@ const CreatePostForm = (handle) => {
     apiClient
       .createDate(data)
       .then(({ data }) => {
-        console.log(data);
+        // console.log(data);
         setNotSubmitted(false);
         handle.handle();
         setTimeout(() => {
