@@ -266,7 +266,7 @@ const ViewCardModal = ({
                 ))}
             </div>
         </DialogContent>
-    )};
+    )}
     {!notSubmitted && (
         <DialogContent>
             <DialogTitle>Posting Comment</DialogTitle>
