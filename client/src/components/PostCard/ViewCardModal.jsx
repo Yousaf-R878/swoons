@@ -278,16 +278,21 @@ const ViewCardModal = ({
                             </div>
                         ))}
                     </div>
-                </DialogContent>
-            )}
-            ;
-            {!notSubmitted && (
-                <DialogContent>
-                    <DialogTitle>Posting Comment</DialogTitle>
-                    <DialogDescription>{commentDialogue}</DialogDescription>
-                </DialogContent>
-            )}
-        </>
+
+                ))}
+            </div>
+        </DialogContent>
+    )}
+    {!notSubmitted && (
+        <DialogContent>
+            <DialogTitle>Posting Comment</DialogTitle>
+            <DialogDescription>
+                {commentDialogue}
+            </DialogDescription>
+        </DialogContent>
+    )}
+    </>
+
     );
 };
 
