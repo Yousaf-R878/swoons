@@ -54,6 +54,7 @@ const formSchema = z.object({
 
 const EditPostForm = ({date}) => {
     // console.log(date)
+
     const tags = date.tags;
     const title = date.title;
   
@@ -68,6 +69,7 @@ const EditPostForm = ({date}) => {
   const { initialized, currentUser } = useContext(AuthorizeContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [notSubmitted, setNotSubmitted] = useState(true);
 
   useEffect(() => {
     while (searchTerm.trim() === "") {
@@ -134,7 +136,13 @@ const EditPostForm = ({date}) => {
       console.log(error);
     });
     apiClient.createDate(data).then(({ data }) => {
-      // console.log(data);
+      //console.log(data);
+      setNotSubmitted(false);
+      handle();
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 2000);
+
     }).catch((error) => {
       console.log(error);
     });
@@ -320,9 +328,11 @@ const EditPostForm = ({date}) => {
                                   <FormMessage />
                               </FormItem>
                           )}
+
                       />
                   </div>
               ))}
+
 
               <div className="flex justify-center">
                   <Button
