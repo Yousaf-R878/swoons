@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
@@ -21,6 +21,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 
 import API from "../../services/apiClient";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 const commentSchema = z.object({
     comment: z
@@ -42,10 +43,12 @@ const ViewCardModal = ({
     setIsLiked,
     setLikesCount,
     showLoginDialog,
-    setShowLoginDialog,
+    setShowLoginDialog
 }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { currentUser } = useContext(AuthorizeContext);
+    const [notSubmitted, setNotSubmitted] = useState(true);
+    const [commentDialogue, setCommentDialogue] = useState("Comment successfully posted!");
 
     const {
         control,
@@ -74,9 +77,18 @@ const ViewCardModal = ({
         try {
             await API.postComment(currentUser._id, date._id, data.comment);
             reset();
-            window.location.reload();
+            setNotSubmitted(false);
+            setCommentDialogue("Comment successfully posted!");
+            //window.location.reload();
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 2000);
         } catch (error) {
+            setCommentDialogue("Something went wrong. Please try again!");
             console.error("Failed to post comment", error);
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 2000);
         }
         setIsSubmitting(false);
     };
@@ -88,14 +100,24 @@ const ViewCardModal = ({
 
         try {
             await API.deleteComment(currentUser._id, date._id, timeStamp);
-            window.location.reload(); // or use another method to refresh comments
+            setNotSubmitted(false);
+            setCommentDialogue("Comment successfully deleted!");
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 2000);
+            //window.location.reload(); // or use another method to refresh comments
         } catch (error) {
+            setCommentDialogue("Something went wrong. Please try again!");
             console.error("Failed to delete comment", error);
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 2000);
         }
     };
 
     return (
-        <DialogContent className="flex gap-8 max-w-[925px] max-h-[700px] overflow-y-auto">
+        <>
+        {notSubmitted && (<DialogContent className="flex gap-8 max-w-[925px] max-h-[700px] overflow-y-auto">
             <div className="flex flex-col w-3/5 space-y-2 overflow-y-auto max-h-[700px]">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-semibold">
@@ -245,6 +267,16 @@ const ViewCardModal = ({
                 ))}
             </div>
         </DialogContent>
+    )};
+    {!notSubmitted && (
+        <DialogContent>
+            <DialogTitle>Posting Comment</DialogTitle>
+            <DialogDescription>
+                {commentDialogue}
+            </DialogDescription>
+        </DialogContent>
+    )}
+    </>
     );
 };
 
