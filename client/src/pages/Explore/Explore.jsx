@@ -131,7 +131,7 @@ const Explore = () => {
         </div>
         <div className="flex justify-between items-center my-10">
           <h2 className="text-2xl font-semibold">
-            {hasSearch ? "Found Results" : "Recent Activity"}
+            {hasSearch ? "Found Results" : "Browse Dates"}
           </h2>
           <Select
             className="w-1/5"
