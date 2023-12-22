@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useContext } from "react";
 import { AuthorizeContext } from "../../contexts/auth";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { S3 } from "aws-sdk/clients/s3";
-import { config } from "aws-sdk/lib/config";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,23 +37,6 @@ const formSchema = z.object({
     .min(3, { message: "Username must be at least 2 characters long" })
     .max(20, { message: "Username must be less than 20 characters long" })
     .regex(/^[a-z0-9]+$/i, { message: "Invalid username format" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters long" })
-    .regex(/(?=.*[a-z])/, {
-      message: "Password must contain at least one lowercase letter",
-    })
-    .regex(/(?=.*[A-Z])/, {
-      message: "Password must contain at least one uppercase letter",
-    })
-    .regex(/(?=.*[0-9])/, {
-      message: "Password must contain at least one number",
-    })
-    .regex(/(?=.*[!@#$%^&*])/, {
-      message: "Password must contain at least one symbol (!@#$%^&*)",
-    })
-    .optional()
-    .or(z.literal("")),
 });
 
 const timeStampToDate = (timeStamp) => {
@@ -70,7 +51,7 @@ const UserProfile = () => {
   const { currentUser, updateUser } = useContext(AuthorizeContext);
   const [file, setFile] = useState(null);
   const [fileName, setfileName] = useState("No file chosen");
-  const [pic, setPic] = useState({ image: currentUser.picture, x: 0 });
+
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -211,7 +192,6 @@ const UserProfile = () => {
     let firstName = data.firstName;
     let lastName = data.lastName;
     let username = data.username;
-    let password = "";
 
     let apiUrl =
       import.meta.env.VITE_API_URL + `/users/user/${currentUser._id}`;
@@ -339,20 +319,6 @@ const UserProfile = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
