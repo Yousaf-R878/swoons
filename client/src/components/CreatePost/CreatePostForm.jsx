@@ -108,7 +108,7 @@ const CreatePostForm = (handle) => {
   };
 
   return (
-  {notSubmitted && (<Form {...form}>
+  notSubmitted && (<Form {...form}>
           <form
               onSubmit={form.handleSubmit(handleSubmitData)}
               className="space-y-8"
@@ -196,7 +196,8 @@ const CreatePostForm = (handle) => {
           </form>
       </Form>
 
+  )
   );
-};
+}
 
 export default CreatePostForm;
